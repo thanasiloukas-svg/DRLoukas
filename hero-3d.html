@@ -17,7 +17,9 @@
     align-items: center;
     justify-content: center;
     overflow: hidden;
+    background: #06202D;
     background: var(--navy);
+    color: #F5F7FA;
     color: var(--white);
     font-family: 'Source Sans Pro', 'Segoe UI', system-ui, sans-serif;
   }
@@ -37,6 +39,10 @@
     max-width: 720px;
     padding: 0 24px;
   }
+  @keyframes heroReveal {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
   .eyebrow {
     font-size: 12px;
     font-weight: 600;
@@ -44,8 +50,8 @@
     text-transform: uppercase;
     color: var(--teal);
     margin-bottom: 20px;
+    animation: heroReveal 0.7s ease 0.4s forwards;
     opacity: 0;
-    transform: translateY(30px);
   }
   .hero-h1 {
     font-family: Georgia, 'Playfair Display', 'Times New Roman', serif;
@@ -55,8 +61,8 @@
     color: var(--white);
     margin-bottom: 20px;
     text-wrap: balance;
+    animation: heroReveal 0.7s ease 0.58s forwards;
     opacity: 0;
-    transform: translateY(30px);
   }
   .hero-h1 em {
     font-style: normal;
@@ -73,8 +79,8 @@
     max-width: 560px;
     margin-left: auto;
     margin-right: auto;
+    animation: heroReveal 0.7s ease 0.76s forwards;
     opacity: 0;
-    transform: translateY(30px);
   }
   .hero-ctas {
     display: flex;
@@ -82,8 +88,8 @@
     justify-content: center;
     flex-wrap: wrap;
     margin-bottom: 48px;
+    animation: heroReveal 0.7s ease 0.94s forwards;
     opacity: 0;
-    transform: translateY(30px);
   }
   .btn {
     display: inline-flex;
@@ -124,8 +130,8 @@
     justify-content: center;
     gap: 32px;
     flex-wrap: wrap;
+    animation: heroReveal 0.7s ease 1.12s forwards;
     opacity: 0;
-    transform: translateY(30px);
   }
   .stat {
     background: var(--glass);
@@ -170,6 +176,7 @@
     left: 50%;
     transform: translateX(-50%);
     z-index: 4;
+    animation: heroReveal 0.7s ease 1.3s forwards;
     opacity: 0;
   }
   .scroll-hint span {
@@ -236,9 +243,9 @@
       <a href="#below" class="btn btn-outline">View Our Gallery</a>
     </div>
     <div class="stats-row" data-reveal="4">
-      <div class="stat"><div class="stat-num" data-count="40" data-suffix="+">0</div><div class="stat-label">Years</div></div>
-      <div class="stat"><div class="stat-num" data-count="5" data-suffix=" &#9733;">0</div><div class="stat-label">Rating</div></div>
-      <div class="stat"><div class="stat-num" data-count="1000" data-suffix="+">0</div><div class="stat-label">Smiles</div></div>
+      <div class="stat"><div class="stat-num" data-count="40" data-suffix="+">40+</div><div class="stat-label">Years</div></div>
+      <div class="stat"><div class="stat-num" data-count="5" data-suffix=" &#9733;">5 &#9733;</div><div class="stat-label">Rating</div></div>
+      <div class="stat"><div class="stat-num" data-count="1000" data-suffix="+">1,000+</div><div class="stat-label">Smiles</div></div>
     </div>
   </div>
   <div class="scroll-hint" data-reveal="5"><span></span></div>
