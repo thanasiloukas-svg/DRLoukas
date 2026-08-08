@@ -31,13 +31,13 @@
     <h2 class="hp-h2">Our Services</h2>
     <p class="hp-subtitle">From implants to Invisalign, veneers to Botox &mdash; comprehensive dentistry and facial aesthetics under one roof.</p>
     <div class="hp-grid6">
-      <a href="/dental-implants/" class="hp-service-tile">
-        <img src="https://www.drloukas.com/wp-content/uploads/2026/06/dental-implant-before-and-after_c1b9d4c0.jpg" alt="Dental Implants" width="400" height="267" loading="lazy">
-        <span class="tile-label">Dental Implants</span>
-      </a>
       <a href="/invisalign/" class="hp-service-tile">
         <img src="https://www.drloukas.com/wp-content/uploads/2026/06/loukas-instagram-invisalign-clear-aligners.webp" alt="Invisalign" width="400" height="267" loading="lazy">
         <span class="tile-label">Invisalign</span>
+      </a>
+      <a href="/dental-implants/" class="hp-service-tile">
+        <img src="https://www.drloukas.com/wp-content/uploads/2026/06/dental-implant-before-and-after_c1b9d4c0.jpg" alt="Dental Implants" width="400" height="267" loading="lazy">
+        <span class="tile-label">Dental Implants</span>
       </a>
       <a href="/porcelain-veneers/" class="hp-service-tile">
         <img src="https://www.drloukas.com/wp-content/uploads/2026/06/loukas-homepage-veneers-img3377-approved.webp" alt="Porcelain Veneers" width="400" height="267" loading="lazy">
