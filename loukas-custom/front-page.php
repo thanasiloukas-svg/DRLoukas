@@ -36,7 +36,7 @@
         <span class="tile-label">Invisalign</span>
       </a>
       <a href="/dental-implants/" class="hp-service-tile">
-        <img src="https://www.drloukas.com/wp-content/uploads/2026/06/dental-implant-before-and-after_c1b9d4c0.jpg" alt="Dental Implants" width="400" height="267" loading="lazy">
+        <img src="https://www.drloukas.com/wp-content/uploads/2026/06/before-after-dental-implants_ffab8b60.jpg" alt="Dental Implants" width="400" height="267" loading="lazy">
         <span class="tile-label">Dental Implants</span>
       </a>
       <a href="/porcelain-veneers/" class="hp-service-tile">
@@ -48,7 +48,7 @@
         <span class="tile-label">Botox &amp; Dysport</span>
       </a>
       <a href="/dental-crowns/" class="hp-service-tile">
-        <img src="https://www.drloukas.com/wp-content/uploads/2026/06/loukas-homepage-crowns.jpg" alt="Dental Crowns" width="400" height="267" loading="lazy">
+        <img src="https://www.drloukas.com/wp-content/uploads/2026/06/implant-crowns-before-and-after_e886eb1e.jpg" alt="Dental Crowns" width="400" height="267" loading="lazy">
         <span class="tile-label">Dental Crowns</span>
       </a>
       <a href="/lip-filler/" class="hp-service-tile">
