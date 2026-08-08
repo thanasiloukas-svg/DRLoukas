@@ -28,7 +28,7 @@
 
     <div class="header-actions">
       <a href="https://maps.google.com/?q=714+W+Higgins+Rd+Park+Ridge+IL+60068" target="_blank" rel="noopener" class="header-cta header-cta-dir">Directions</a>
-      <a href="/contact-us/" class="header-cta">Appointment</a>
+      <a href="<?php echo esc_url(get_option('loukas_appointment_url', 'https://www.mogo.com/Registration/Appointment/Index')); ?>" class="header-cta" target="_blank" rel="noopener">Appointment</a>
     </div>
 
     <button class="mobile-toggle" id="mobile-toggle" aria-label="Toggle menu" aria-expanded="false">

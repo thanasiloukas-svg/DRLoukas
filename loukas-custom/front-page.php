@@ -12,7 +12,7 @@
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
         Call <?php echo loukas_phone(); ?>
       </a>
-      <a href="/contact-us/" class="btn btn-outline">Book Appointment</a>
+      <a href="<?php echo esc_url(get_option('loukas_appointment_url', 'https://www.mogo.com/Registration/Appointment/Index')); ?>" class="btn btn-outline" target="_blank" rel="noopener">Book Appointment</a>
     </div>
     <div class="stats-row">
       <div class="stat"><div class="stat-num">40+</div><div class="stat-label">Years</div></div>
@@ -32,7 +32,7 @@
     <p class="hp-subtitle">From implants to Invisalign, veneers to Botox &mdash; comprehensive dentistry and facial aesthetics under one roof.</p>
     <div class="hp-grid6">
       <a href="/dental-implants/" class="hp-service-tile">
-        <img src="https://www.drloukas.com/wp-content/uploads/2026/06/loukas-homepage-dental-implants.jpg" alt="Dental Implants" width="400" height="267" loading="lazy">
+        <img src="https://www.drloukas.com/wp-content/uploads/2026/06/dental-implant-before-and-after_c1b9d4c0.jpg" alt="Dental Implants" width="400" height="267" loading="lazy">
         <span class="tile-label">Dental Implants</span>
       </a>
       <a href="/invisalign/" class="hp-service-tile">
@@ -48,7 +48,7 @@
         <span class="tile-label">Botox &amp; Dysport</span>
       </a>
       <a href="/dental-crowns/" class="hp-service-tile">
-        <img src="https://www.drloukas.com/wp-content/uploads/2026/06/loukas-instagram-porcelain-crowns-result.webp" alt="Dental Crowns" width="400" height="267" loading="lazy">
+        <img src="https://www.drloukas.com/wp-content/uploads/2026/06/loukas-homepage-crowns.jpg" alt="Dental Crowns" width="400" height="267" loading="lazy">
         <span class="tile-label">Dental Crowns</span>
       </a>
       <a href="/lip-filler/" class="hp-service-tile">
@@ -230,7 +230,7 @@
         <h3 style="font-family:var(--ff-heading);font-size:24px;color:#fff;margin:0 0 16px">Request an Appointment</h3>
         <p class="hp-contact-sub">Call us at <a href="tel:<?php echo loukas_phone_raw(); ?>"><?php echo loukas_phone(); ?></a> or visit us to schedule your appointment today.</p>
         <div class="hp-contact-btns">
-          <a href="/contact-us/" class="hp-btn hp-btn-teal">Book Online</a>
+          <a href="<?php echo esc_url(get_option('loukas_appointment_url', 'https://www.mogo.com/Registration/Appointment/Index')); ?>" class="hp-btn hp-btn-teal" target="_blank" rel="noopener">Book Online</a>
           <a href="https://maps.google.com/?q=714+W+Higgins+Rd+Park+Ridge+IL+60068" target="_blank" rel="noopener" class="hp-btn hp-btn-outline">Get Directions</a>
         </div>
         <div class="hp-map-embed">
@@ -255,7 +255,7 @@
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
     Call Us
   </a>
-  <a href="/contact-us/" aria-label="Book appointment">
+  <a href="<?php echo esc_url(get_option('loukas_appointment_url', 'https://www.mogo.com/Registration/Appointment/Index')); ?>" aria-label="Book appointment" target="_blank" rel="noopener">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
     Book
   </a>

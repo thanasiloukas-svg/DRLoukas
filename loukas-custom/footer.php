@@ -42,7 +42,7 @@
         </a>
       </div>
       <a href="https://g.page/loukas-dentistry/review" target="_blank" rel="noopener" class="footer-review-link">Leave a Google Review</a>
-      <a href="/contact-us/" class="hp-btn hp-btn-teal footer-book-btn">Book Appointment</a>
+      <a href="<?php echo esc_url(get_option('loukas_appointment_url', 'https://www.mogo.com/Registration/Appointment/Index')); ?>" class="hp-btn hp-btn-teal footer-book-btn" target="_blank" rel="noopener">Book Appointment</a>
     </div>
   </div>
   <div class="footer-bottom">
