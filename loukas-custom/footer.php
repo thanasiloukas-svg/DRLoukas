@@ -5,27 +5,37 @@
       <p class="footer-address">714 W Higgins Rd<br>Park Ridge, IL 60068</p>
       <a href="tel:<?php echo loukas_phone_raw(); ?>" class="footer-phone"><?php echo loukas_phone(); ?></a>
       <table class="footer-hours">
-        <tr><td>Mon</td><td>9am&ndash;6pm</td></tr>
-        <tr><td>Tue</td><td>10am&ndash;7:30pm</td></tr>
+        <tr><td>Mon</td><td>10am&ndash;4pm</td></tr>
+        <tr><td>Tue</td><td>10am&ndash;6pm</td></tr>
         <tr><td>Wed</td><td class="closed">Closed</td></tr>
-        <tr><td>Thu</td><td>10am&ndash;7:30pm</td></tr>
-        <tr><td>Fri</td><td>9am&ndash;2pm</td></tr>
-        <tr><td>Sat</td><td>9am&ndash;3pm</td></tr>
+        <tr><td>Thu</td><td>10am&ndash;6:30pm</td></tr>
+        <tr><td>Fri</td><td>By appointment</td></tr>
+        <tr><td>Sat</td><td>9am&ndash;2pm</td></tr>
+        <tr><td>Sun</td><td class="closed">Closed</td></tr>
       </table>
     </div>
     <div class="footer-col">
       <h4>Quick Links</h4>
       <ul>
         <li><a href="/dental-implants/">Dental Implants</a></li>
-        <li><a href="/invisalign/">Invisalign</a></li>
-        <li><a href="/porcelain-veneers/">Porcelain Veneers</a></li>
-        <li><a href="/botox-dysport/">Botox &amp; Dysport</a></li>
+        <li><a href="/invisalign-park-ridge/">Invisalign</a></li>
+        <li><a href="/cosmetic-dentistry/porcelain-veneers/">Porcelain Veneers</a></li>
+        <li><a href="/botox/">Botox &amp; Dysport</a></li>
         <li><a href="/about-us/">About Us</a></li>
         <li><a href="/blog/">Blog</a></li>
         <li><a href="/contact-us/">Contact</a></li>
         <li><a href="/virtual-tour/">Virtual Tour</a></li>
         <li><a href="/smile-gallery/">Smile Gallery</a></li>
         <li><a href="/emergency-dentistry/">Emergency Dentistry</a></li>
+      </ul>
+      <h4 style="margin-top:18px">Areas We Serve</h4>
+      <ul>
+        <li><a href="/des-plaines-dentist/">Dentist near Des Plaines</a></li>
+        <li><a href="/dentist-near-niles/">Dentist near Niles</a></li>
+        <li><a href="/norridge-dentist/">Norridge Dentist</a></li>
+        <li><a href="/harwood-heights-dentist/">Harwood Heights Dentist</a></li>
+        <li><a href="/rosemont-dentist/">Rosemont Dentist</a></li>
+        <li><a href="/chicago-dentist/">Chicago Northwest Side</a></li>
       </ul>
     </div>
     <div class="footer-col">
@@ -42,12 +52,13 @@
         </a>
       </div>
       <a href="https://g.page/loukas-dentistry/review" target="_blank" rel="noopener" class="footer-review-link">Leave a Google Review</a>
-      <a href="<?php echo esc_url(get_option('loukas_appointment_url', 'https://www.mogo.com/Registration/Appointment/Index')); ?>" class="hp-btn hp-btn-teal footer-book-btn" target="_blank" rel="noopener">Book Appointment</a>
+      <a href="/contact-us/" class="hp-btn hp-btn-teal footer-book-btn">Book Appointment</a>
     </div>
   </div>
   <div class="footer-bottom">
     <p>&copy; <?php echo date('Y'); ?> Loukas Dentistry of Park Ridge. All rights reserved.</p>
     <p class="footer-legal">Unauthorized use of the names Dr. Thanasi Loukas or Dr. Maria Loukas is prohibited.</p>
+      <p class="footer-legal"><a href="/privacy-policy/">Privacy Policy</a></p>
   </div>
 </footer>
 <?php wp_footer(); ?>

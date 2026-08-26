@@ -105,6 +105,9 @@ All photos supplied by the user in chat, processed locally (Pillow crop/resize, 
 - 4052 crowns before + 4053 crowns after → third B/A card on /restorative-dentistry/dental-crowns/ (100)
 - 4056 labeled BEFORE|AFTER crowns composite (1404×700) → full-width figure in the homepage Before & After section of front-page.php (backup: front-page.php.bak-20260826-crowns alongside the older .bak-20260826)
 
+### Hours consistency pass (Aug 26, user supplied GBP screenshot as source of truth) — DONE
+Canonical hours (GBP + AIOSEO Local Business, both match): Mon 10-4, Tue 10-6, Wed Closed, Thu 10-6:30, Fri Closed on GBP but "By appointment" on site (surgical cases nuance, intentional), Sat 9-2, Sun Closed. **Sunday was missing from every site display — added** to footer.php hours table (sitewide, backup footer.php.bak-20260826-hours), front-page.php contact table, and the homepage FAQ hours answer in BOTH visible text and FAQPage JSON-LD (kept in sync, schema re-validated). Repo copies of footer.php and front-page.php re-synced from live (md5 verified). Other hour mentions checked and fine: 1409 prose ("open until 6:30 Thursdays"), AIOSEO Local Business openingHours, footer on all pages. Dormant post 3258 content still has old hours but is not rendered.
+
 ### Botox page consolidation (/botox/ ID 461, Aug 26) — DONE
 - Merged TWO visible FAQ sections into the styled ld-v112-faq (now 10 details items); deleted the bolted-on duplicate faq-section div.
 - Replaced THREE FAQPage schemas' worth of markup (one had no visible counterpart) with ONE valid FAQPage matching visible questions.
