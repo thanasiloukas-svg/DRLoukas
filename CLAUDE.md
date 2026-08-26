@@ -22,9 +22,22 @@ Workspace for Loukas Dentistry of Park Ridge (www.drloukas.com) — SEO, content
 - **Novamira MCP** (`mcp__Novamira_-_Loukas_Dentistry_of_Park_Ridge__`): WORKS (the older duplicate "drloukas.com" connector pointing at /novamira/v1 is broken — ignore it or ask user to remove). Gives AIOSEO redirect CRUD, wp-cli, execute-php, file access. Connects as WP user ID 1 — never break its OAuth/app passwords.
 - **GitHub:** repo `thanasiloukas-svg/drloukas` via `mcp__github__` tools.
 - **Google Drive** via `mcp__Google_Drive__`.
+- **AIOSEO Search Statistics / GSC link (found Aug 26, claude.ai session):** AIOSEO is GSC-connected (site.verified true) but **authed against the WRONG property — `http://drloukas.com`** (no https, no www) while canonical URLs are `https://www.drloukas.com`. This is why Search Statistics data is thin and why all sitemaps show `indexed: 0` via the API (an artifact, not reality — GSC UI shows ~688 indexed). Fix is user's click: AIOSEO → Search Statistics → disconnect → reconnect → pick `https://www.drloukas.com/` (or the Domain property). **Rule: verify `profile.authedsite` matches the canonical host before trusting any Search Statistics output.** Site Kit separately has no Search Console module (pagespeed, GA4, RRM, tagmanager only).
 - **Google Search Console:** NO remote access. A GSC MCP server (`mcp-server-gsc`, service account `gsc-reader@numeric-anthem-506400-v4.iam.gserviceaccount.com`, key at `D:\claude Drloukas.com\gsc-key.json`) is wired on the user's Windows PC for BOTH Claude Code CLI and Claude Desktop. GSC data must be pulled in a LOCAL session or pasted in. Note: the mcp-server-gsc token refresh can fail transiently ("premature close"); a local helper with a working OAuth token lives in the `google-search-console\` folder of the user's local project.
 - **Ahrefs / Semrush:** connected but useless via API — Ahrefs returns "Insufficient plan", Semrush "API units balance is zero".
 - Remote sessions CANNOT fetch drloukas.com or google.com (network egress blocked); audit the site through the WordPress/Novamira MCPs.
+
+## Novamira OAuth 429 incident (Aug 26, diagnosed in claude.ai session — PLAN ONLY, no changes made)
+
+- The 429s on the Novamira MCP endpoint come from the **IONOS edge/proxy per-source-IP rate limit (1000 req/window, `x-ws-ratelimit-*` headers)** — not WordPress, not a plugin, not ModSecurity. WordPress and Novamira auth respond normally (clean 401s).
+- Suspected driver: an **OAuth retry/re-registration loop** in a client that lost its refresh token — repeatedly hitting `/oauth/register`, `/oauth/token`, discovery, and the MCP endpoint. One cold handshake costs ~6 requests before any work.
+- **Operating rules for ALL MCP sessions against this site until resolved:** keep tool calls sequential and paced (no rapid-fire/parallel bursts), one session at a time, don't toggle/reconnect connectors repeatedly, keep sessions long-lived. A 429 here means STOP and wait for the window, not retry.
+- **Never** request or apply broad rate-limit exemptions (`/wp-json/`, `/wp-json/mcp/*`, `/.well-known/*`, the oauth register/token/device endpoints). If mitigation is ever needed it must be single-source-IP + exact path `/wp-json/mcp/novamira-oauth` only, time-boxed, owner-applied in the IONOS panel.
+- Remediation order (owner-gated): clean disconnect/reconnect of the failing client first; then read-only inventory of Novamira OAuth admin settings (TTLs, rotation, client list, whether open dynamic registration can be disabled — likely the best hardening); Apache access-log confirmation of the looping IP. The full plan lives in the claude.ai session doc "2026-08-26-novamira-oauth-429-repair-plan".
+- **OpenAI API key in `mwai_options` is treated as COMPROMISED** (surfaced in a diagnostic read). Owner rotates manually at platform.openai.com → update in AI Engine admin UI → test ARYA → revoke old key. Never pass the key through MCP, chat, or commits.
+
+### Standing redaction rule (adopted Aug 26 — applies to every session)
+When reading options/settings/config: never dump a full option when a targeted read will do; treat values matching credential patterns (`sk-`, `api_key`, `secret`, `token`, `password`, bearer strings, private keys) as sensitive; never write such values into reports, chat, artifacts, or commits — report presence and location only (e.g. "a key exists at `mwai_options.ai_envs[0].apikey`"); if a secret is retrieved incidentally, flag it for rotation and treat it as exposed from that moment.
 
 ## CRITICAL RULES — DO NOT VIOLATE
 
@@ -56,6 +69,9 @@ Workspace for Loukas Dentistry of Park Ridge (www.drloukas.com) — SEO, content
 - GSC "381 not indexed" is expected fallout: redirected posts + noindexed tag/author/date archives + attachment redirects. Not a problem to fix.
 
 ### AIOSEO keyphrases — DONE (~220+ posts/pages, prior sessions). Locked pages skipped.
+
+### Plugin change (Aug 26, claude.ai session): AIOSEO News Sitemap 1.0.21 DELETED
+It was inactive, so no site output changed; reinstallable from the Elite account if ever needed (a dental practice won't need a Google News sitemap). Everything else AIOSEO untouched: Pro 5.0.1 active; free 5.0.0.1 inactive-in-place; Author SEO, Image SEO, IndexNow, Link Assistant, Local Business, Video Sitemap, Broken Link Checker active; REST API addon inactive-in-place. Elementor, Asset CleanUp, WP Super Cache, MonsterInsights, six old themes, Duplicator, WP File Manager: still present, pending owner's call on a backup — this was the ONLY deletion.
 
 ### Video SEO (Aug 26 session) — DONE
 All published video watch pages under /videos/ plus service pages were audited. Fixes applied:
@@ -106,6 +122,7 @@ GSC rich-results warned on date-only uploadDate values. All video pages scanned 
 Comes from the **AIOSEO Author SEO (E-E-A-T) addon** on author archives (noindexed). 5 admin users exist: loukaswpboss (Dr. Loukas, ID 1 — authors everything), ionos, ionos123, manus-seo-agent, manus-seo-temp. Exact GSC error text never obtained; fix via AIOSEO → Search Appearance → Author SEO when user supplies it.
 
 ## PENDING / OPEN ITEMS
+0. **P0 (owner, manual, time-sensitive): rotate the OpenAI API key** (new key at platform.openai.com → enter in AI Engine admin UI → test ARYA → revoke old). Also: **reconnect AIOSEO Search Statistics to the correct GSC property** (`https://www.drloukas.com/` or Domain property — currently authed to `http://drloukas.com`).
 1. **User's one click:** AIOSEO → Sitemaps → General Sitemap → uncheck "Include All Post Types", check Posts/Pages/Products (drop Attachments) → Save.
 2. User to hit "Request indexing" in GSC UI for: /videos/botox-treatment-park-ridge/, /videos/lip-filler-treatment-park-ridge/, /botox-parties/, /lip-fillers-park-ridge/, /implant-supported-dentures/.
 3. Confirm real duration of video_20220414_1.mp4 (dermal filler) → align 116 vs 2805 schema.
