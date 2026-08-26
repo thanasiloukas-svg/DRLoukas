@@ -1,7 +1,7 @@
 # CLAUDE.md
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
-**Last updated: 2026-08-26 (post-GSC-audit session). Treat this as the session handoff — read it fully before touching the site.**
+**Last updated: 2026-08-26 evening (image placement session). Treat this as the session handoff — read it fully before touching the site.**
 
 ## Project Overview
 
@@ -67,7 +67,7 @@ All published video watch pages under /videos/ plus service pages were audited. 
 - ~15 raw mp4 uploads in the media library sit on no watch page — these are most of GSC's "videos not indexed"; attachment URLs for them already 301 to watch pages where relevant.
 
 ### TMJ/Botox topic cluster (Aug 26) — DONE
-"botox for tmj near me" (GSC pos ~30) was split across 5 pages. Fixed by differentiation + interlinking: 1850 (/botox-tmj-jaw-pain-park-ridge-il/) got FAQ + FAQPage schema + related-links; /tmj-treatment/ (1859) and /botox-for-migraines-headaches-park-ridge-il/ (3303) now cross-link to 1850. Do not create a new Botox-TMJ post — strengthen 1850 instead (it still has no images; user may supply a masseter photo/clip).
+"botox for tmj near me" (GSC pos ~30) was split across 5 pages. Fixed by differentiation + interlinking: 1850 (/botox-tmj-jaw-pain-park-ridge-il/) got FAQ + FAQPage schema + related-links; /tmj-treatment/ (1859) and /botox-for-migraines-headaches-park-ridge-il/ (3303) now cross-link to 1850. Do not create a new Botox-TMJ post — strengthen 1850 instead. Evening session: 1850 now has a masseter injection photo (attachment 4045) plus a new "Botox Is One Part of a Complete TMJ Treatment Plan" H2 covering the multifactorial approach (custom occlusal guard, anti-inflammatory treatment, muscle relaxers in selected cases).
 
 ### Invisalign cluster de-cannibalization (Aug 26, after user unlocked 1409) — DONE
 "invisalign park ridge il" slipped from ~#4 to ~9.2. Cause: two live "Invisalign vs braces" pages competing (1849 /invisalign-vs-braces-park-ridge-il/ post + 1624 /braces-vs-invisalign/ page) plus orthodontics page 104. Fixes applied:
@@ -79,7 +79,15 @@ All published video watch pages under /videos/ plus service pages were audited. 
 - **Fixed broken FAQPage JSON-LD**: the schema script contained a full duplicated question array pasted after the closing brace — invalid JSON, so Google could not parse the homepage FAQ schema at all. Deduplicated; now valid.
 - **Removed the schema-only VideoObject** from the @graph (it referenced YouTube 8nwlO4GGDyw with no video embedded on the page — an invalidation risk with no upside).
 - Keyword presence: "Park Ridge dentist(s)" woven into hero description and The Loukas Dentistry Difference section (which also lost the off-target "among the best Chicago dentists" claim). New FAQ item "Are you accepting new patients in Park Ridge?" added to visible FAQ + schema in sync.
-- Homepage is still rendered from post content (the front-page.php SFTP upload remains pending on user's side).
+- **CORRECTION (evening session): the live homepage IS rendered by the theme template** `loukas-custom/front-page.php` (post 3258 content is dormant). Homepage edits go through the template file via Novamira execute-php file ops, with a backup first. Repo copies of front-page.php and assets/js/canvas.js were reverse-synced from production on Aug 26 — the repo now mirrors live; NEVER deploy an older repo copy over the live theme.
+
+### Image placements (Aug 26 evening session) — DONE
+All photos supplied by the user in chat, processed locally (Pillow crop/resize, WEBP), uploaded via chunked-base64 pipeline (see AIOSEO Technical Reference), promo pricing text and IG story frames cropped off before publishing. New attachments:
+- 4045 masseter injection → 1850 hero figure
+- 4048 forehead injection, 4049 eyebrow/frown injection, 4050 frown-line B/A collage → /botox/ (461) photo grid extended from 3 to 6 ld-v112 photo cards
+- 4051 party treatment photo → /botox-parties/ (3839) figure before "What Guests Can Have Treated"
+- 4052 crowns before + 4053 crowns after → third B/A card on /restorative-dentistry/dental-crowns/ (100)
+- 4056 labeled BEFORE|AFTER crowns composite (1404×700) → full-width figure in the homepage Before & After section of front-page.php (backup: front-page.php.bak-20260826-crowns alongside the older .bak-20260826)
 
 ### Botox page consolidation (/botox/ ID 461, Aug 26) — DONE
 - Merged TWO visible FAQ sections into the styled ld-v112-faq (now 10 details items); deleted the bolted-on duplicate faq-section div.
@@ -112,7 +120,9 @@ Comes from the **AIOSEO Author SEO (E-E-A-T) addon** on author archives (noindex
 
 Meta fields: `_aioseo_title`, `_aioseo_description`, `_aioseo_keyphrases` (JSON: {"focus":{"keyphrase":"...","score":0,"analysis":{}},"additional":[]}), `_aioseo_og_*`, `_aioseo_twitter_*`.
 Redirects: manage via Novamira abilities `aioseo-redirects/list|create|update|delete` (create rejects duplicate sources).
-Content edits: prefer `wp_alter_post` (search/replace or regex, `\z` appends) over full-content rewrites.
+Content edits: prefer `wp_alter_post` (search/replace or regex, `\z` appends) over full-content rewrites. A 60s timeout on wp_alter_post does NOT mean failure — verify with execute-php before retrying (edits have applied despite the timeout).
+
+**Image upload pipeline (remote sessions; wp_upload_media chokes on large base64):** process locally → `base64 -w0` → `split -b 26000 -d` (26000 bytes stays inline in tool output; larger gets persisted to a file) → append each chunk via execute-php `file_put_contents($f, '<chunk>', FILE_APPEND)` to `wp_upload_dir()['basedir'].'/ld-tmp-img.b64'` → **after EVERY append check the appended byte count equals the chunk size** (paste corruption adds stray bytes; repair with `ftruncate` to the expected total + `md5_file` compare) → finalize: base64_decode strict, md5 verify, write to `wp_upload_dir()['path']`, `wp_insert_attachment` + `wp_generate_attachment_metadata` + `_wp_attachment_image_alt`, unlink temp.
 
 ## Tone & Brand Voice
 
