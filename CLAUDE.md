@@ -1,13 +1,97 @@
 # CLAUDE.md
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+**Last updated: 2026-08-26 (post-GSC-audit session). Treat this as the session handoff — read it fully before touching the site.**
 
 ## Project Overview
 
-This repository is the workspace for DRLoukas. It is currently in initial setup.
+Workspace for Loukas Dentistry of Park Ridge (www.drloukas.com) — SEO, content, and site management.
+
+## The Practice
+
+- **Name:** Loukas Dentistry of Park Ridge
+- **Doctors:** Dr. Thanasi Loukas, DMD and Dr. Maria Loukas, DDS
+- **Address:** 714 W Higgins Rd, Park Ridge, IL 60068 (NO suite number, ever)
+- **Phone:** (847) 696-1919 (this format only, always)
+- **Brand colors:** Teal #18C6B3, Navy #06202D, Text #365F6F
+- **Services:** Dental implants, Invisalign, porcelain veneers, Botox/Dysport, dermal fillers, lip filler, jawline filler, Kybella, PDO threads, cosmetic/restorative/preventive dentistry
 
 ## Connected Integrations
 
-- **WordPress (www.drloukas.com)**: Full CMS access — posts, pages, media, comments, users, and site options via MCP tools prefixed `mcp__www_drloukas_com__`.
-- **Google Drive**: File read/search/download access via MCP tools prefixed `mcp__Google_Drive__`.
-- **GitHub**: Repository management via MCP tools prefixed `mcp__github__`.
+- **WordPress (www.drloukas.com):** primary tool, MCP prefix `mcp__www_drloukas_com__`.
+- **Novamira MCP** (`mcp__Novamira_-_Loukas_Dentistry_of_Park_Ridge__`): WORKS (the older duplicate "drloukas.com" connector pointing at /novamira/v1 is broken — ignore it or ask user to remove). Gives AIOSEO redirect CRUD, wp-cli, execute-php, file access. Connects as WP user ID 1 — never break its OAuth/app passwords.
+- **GitHub:** repo `thanasiloukas-svg/drloukas` via `mcp__github__` tools.
+- **Google Drive** via `mcp__Google_Drive__`.
+- **Google Search Console:** NO remote access. A GSC MCP server (`mcp-server-gsc`, service account `gsc-reader@numeric-anthem-506400-v4.iam.gserviceaccount.com`, key at `D:\claude Drloukas.com\gsc-key.json`) is wired on the user's Windows PC for BOTH Claude Code CLI and Claude Desktop. GSC data must be pulled in a LOCAL session or pasted in. Note: the mcp-server-gsc token refresh can fail transiently ("premature close"); a local helper with a working OAuth token lives in the `google-search-console\` folder of the user's local project.
+- **Ahrefs / Semrush:** connected but useless via API — Ahrefs returns "Insufficient plan", Semrush "API units balance is zero".
+- Remote sessions CANNOT fetch drloukas.com or google.com (network egress blocked); audit the site through the WordPress/Novamira MCPs.
+
+## CRITICAL RULES — DO NOT VIOLATE
+
+### Operational Safety
+- **NEVER** use `wp_update_option` to modify `wpassetcleanup_settings` — site-wide PHP fatals
+- **NEVER** write `aioseo_options` / `aioseo_options_dynamic` via `wp_update_option` — the MCP tool decodes the JSON string into an array, which corrupts AIOSEO's storage format. AIOSEO settings changes go through wp-admin UI or Novamira abilities only.
+- **NEVER** change existing URL slugs, post titles, or H1s
+- **NEVER** delete the old loukas theme; never modify live .htaccess
+- **NEVER** add manual meta/canonical/robots tags (AIOSEO handles these)
+- **NEVER** install/activate: elementor (installed but INACTIVE — leave it), elementor-pro, header-footer-elementor, bulletproof-security, all-in-one-seo-pack free (Pro 5.0.1 is the active one), google-analytics-for-wordpress, wp-super-cache, jetpack-boost*, wp-asset-clean-up
+  - *Jetpack Boost was found ACTIVE on 2026-08-26 despite this list — flagged to user, left as-is.
+- Never publish anything unless the user explicitly asks — default post_status draft
+- No guaranteed-outcome language; no hyphens in patient-facing sentences (use commas); internal links use full drloukas.com URLs
+
+### LOCKED Pages — ZERO WRITES:
+1. **Homepage** (ID 3258) — target "Park Ridge dentist" (GSC Aug 2026: avg position 13.7, 200 impressions/mo)
+2. **/invisalign-park-ridge/** (ID 1409) — ranks ~#4 "Invisalign Park Ridge IL" (missing VideoObject schema — known, accepted)
+3. **/porcelain-veneers/**
+4. **/botox-dysport/** — NOTE: since Aug 20 this URL 301s to /botox/ (ID 461); the Botox rankings live on /botox/ now
+5. **/cosmetic-dentistry/**
+- Never modify _aioseo_title/_description/_keyphrases on any page that already has values; never change existing titles/slugs/H1s anywhere
+
+## SITE STATE (as of 2026-08-26)
+
+### Content consolidation (Aug 23) — DONE, do not redo or "fix"
+- ~186 legacy blog posts (2014-2020) intentionally set to **draft**. Do NOT republish.
+- Replaced by consolidated guides: /healthy-teeth-at-home-guide-park-ridge/ (3972), /teeth-grinding-tmj-guide-park-ridge/ (3970), /gum-disease-guide-park-ridge/ (3967).
+- **All old post URLs have 301 redirects — 361 redirects live in AIOSEO Redirects** (verified complete on Aug 26 against a full draft-post inventory; user confirmed working). Check `aioseo-redirects/list` via Novamira before creating any redirect — duplicates are rejected.
+- GSC "381 not indexed" is expected fallout: redirected posts + noindexed tag/author/date archives + attachment redirects. Not a problem to fix.
+
+### AIOSEO keyphrases — DONE (~220+ posts/pages, prior sessions). Locked pages skipped.
+
+### Video SEO (Aug 26 session) — DONE
+All published video watch pages under /videos/ plus service pages were audited. Fixes applied:
+- VideoObject schema ADDED to /botox-parties/ (3839) and /lip-fillers-park-ridge/ (1623)
+- thumbnailUrl corrected on /videos/botox-treatment-park-ridge/ (2641) and /videos/lip-filler-treatment-park-ridge/ (2642); leftover empty video div removed from 2641
+- duration PT46S added to snap-in VideoObject on /implant-supported-dentures/ (2563); publisher logo fixed on 2819
+- All 11 /videos/ pages verified "Submitted and indexed" via URL Inspection API, but `videoIndexingResult` empty — Google hasn't evaluated the videos themselves. Crawls predate the fixes.
+- Known remaining: homepage (LOCKED) has schema-only VideoObject with no embedded video; 1409 (LOCKED) embeds video without schema; /cosmetic-dentistry/dermal-fillers/ (116) says PT6S vs watch page 2805 PT45S for the same mp4 — user to confirm real duration; pages 104/2876 YouTube VideoObjects missing duration (unknown durations).
+- ~15 raw mp4 uploads in the media library sit on no watch page — these are most of GSC's "videos not indexed"; attachment URLs for them already 301 to watch pages where relevant.
+
+### TMJ/Botox topic cluster (Aug 26) — DONE
+"botox for tmj near me" (GSC pos ~30) was split across 5 pages. Fixed by differentiation + interlinking: 1850 (/botox-tmj-jaw-pain-park-ridge-il/) got FAQ + FAQPage schema + related-links; /tmj-treatment/ (1859) and /botox-for-migraines-headaches-park-ridge-il/ (3303) now cross-link to 1850. Do not create a new Botox-TMJ post — strengthen 1850 instead (it still has no images; user may supply a masseter photo/clip).
+
+### GSC snapshot (Jul 29-Aug 26 2026, URL-prefix property)
+46 clicks/28d, 40 branded. "dentist park ridge": pos 13.7, 200 impr (main opportunity — homepage locked, improve via internal links/GBP/reviews). "60068 clear aligners": pos 8.2, 0 clicks (snippet loses; leave — AIOSEO fields locked). Baselines: Invisalign #4, veneers #10, Botox #13, cosmetic #9.
+
+### GSC "Profile page" enhancement
+Comes from the **AIOSEO Author SEO (E-E-A-T) addon** on author archives (noindexed). 5 admin users exist: loukaswpboss (Dr. Loukas, ID 1 — authors everything), ionos, ionos123, manus-seo-agent, manus-seo-temp. Exact GSC error text never obtained; fix via AIOSEO → Search Appearance → Author SEO when user supplies it.
+
+## PENDING / OPEN ITEMS
+1. **User's one click:** AIOSEO → Sitemaps → General Sitemap → uncheck "Include All Post Types", check Posts/Pages/Products (drop Attachments) → Save.
+2. User to hit "Request indexing" in GSC UI for: /videos/botox-treatment-park-ridge/, /videos/lip-filler-treatment-park-ridge/, /botox-parties/, /lip-fillers-park-ridge/, /implant-supported-dentures/.
+3. Confirm real duration of video_20220414_1.mp4 (dermal filler) → align 116 vs 2805 schema.
+4. Verify all 11 /videos/ pages appear in video-sitemap.xml (5 showed "sitemaps: none" in URL Inspection).
+5. Redirect hit_count is 0 on all 361 redirects — user confirmed redirects work, so it's likely just logging; ignore unless 404s reappear.
+6. Video watch pages 3594-3597 still draft ("videos are not correct anyways") — leave alone.
+7. Re-pull GSC top queries ~Sept 10 (local session) to measure consolidation + schema fixes.
+8. Homepage front-page.php/canvas.js SFTP upload to IONOS — on user's side.
+9. WP application password for user loukaswpboss appeared in chat (Aug 26) — user advised to rotate at leisure.
+
+## AIOSEO Technical Reference
+
+Meta fields: `_aioseo_title`, `_aioseo_description`, `_aioseo_keyphrases` (JSON: {"focus":{"keyphrase":"...","score":0,"analysis":{}},"additional":[]}), `_aioseo_og_*`, `_aioseo_twitter_*`.
+Redirects: manage via Novamira abilities `aioseo-redirects/list|create|update|delete` (create rejects duplicate sources).
+Content edits: prefer `wp_alter_post` (search/replace or regex, `\z` appends) over full-content rewrites.
+
+## Tone & Brand Voice
+
+Professional but approachable; confident, educational, never salesy. No hyphens in patient-facing sentences (use commas). No guaranteed outcomes. Content should feel like it comes from the practice. Always tag Park Ridge, IL.
