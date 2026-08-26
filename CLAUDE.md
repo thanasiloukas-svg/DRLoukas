@@ -112,6 +112,15 @@ All photos supplied by the user in chat, processed locally (Pillow crop/resize, 
 - Retargeted links: migraine card → /botox-for-migraines-headaches-park-ridge-il/ (was pointing at the TMJ guide); "Botox for TMJ" anchor → /botox-tmj-jaw-pain-park-ridge-il/.
 - **CRITICAL FIND: /contact/ does not exist as a page.** 15 published pages (incl. locked veneers/cosmetic) had CTAs pointing at it. Fixed 461's three links to /contact-us/ and created AIOSEO redirect #366 /contact/ → /contact-us/ (301) which heals all other pages without editing them.
 
+### SEO continuation pass (Aug 26 afternoon, remote session) — DONE
+- **Internal links:** /services/ (68) Invisalign card description now carries exact anchor "Invisalign in Park Ridge, IL" → 1409 (card's "Learn more" link untouched); guides 3972/3970 "Park Ridge dentist" home anchors fixed from relative `/` to full URL; guide 3967 gained a "Park Ridge dentist" home link in its closing CTA. Homepage now has in-content links from all 3 consolidated guides.
+- **Meta fills (all were EMPTY, never overwrote):** posts 3303/3604/3603 got full title+description+focus keyphrase; 13 legacy published posts (777, 737, 743, 750, 755, 760, 775, 785, 786, 795, 799, 867, 762) got focus keyphrases. `aioseo-posts/list-missing-seo` is now clean except Privacy Policy (intentionally skipped).
+- **Knowledge graph schema completed** (was empty, via aioseo()->options API — safe path): organizationLogo = loukas_logo_master_transparent.png, phone = +18476961919, email = loukasgendentistry@gmail.com.
+- **IndexNow pings** sent for ~15 updated URLs via aioseoIndexNow()->ping->pingPost($permalink,'publish') (reaches Bing/Yandex; Google relies on sitemap + manual GSC requests).
+- **Audit findings:** AIOSEO notifications: 0. robots.txt: clean, 3 sitemaps declared, no physical file (dynamic). Sitemap config already correct (no attachments/author/date) — former pending item 1 was ALREADY DONE. Local Business fully configured (address/phone/hours/priceRange/areaServed). **ALL category archives are per-term noindexed (deliberate, prior session)** — term meta is moot, do not fill; tag archives noindexed globally. Term 5 (cosmetic dentistry cat) description was overwritten before this was discovered — zero impact (noindexed).
+- **Social profile gaps:** Facebook/Instagram/YouTube set; TikTok and X/Twitter URLs empty (user has Smash Balloon TikTok feed, so a TikTok account likely exists — ask user). Webmaster Tools verification fields all empty (GSC verified via other means; Bing Webmaster Tools optional future win).
+- **Plugin redundancy (report only, nothing deactivated):** TWO cookie-consent plugins active (Cookie Consent GDPR/CCPA v0.0.10 + WPConsent v1.1.8) — owner should pick one; TWO backup plugins active (All-in-One WP Migration + Duplicator) — pick one; MonsterInsights inactive vs Site Kit active (GA4 covered — MonsterInsights deletable at cleanup); WP Super Cache is now INACTIVE (state change from earlier notes; Jetpack Boost is the active cache layer); 9 published posts sit in "Uncategorized" — recategorize someday.
+
 ### uploadDate normalization (Aug 26) — DONE
 GSC rich-results warned on date-only uploadDate values. All video pages scanned via execute-php; fixed to full ISO 8601 with -05:00 on: 2641, 2805, 116, 3839. Homepage 3258 still date-only (LOCKED). 2819's value was already valid (GSC warning came from stale June crawl).
 
@@ -123,7 +132,7 @@ Comes from the **AIOSEO Author SEO (E-E-A-T) addon** on author archives (noindex
 
 ## PENDING / OPEN ITEMS
 0. **P0 (owner, manual, time-sensitive): rotate the OpenAI API key** (new key at platform.openai.com → enter in AI Engine admin UI → test ARYA → revoke old). ~~Reconnect AIOSEO Search Statistics~~ — DONE Aug 26, now authed to `https://www.drloukas.com/`; re-check Search Statistics data in a day or two.
-1. **User's one click:** AIOSEO → Sitemaps → General Sitemap → uncheck "Include All Post Types", check Posts/Pages/Products (drop Attachments) → Save.
+1. ~~Sitemap post types click~~ — verified ALREADY CORRECT Aug 26 (posts/pages/products only, no attachments, author/date off). Nothing to do.
 2. User to hit "Request indexing" in GSC UI for: /videos/botox-treatment-park-ridge/, /videos/lip-filler-treatment-park-ridge/, /botox-parties/, /lip-fillers-park-ridge/, /implant-supported-dentures/.
 3. Confirm real duration of video_20220414_1.mp4 (dermal filler) → align 116 vs 2805 schema.
 4. Verify all 11 /videos/ pages appear in video-sitemap.xml (5 showed "sitemaps: none" in URL Inspection).
