@@ -40,10 +40,10 @@ Workspace for Loukas Dentistry of Park Ridge (www.drloukas.com) — SEO, content
 - No guaranteed-outcome language; no hyphens in patient-facing sentences (use commas); internal links use full drloukas.com URLs
 
 ### LOCKED Pages — ZERO WRITES:
-1. **Homepage** (ID 3258) — target "Park Ridge dentist" (GSC Aug 2026: avg position 13.7, 200 impressions/mo)
+1. ~~Homepage (ID 3258)~~ — **UNLOCKED by user Aug 26, 2026** for surgical SEO work (target "Park Ridge dentist", pos 13.7). No title/slug/H1 changes. See "Homepage SEO pass" below.
 2. ~~/invisalign-park-ridge/ (ID 1409)~~ — **UNLOCKED by user Aug 26, 2026** after "invisalign park ridge il" slipped to ~9.2. Still: no title/slug/H1 changes; edits stay surgical. See "Invisalign cluster" below.
 3. **/porcelain-veneers/**
-4. **/botox-dysport/** — NOTE: since Aug 20 this URL 301s to /botox/ (ID 461); the Botox rankings live on /botox/ now
+4. **/botox-dysport/** — NOTE: since Aug 20 this URL 301s to /botox/ (ID 461); the Botox rankings live on /botox/ now. **/botox/ itself was worked on Aug 26 with user approval** — see "Botox page consolidation" below.
 5. **/cosmetic-dentistry/**
 - Never modify _aioseo_title/_description/_keyphrases on any page that already has values; never change existing titles/slugs/H1s anywhere
 
@@ -74,6 +74,19 @@ All published video watch pages under /videos/ plus service pages were audited. 
 - AIOSEO canonical set on 1624 → 1849 (field was empty; 1849 chosen as survivor — geo slug, focused content, prior sessions' comparison home). Both stay live for visitors.
 - 1409: fixed stray `</p></p>` in intro; comparison link repointed from 1624 to 1849; VideoObject schema ADDED for park-ridge-invisalign.mp4 (its known gap). Note: that mp4's video-canonical belongs to /videos/invisalign-results-park-ridge/ (2639) — 1409's schema is metadata support, not a watch-page claim.
 - Watch "invisalign park ridge il" position in the ~Sept 10 GSC re-pull; if no recovery, next levers are fresh content on 1409 and more internal links with exact anchors.
+
+### Homepage SEO pass (Aug 26, after user unlocked 3258) — DONE
+- **Fixed broken FAQPage JSON-LD**: the schema script contained a full duplicated question array pasted after the closing brace — invalid JSON, so Google could not parse the homepage FAQ schema at all. Deduplicated; now valid.
+- **Removed the schema-only VideoObject** from the @graph (it referenced YouTube 8nwlO4GGDyw with no video embedded on the page — an invalidation risk with no upside).
+- Keyword presence: "Park Ridge dentist(s)" woven into hero description and The Loukas Dentistry Difference section (which also lost the off-target "among the best Chicago dentists" claim). New FAQ item "Are you accepting new patients in Park Ridge?" added to visible FAQ + schema in sync.
+- Homepage is still rendered from post content (the front-page.php SFTP upload remains pending on user's side).
+
+### Botox page consolidation (/botox/ ID 461, Aug 26) — DONE
+- Merged TWO visible FAQ sections into the styled ld-v112-faq (now 10 details items); deleted the bolted-on duplicate faq-section div.
+- Replaced THREE FAQPage schemas' worth of markup (one had no visible counterpart) with ONE valid FAQPage matching visible questions.
+- Deleted the duplicate "Related Services" strip that contained two broken links (/tmj-treatment-park-ridge-il/, /lip-fillers-park-ridge-il/).
+- Retargeted links: migraine card → /botox-for-migraines-headaches-park-ridge-il/ (was pointing at the TMJ guide); "Botox for TMJ" anchor → /botox-tmj-jaw-pain-park-ridge-il/.
+- **CRITICAL FIND: /contact/ does not exist as a page.** 15 published pages (incl. locked veneers/cosmetic) had CTAs pointing at it. Fixed 461's three links to /contact-us/ and created AIOSEO redirect #366 /contact/ → /contact-us/ (301) which heals all other pages without editing them.
 
 ### uploadDate normalization (Aug 26) — DONE
 GSC rich-results warned on date-only uploadDate values. All video pages scanned via execute-php; fixed to full ISO 8601 with -05:00 on: 2641, 2805, 116, 3839. Homepage 3258 still date-only (LOCKED). 2819's value was already valid (GSC warning came from stale June crawl).
