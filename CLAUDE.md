@@ -41,7 +41,7 @@ Workspace for Loukas Dentistry of Park Ridge (www.drloukas.com) — SEO, content
 
 ### LOCKED Pages — ZERO WRITES:
 1. **Homepage** (ID 3258) — target "Park Ridge dentist" (GSC Aug 2026: avg position 13.7, 200 impressions/mo)
-2. **/invisalign-park-ridge/** (ID 1409) — ranks ~#4 "Invisalign Park Ridge IL" (missing VideoObject schema — known, accepted)
+2. ~~/invisalign-park-ridge/ (ID 1409)~~ — **UNLOCKED by user Aug 26, 2026** after "invisalign park ridge il" slipped to ~9.2. Still: no title/slug/H1 changes; edits stay surgical. See "Invisalign cluster" below.
 3. **/porcelain-veneers/**
 4. **/botox-dysport/** — NOTE: since Aug 20 this URL 301s to /botox/ (ID 461); the Botox rankings live on /botox/ now
 5. **/cosmetic-dentistry/**
@@ -68,6 +68,15 @@ All published video watch pages under /videos/ plus service pages were audited. 
 
 ### TMJ/Botox topic cluster (Aug 26) — DONE
 "botox for tmj near me" (GSC pos ~30) was split across 5 pages. Fixed by differentiation + interlinking: 1850 (/botox-tmj-jaw-pain-park-ridge-il/) got FAQ + FAQPage schema + related-links; /tmj-treatment/ (1859) and /botox-for-migraines-headaches-park-ridge-il/ (3303) now cross-link to 1850. Do not create a new Botox-TMJ post — strengthen 1850 instead (it still has no images; user may supply a masseter photo/clip).
+
+### Invisalign cluster de-cannibalization (Aug 26, after user unlocked 1409) — DONE
+"invisalign park ridge il" slipped from ~#4 to ~9.2. Cause: two live "Invisalign vs braces" pages competing (1849 /invisalign-vs-braces-park-ridge-il/ post + 1624 /braces-vs-invisalign/ page) plus orthodontics page 104. Fixes applied:
+- AIOSEO canonical set on 1624 → 1849 (field was empty; 1849 chosen as survivor — geo slug, focused content, prior sessions' comparison home). Both stay live for visitors.
+- 1409: fixed stray `</p></p>` in intro; comparison link repointed from 1624 to 1849; VideoObject schema ADDED for park-ridge-invisalign.mp4 (its known gap). Note: that mp4's video-canonical belongs to /videos/invisalign-results-park-ridge/ (2639) — 1409's schema is metadata support, not a watch-page claim.
+- Watch "invisalign park ridge il" position in the ~Sept 10 GSC re-pull; if no recovery, next levers are fresh content on 1409 and more internal links with exact anchors.
+
+### uploadDate normalization (Aug 26) — DONE
+GSC rich-results warned on date-only uploadDate values. All video pages scanned via execute-php; fixed to full ISO 8601 with -05:00 on: 2641, 2805, 116, 3839. Homepage 3258 still date-only (LOCKED). 2819's value was already valid (GSC warning came from stale June crawl).
 
 ### GSC snapshot (Jul 29-Aug 26 2026, URL-prefix property)
 46 clicks/28d, 40 branded. "dentist park ridge": pos 13.7, 200 impr (main opportunity — homepage locked, improve via internal links/GBP/reviews). "60068 clear aligners": pos 8.2, 0 clicks (snippet loses; leave — AIOSEO fields locked). Baselines: Invisalign #4, veneers #10, Botox #13, cosmetic #9.
