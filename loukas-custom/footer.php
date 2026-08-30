@@ -59,6 +59,7 @@
     <p>&copy; <?php echo date('Y'); ?> Loukas Dentistry of Park Ridge. All rights reserved.</p>
     <p class="footer-legal">Unauthorized use of the names Dr. Thanasi Loukas or Dr. Maria Loukas is prohibited.</p>
       <p class="footer-legal"><a href="/privacy-policy/">Privacy Policy</a></p>
+      <p class="footer-sitelock" style="margin-top:10px"><a href="#" onclick="window.open('https://www.sitelock.com/verify.php?site=drloukas.com','SiteLock','width=600,height=600,left=160,top=170');"><img alt="SiteLock" title="SiteLock" src="https://shield.sitelock.com/shield/drloukas.com" style="height:34px;width:auto" loading="lazy" /></a></p>
   </div>
 </footer>
 <?php wp_footer(); ?>
