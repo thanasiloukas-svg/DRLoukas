@@ -159,3 +159,21 @@ function loukas_defer_frontend_scripts() {
     }
 }
 add_action( 'wp_enqueue_scripts', 'loukas_defer_frontend_scripts', 99 );
+
+/**
+ * AI Engine registers 'mwai_chatbot' (which depends on wp-element/React) too late for the
+ * wp_enqueue_scripts strategy pass above, so React was being deferred while the chatbot was not.
+ * This filter runs at print time, when the handle definitely exists, and defers it too.
+ * Deferred scripts execute in document order, so React still runs first. Added 2026-08-30.
+ */
+function loukas_defer_late_scripts( $tag, $handle ) {
+    $late = array( 'mwai_chatbot', 'mwai_highlight' );
+    if ( ! in_array( $handle, $late, true ) ) {
+        return $tag;
+    }
+    if ( strpos( $tag, ' defer' ) !== false || strpos( $tag, ' async' ) !== false ) {
+        return $tag;
+    }
+    return str_replace( '<script ', '<script defer ', $tag );
+}
+add_filter( 'script_loader_tag', 'loukas_defer_late_scripts', 10, 2 );
