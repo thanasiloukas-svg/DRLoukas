@@ -1,7 +1,7 @@
 <footer class="site-footer">
   <div class="footer-inner">
     <div class="footer-col footer-brand">
-      <img src="https://www.drloukas.com/wp-content/uploads/2026/05/loukas_logo_master_transparent.png" alt="Loukas Dentistry" width="180" height="48" class="footer-logo" loading="lazy">
+      <picture><source srcset="https://www.drloukas.com/wp-content/uploads/2026/08/loukas-logo-header.webp" type="image/webp"><img src="https://www.drloukas.com/wp-content/uploads/2026/08/loukas-logo-header.png" alt="Loukas Dentistry" width="161" height="120" class="footer-logo" loading="lazy"></picture>
       <p class="footer-address">714 W Higgins Rd<br>Park Ridge, IL 60068</p>
       <a href="tel:<?php echo loukas_phone_raw(); ?>" class="footer-phone"><?php echo loukas_phone(); ?></a>
       <table class="footer-hours">
