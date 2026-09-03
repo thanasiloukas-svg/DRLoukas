@@ -287,6 +287,27 @@ The problem, from live GSC: for "dental implants park ridge" (644 impr) Google s
 
 **MEASUREMENT:** re-pull "dental implants park ridge" and "tooth implant park ridge" page-level in ~4–6 weeks via `gsc_query(..., array('page'), 200, $filter)`. Success = 2559 displacing /oral-surgery/ on those queries and its 308 impressions rising. Consolidation typically takes 4–10 weeks to show.
 
+### Orphaned before/afters placed on service pages (Sep 3) — ROUND 1 DONE
+Placed 7 of the 92 orphaned before/after images. **Every image was verified with `mwai_vision` before placement** — this is the standing clinical-accuracy rule and it rejected 2 of 9 candidates in this round alone.
+
+| Page | ID | Was | Placed |
+|---|---|---|---|
+| /restorative-dentistry/fillings/ | 98 | **0 images**, 1,031 impr | 1523 + 1524 composite bonding B/A |
+| /dental-implants/ (hub) | 2559 | 3 images, 308 impr | 1558 + 1457 implant B/A |
+| /botox/ | 461 | 7 imgs but only 2 B/A, 2,950 impr | 1502 forehead + 1501 crow's feet |
+| /lip-fillers-park-ridge/ | 1623 | 6 imgs, 2 B/A, pos 14.7 | 1585 lip filler B/A |
+
+**REJECTED BY VISION — do not place these, the filenames are wrong:**
+- **1503 `botox_before_after_01`** is NOT a before/after at all, it is a **single photograph** of a forehead. The whole `botox_before_after_0X` series (1503-1507) is suspect for the same reason — verify individually.
+- **1554 `implant_ba_05`** shows crowns with **no implant hardware visible**, so it cannot be presented as an implant case.
+- **1583 `juvederm_ba_lips_01`** is a 2x2 collage mixing Juvederm AND PDO threads with burned-in **emoji** text. Instagram quality, not service-page quality.
+- **LESSON: the filename is not evidence.** Roughly 1 in 4 of these orphans is mislabelled, a single photo, or an unusable collage.
+
+Notes: 1501/1502 carry legitimate burned-in "Before Botox"/"After Botox" labels, which is fine. Attachments 200/201/221/222 are legacy 173x130px thumbnails, far too small to use. All alt text rewritten to be accurate and specific; width/height on every image; lazy loading; webp used where a webp original existed. Backups `ld_bak_img_<id>_20260903`. Live verified: all 4 pages 200, 1 h1, all image files 200, 0 invalid JSON-LD. Cache purged, IndexNow pinged.
+
+**REMAINING GAPS with no matching orphan** (these need new photography, not placement): /kids-dentistry/ (1860) **5,121 impr and ZERO images**, /oral-surgery/ (124) **4,211 impr and ZERO images**, /tmj-treatment/ (1859) 2,455 impr zero images, /dental-bridges/ (519) 1,044 zero, /bone-grafting/ (1426) 575 zero, /sedation-dentistry/ (3306) zero, /partial-dentures/ (524) zero.
+**Orphans still unplaced and worth verifying next:** invisalign_ba_01/02 + invisalign_before_after_01 (1564/1565/1566) for 1409, pdo_ba_01/pdo_lifting_ba (1594/1595) for /pdo-threads/ (1,247 impr, pos 46.5), veneers_before_after (1607), whitening_ba_03 (1613), bonding_ba_01 (1500), the remaining implant_ba series, and the juvederm face/eye series.
+
 ## PENDING / OPEN ITEMS
 0. ~~P0: rotate the OpenAI API key~~ — **DONE Aug 30 night**: owner entered a new key in AI Engine, verified working end-to-end via $mwai->simpleTextQuery ("KEY OK"); final revoke of the old key at platform.openai.com on owner (confirm done). **ARYA upgrades same night:** chatbot_discussions logging ENABLED (was off — conversations/leads were never being saved; view at AI Engine → Chatbots → Discussions, 90-day retention); canonical office hours + Thursday evenings/Saturday mornings/parking/new-patients lines ADDED to her instructions (they were missing entirely). Her training is otherwise solid (procedures, safety rules, lead capture, tone). NO email hookup exists — captured leads only live in Discussions; future win: wire lead capture to email the front desk via AI Engine functions/webhook. ~~Reconnect AIOSEO Search Statistics~~ — DONE Aug 26, now authed to `https://www.drloukas.com/`; re-check Search Statistics data in a day or two.
 1. ~~Sitemap post types click~~ — verified ALREADY CORRECT Aug 26 (posts/pages/products only, no attachments, author/date off). Nothing to do.
