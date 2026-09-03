@@ -213,6 +213,34 @@ Backups: `ld_bak_2565_20260901`, `ld_bak_2720_20260901`, `ld_bak_faq_<id>_202609
 **CLINICAL-ACCURACY GUARD (new standing rule):** before putting a before/after photo on a procedure page, VERIFY the photo actually shows that procedure — `mwai_vision` can read the image. Attachments 4081 and 4080 are captioned as implant before/afters and were candidates for /all-on-4/; vision analysis showed 4081 is a **single missing upper incisor** and 4080 is a **3-unit anterior restoration** — neither is a full-arch All-on-X case. Publishing either on the All-on-4 page would have misrepresented the treatment. **/all-on-4/ (2565) therefore still has ZERO images** and is waiting on a genuine full-arch photo. Do not fill it with an unrelated case.
 Media note: the Aug 30 before/after uploads (4079-4092) are placed ONLY on /smile-gallery/ (87); the service pages do not use them. 474 and 2559 already carry their own before/after images.
 
+### Google API bridge LIVE (Sep 3) + first real GSC analysis — DONE
+**The bridge works.** Owner minted a fresh service-account key (the original was unrecoverable — Google shows a key once). First upload was the WRONG file: the **OAuth client** json (`installed` wrapper, client_id/client_secret, 413 bytes, no private_key). Deleted from server; the folder `.htaccess` had it 403-protected the whole time. Second upload was correct (2386 b, `type: service_account`, openssl loads the key). Converted to `credentials.php` via json_decode + var_export (NEVER hand-write it — the `\n` escapes in private_key break), sign test passed, `.json` deleted.
+`Loukas_Google_API::gsc_sites()` returns **both** properties as `siteFullUser`: `sc-domain:drloukas.com` and `https://www.drloukas.com/`.
+**Any session can now query GSC directly** — `require_once WP_CONTENT_DIR.'/loukas-google/google-api.php';` then `gsc_query($start,$end,$dims,$rowLimit,$filters)`, `gsc_inspect($url)`, `gsc_sitemaps()`. Runbook artifact: https://claude.ai/code/artifact/ed443765-76f2-4857-b6e4-cb9c7f2a4991
+**KEEP the OAuth client file** the owner found — GBP refuses service accounts, so that file is exactly what phase 2 needs.
+
+**REAL NUMBERS (Jun–Aug 2026), replacing the badly understated relayed figures** (old note said 46 clicks / 14.7K impr; actual is ~3x):
+- Aug: **46,039 impressions, 161 clicks, 0.35% CTR, avg pos 25.8**. Jul 38,334/115. Jun 43,978/172.
+- By search type, 90d: web 128,351 impr/448 clicks; **image 26,776 impr/7 clicks/pos 43.5**; **video 19 impr/0 clicks**; news 0.
+- Device: mobile 52,626 impr/299 clicks (0.57%); desktop 70,620/145 (0.21%).
+- **STRIKE ZONE — the headline: 45 non-branded Park Ridge queries, position 3–16, ≥200 impr = 29,097 impressions → 8 clicks (0.027% CTR).** At a normal 4% that is ~1,160 visits/quarter.
+- Diagnostic contrast: branded "loukas dentistry" pos 3.6 → **24.7% CTR**; "teeth whitening cost park ridge" pos 3.9 → **0%**. Same position, opposite outcome ⇒ map pack/ads eat unbranded local clicks. **GBP is the lever, not the page.** Do NOT spend big here until someone eyeballs those SERPs on a phone — 0% across dozens of queries is extreme even for map-pack dominance.
+
+**VALUE/RANKING INVERSION (the strategic finding).** Best positions = lowest value: whitening 14,939 impr (best 3.8), fillers/Kybella (best 3.2), extractions (best 4.9), root canal (best 5.4), crowns/bridges (best 5.7). Worst positions = highest value: **all-on-4 avg pos 53.7**, implants 32.9, veneers 31.4.
+- **/all-on-4/ = 53 impressions, pos 37.2, in 3 months.** Highest-value procedure, invisible, still ZERO images. Top priority for the All-on-X photo.
+- /dental-implants/ ranks **11.2 but only 308 impressions** — opposite problem: respected, not shown.
+- /cosmetic-dentistry/teeth-whitening/ = 15,577 impr → **1 click**.
+- **/two-sides-of-a-coin-dental-care-and-sore-throat-care/ = 11,076 impr, 67 clicks, pos 9.4** — a blog post outperforms every service page. Repeatable format, currently an accident.
+
+**VIDEOS — root cause found.** All watch pages verdict PASS as pages; **0 of 442 inspected URLs return `videoIndexingResult`**. Ruled out by test: markup is correct (real `<video>` + poster + preload + dimensions), **every mp4 returns HTTP 200** (an earlier 404 was a filename I invented — always test the real src), schema valid since the Sep 1 fixes. What remains: **18 of 27 clips are under 30s (many 5–15s)**. Google rarely indexes clips that short. **This is a content problem — more schema will not fix it. Stop making 10-second videos; one 2–3 min explainer beats all 18.**
+
+**TWO HYPOTHESES DISPROVEN — do not repeat them:**
+1. **There are NO "Itasca doorway pages."** Verified every slug and page body: only `/elk-grove-village-dentist/` exists. The 8,723 Itasca impressions land on ordinary service pages at pos 22–96 (Google testing them on nearby-town queries). **Nothing to prune.** Corollary: site-wide avg position 25.8 is diluted by this noise and is NOT a health metric — always segment to Park Ridge.
+2. **The 8 "competing" Invisalign URLs are not competing.** `/invisalign/`, `/invisalign-video/`, `/invisalign_ba/`, `/implants-patient-education/` and `/tag/invisalign-park-ridge/` all **301 correctly**; they are stale index entries. The real, smaller issue: for "invisalign park ridge il" the comparison page **1849 ranks 7.5** while the service page **1409 ranks 14.6**.
+
+**METHOD LESSONS (cost me two wrong reads):** (a) when clicks are all zero the GSC page dimension returns rows **alphabetically** and `rowLimit` truncates — always pull a large limit and sort by impressions yourself; (b) `wp_remote_get` follows redirects, so a robots-meta check reads the *destination* page — pass `redirection=0` when testing index status.
+Full report artifact: https://claude.ai/code/artifact/129a9f77-2fd7-4e25-bb9d-46052737d848
+
 ## PENDING / OPEN ITEMS
 0. ~~P0: rotate the OpenAI API key~~ — **DONE Aug 30 night**: owner entered a new key in AI Engine, verified working end-to-end via $mwai->simpleTextQuery ("KEY OK"); final revoke of the old key at platform.openai.com on owner (confirm done). **ARYA upgrades same night:** chatbot_discussions logging ENABLED (was off — conversations/leads were never being saved; view at AI Engine → Chatbots → Discussions, 90-day retention); canonical office hours + Thursday evenings/Saturday mornings/parking/new-patients lines ADDED to her instructions (they were missing entirely). Her training is otherwise solid (procedures, safety rules, lead capture, tone). NO email hookup exists — captured leads only live in Discussions; future win: wire lead capture to email the front desk via AI Engine functions/webhook. ~~Reconnect AIOSEO Search Statistics~~ — DONE Aug 26, now authed to `https://www.drloukas.com/`; re-check Search Statistics data in a day or two.
 1. ~~Sitemap post types click~~ — verified ALREADY CORRECT Aug 26 (posts/pages/products only, no attachments, author/date off). Nothing to do.
