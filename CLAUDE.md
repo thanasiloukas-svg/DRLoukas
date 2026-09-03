@@ -1,7 +1,7 @@
 # CLAUDE.md
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
-**Last updated: 2026-08-26 evening (image placement session). Treat this as the session handoff — read it fully before touching the site.**
+**Last updated: 2026-09-03 (video indexing audit closed, strike-zone CTR cause proven, image round 3). Treat this as the session handoff — read it fully before touching the site.**
 
 ## Project Overview
 
@@ -327,18 +327,66 @@ Placed 1607 + 1613 on **/cosmetic-dentistry/ (108)** — 7,160 impr and only 2 B
 Live after both rounds: /fillings/ 9 imgs, /cosmetic-dentistry/ 12, /botox/ 16, /lip-fillers-park-ridge/ 14, /dental-implants/ 12, /all-on-4/ 9 — all 200, all 1 h1. Cache purged, IndexNow pinged, GSC URL Inspection re-run on 98/108/2559 (all verdict PASS).
 **Note on "request recrawl": the Indexing API only accepts JobPosting/BroadcastEvent, so it CANNOT be used to force recrawl of normal pages.** The real levers are IndexNow (Bing/Yandex, automated here), the sitemap, and the owner clicking "Request Indexing" in the GSC UI. Do not claim a Google recrawl was requested programmatically.
 
+### Video indexing audit CLOSED + the CTR finding re-confirmed (Sep 3, later session)
+
+**The video question is settled. Stop adding schema.** All 26 published pages carrying a `VideoObject` or `<video>` tag were URL-inspected through the GSC bridge in batches of 4-6 (a 14-URL loop exceeds the 60s MCP timeout; 4 URLs ≈ 25s).
+- **25 of 26 verdict PASS**, 1 NEUTRAL (1624, the canonicalised braces-vs-invisalign page — expected).
+- **0 of 26 return a `videoIndexingResult` field at all.** Not "not indexed with a reason" — the key is absent, meaning Google has crawled these as pages but never queued the video for evaluation.
+- **Video sitemap is NOT the blocker — pending item #4 is CLOSED.** `gsc_sitemaps()` shows `video-sitemap.xml` last downloaded 2026-09-02 (daily), **0 errors / 0 warnings, 26 video entries submitted**. sitemap.xml: 151 web / 379 image, also clean.
+- **Thumbnails are NOT the blocker.** Every local `thumbnailUrl` in every VideoObject was resolved to a file on disk: all present. The only external ones are YouTube `hqdefault`/`maxresdefault` on 104 and 2876, which are correct for YouTube-hosted video.
+- **Durations confirm the root cause, with hard numbers now.** 30s+: 2563 (PT46S), 2641 (PT50S), 2740 (PT60S), 2742 (PT30S), 2819 (PT46S), and the 3:11 Invisalign clip reused on 104/1409/1624/2639. **Everything else is 5–20s** — 116 (6s), 1623 (7s), 2638 (20s), 2640 (12s), 2642 (7s), 2741 (20s), 2743 (16s+5s), 2744 (15s), 2778 (20s), 2787 (20s), 2805 (6s), 3835 (15s), 3836 (12s), 3837 (15s+12s), 3838 (10s), 3839 (10s). **~18 of 24 distinct clips are under 30s.**
+- GSC search-type split, Aug 2026: web 46,039 impr / 161 clicks / pos 25.8; image 9,339 / 4 / 41.1; **video 13 impressions / 0 clicks**. (Jul: web 38,334/115, image 11,852/2, video 4/0.)
+- **ONE REAL DEFECT FOUND AND FIXED:** page **104 /orthodontics/** had a `<video>` with **no `poster` attribute** (the only such tag on the site). Added the existing `2026/06/invisalign-results-park-ridge-thumbnail.jpg` poster. Backup `ld_bak_104_poster_20260903`.
+- **Conclusion for the owner: this is a content problem, not a technical one. One 2–3 minute explainer will do more than all 18 short clips combined. Do not commission more 10-second videos.**
+
+**STRIKE ZONE RE-PULLED, AND THE ANOMALY IS NOW PROVEN TO BE SERP LAYOUT, NOT RANKING.**
+August 2026, non-branded, ≥120 impressions, position ≤18: **47 queries / 11,313 impressions / 1 click.**
+- Six whitening queries sit at **position 4.5–5.9** with 1,433 combined impressions and **zero clicks**: "best way to whiten teeth park ridge" 259@4.5, "teeth whitening cost park ridge" 234@4.5, "teeth whitening at home park ridge" 244@4.8, "teeth whitening park ridge" 225@5.0, "professional teeth whitening park ridge" 230@5.2, "best teeth whitening park ridge" 241@5.9.
+- **Verified these are genuine WEB positions, not image search**: pulled the same queries with `type` set to `WEB` and `IMAGE` separately — every one returns under WEB, none appear under IMAGE. At a normal position-5 CTR those six alone should yield 50–90 clicks/month.
+- **Page-level vs query-level mismatch explained:** `/cosmetic-dentistry/teeth-whitening/` averages **position 23.4** across all whitening queries (5,324 impr) because generic non-local whitening queries drag it down. The Park Ridge subset genuinely ranks 4.5–5.9. Always segment before judging a page.
+- **Every on-page cause has now been ruled out.** Titles and descriptions are already strong, keyword-led and carry the phone number (whitening 59 chars, crowns 64, kids 72 — all verified live). Schema is valid. `/tag/dental-crowns-park-ridge/` — which outranks the crown service page at 9.7 vs 23.3 — **301s correctly to `/restorative-dentistry/dental-crowns/`**; those are stale index entries that will consolidate, not a cannibalisation bug. Nothing to fix.
+- **Diagnostic contrast that settles it:** the homepage at **position 19** earns 86 clicks from 6,619 impressions (1.3%), while `/smile-gallery/` at **position 10.0** earns 0 from 1,045. Branded intent converts at any position; non-branded local intent converts at none. The map pack, ads and AI Overviews are consuming these clicks above the blue links. **GBP and reviews are the lever. Do not spend more on on-page work for these queries.**
+- The one page that does convert: `/two-sides-of-a-coin-dental-care-and-sore-throat-care/` — 3,815 impr, 22 clicks, pos 10.2.
+- **Genuine page-2 opportunities (ranking really is the constraint here):** the head "dentist park ridge" cluster (7 variants, ~2,250 impr, all pos 10–17, 1 click total), cosmetic dentist (780 impr @ ~16.8), crowns (794 @ ~14.8), oral surgeon (547 @ ~16), fillings (396 @ 17.2). `/emergency-dentist-chicago/` pulls 1,893 impressions at position 45.5 — a geography the practice does not serve, worth an owner conversation.
+
+### Image placements round 3 (Sep 3) — owner-supplied photos, brand template
+All three built in the owner's own navy/gold BEFORE/AFTER card template (gold `#CCA968`, navy gradient, corner brackets, "Individual results vary.").
+
+| Att | File | Page | Was |
+|---|---|---|---|
+| 4259 | kids-family-dentistry-park-ridge-il.webp | **/kids-dentistry/ (1860)** | **ZERO images**, 3,126 impr, pos 29.5 |
+| 4261 | botox-forehead-frown-lines-before-after-park-ridge-il.webp | /botox/ (461) | 9 imgs, placed under the existing "Botox Before and After" H2 |
+| 4263 | botox-migraine-temple-injection-park-ridge-il.webp | /botox-for-migraines-headaches-park-ridge-il/ (3303) | 8 imgs, placed at "The Injection Points" H2 |
+
+Backups `ld_bak_1860_img_20260903`, `ld_bak_461_img2_20260903`, `ld_bak_3303_img_20260903`. Close-out verified: all 4 edited pages 200, exactly 1 h1, **0 invalid JSON-LD blocks**, all 3 image files 200, Boost cache purged, IndexNow pinged.
+
+**UPLOAD PATH — IMPORTANT ENVIRONMENT CONSTRAINT.** This remote session's network policy **denies outbound HTTPS to www.drloukas.com** (`CONNECT tunnel failed, response 403`), so `wp_upload_request` and any direct POST are unusable. Every image must go through the chunked-base64 pipeline via execute-php, which costs ~45–70K tokens of context per image. Chunk size must be **23200 bytes** (`split -b 23200 -d -a 1`) — anything larger gets persisted to a file by the Bash tool instead of shown inline, and then cannot be copied into the PHP call. Verify `filesize()` after every append, then `base64_decode(...,true)` + md5 compare before writing. **If the owner allows drloukas.com in the environment's network policy, uploads become a single call instead of this crawl.** A Google Drive relay was considered and rejected: the bytes still have to pass through the session context either way, so it saves nothing.
+
+**METHOD NOTES (cost me time this session):**
+- `Loukas_Google_API::gsc_query()`'s `$filters` argument is for `dimensionFilterGroups` only. To segment by **search type** you must call `Loukas_Google_API::request()` directly with a top-level `type` field (`WEB`/`IMAGE`/`VIDEO`) in the payload — passing it through `gsc_query` returns a WP_Error that surfaces as "Cannot use object of type WP_Error as array".
+- `dimensionFilterGroups` filter dimensions must be **uppercase** (`QUERY`, `PAGE`); lowercase returns "'dimension' field is required".
+- IndexNow is reached via **`aioseoIndexNow()->ping->pingPost($url,'publish')`**. `aioseo()->indexNow` is null and fatals.
+- Jetpack Boost's `Boost_Cache` class is not loadable from execute-php; purge by `do_action('jetpack_boost_clear_page_cache_all')` plus deleting `*.html` under `wp-content/boost-cache/cache`.
+- A 502 from the API mid-call does **not** mean the PHP failed — verify server-side before retrying. And when checking whether an attachment was created, query `_wp_attached_file` rather than `guid` (a guid LIKE match returned empty for an attachment that existed).
+
 ## PENDING / OPEN ITEMS
 0. ~~P0: rotate the OpenAI API key~~ — **DONE Aug 30 night**: owner entered a new key in AI Engine, verified working end-to-end via $mwai->simpleTextQuery ("KEY OK"); final revoke of the old key at platform.openai.com on owner (confirm done). **ARYA upgrades same night:** chatbot_discussions logging ENABLED (was off — conversations/leads were never being saved; view at AI Engine → Chatbots → Discussions, 90-day retention); canonical office hours + Thursday evenings/Saturday mornings/parking/new-patients lines ADDED to her instructions (they were missing entirely). Her training is otherwise solid (procedures, safety rules, lead capture, tone). NO email hookup exists — captured leads only live in Discussions; future win: wire lead capture to email the front desk via AI Engine functions/webhook. ~~Reconnect AIOSEO Search Statistics~~ — DONE Aug 26, now authed to `https://www.drloukas.com/`; re-check Search Statistics data in a day or two.
 1. ~~Sitemap post types click~~ — verified ALREADY CORRECT Aug 26 (posts/pages/products only, no attachments, author/date off). Nothing to do.
 2. User to hit "Request indexing" in GSC UI for: /videos/botox-treatment-park-ridge/, /videos/lip-filler-treatment-park-ridge/, /botox-parties/, /lip-fillers-park-ridge/, /implant-supported-dentures/.
 3. ~~Confirm real duration of video_20220414_1.mp4~~ — **RESOLVED Aug 30 by reading the file: PT6S** (page 116 was right; 2805 corrected from PT45S). Same pass: **sitewide broken-media scan (83 pages, 312 local media URLs) found only 2 broken refs, both fixed**: 2787's mp4 pointed at a wrong month folder (2026/03→2026/06), 1624's poster+schema thumb pointed at a deleted 2025 file (replaced with attachment 2634 invisalign-results thumbnail, 0 dead refs left). External embeds (youtube on 104, google maps on 47/1233) are fine. Remaining truly-missing media = the gallery rebuild photos (owner-gated, D:\\PT PICS) and the orphan-video decisions (promo 1879 → /about-us/?).
-4. Verify all 11 /videos/ pages appear in video-sitemap.xml (5 showed "sitemaps: none" in URL Inspection).
+4. ~~Verify all 11 /videos/ pages appear in video-sitemap.xml~~ — **CLOSED Sep 3**: `gsc_sitemaps()` shows video-sitemap.xml fetched daily (last 2026-09-02), 0 errors, 26 video entries submitted. Submission was never the blocker; clip length is.
 5. Redirect hit_count is 0 on all 361 redirects — user confirmed redirects work, so it's likely just logging; ignore unless 404s reappear.
 6. Video watch pages 3594-3597 still draft ("videos are not correct anyways") — leave alone.
 7. Re-pull GSC top queries ~Sept 10 (local session) to measure consolidation + schema fixes.
 8. Homepage front-page.php/canvas.js SFTP upload to IONOS — on user's side.
 9. WP application password for user loukaswpboss appeared in chat (Aug 26) — user advised to rotate at leisure.
 10. **Owner: the 5 clinical before/after photos sent Sep 1 never reached the remote session's filesystem** (verified twice; only a saved Instagram HTML page arrived). They are also NOT in the media library. To place them, upload via wp-admin -> Media -> Add New, or hand them to a local Claude session. Suggested neutral filenames: `dental-implant-front-tooth-before-after-park-ridge-il.jpg`, `single-tooth-dental-implant-before-after-park-ridge-il.jpg`, `dental-implant-crown-before-after-park-ridge-il.jpg`, `all-on-x-implant-bridge-before-after-park-ridge-il.jpg`, `chin-lip-filler-before-after-park-ridge-il.jpg`. The All-on-X one is the priority: /all-on-4/ has zero images and no accurate substitute exists. Patient authorization gate applies before publishing.
+
+11. **Video content decision for the owner (replaces all further video schema work):** ~18 of 24 clips are under 30 seconds and Google will not index them. One 2–3 minute explainer on a high-demand topic beats the whole library. Ask before any new filming.
+12. **GBP / reviews is now the top lever, not the site.** 47 non-branded Park Ridge queries at positions 4.5–18 produce 11,313 impressions and 1 click, while branded queries convert normally at worse positions. Someone should eyeball 3–4 of these SERPs on a phone (start with "teeth whitening cost park ridge") and confirm what sits above the organic results.
+13. **Owner (environment):** allow `www.drloukas.com` in the remote environment's network policy. It currently blocks outbound HTTPS to the site, which forces every image upload through a slow chunked-base64 pipeline.
+14. `/emergency-dentist-chicago/` draws 1,893 impressions at position 45.5 for a city the practice does not serve — decide whether to retarget it to Park Ridge/Norridge or let it go.
+15. Remaining prepared-but-unplaced local asset: `complete-implant-smile-before-after-park-ridge-il.webp` (the owner's own ready-made card, md5 33901c460fa46fe64f200e57706c0609). Still in the session scratchpad only; re-generate or re-request if a future session wants it.
 
 ## AIOSEO Technical Reference
 
