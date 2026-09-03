@@ -308,6 +308,25 @@ Notes: 1501/1502 carry legitimate burned-in "Before Botox"/"After Botox" labels,
 **REMAINING GAPS with no matching orphan** (these need new photography, not placement): /kids-dentistry/ (1860) **5,121 impr and ZERO images**, /oral-surgery/ (124) **4,211 impr and ZERO images**, /tmj-treatment/ (1859) 2,455 impr zero images, /dental-bridges/ (519) 1,044 zero, /bone-grafting/ (1426) 575 zero, /sedation-dentistry/ (3306) zero, /partial-dentures/ (524) zero.
 **Orphans still unplaced and worth verifying next:** invisalign_ba_01/02 + invisalign_before_after_01 (1564/1565/1566) for 1409, pdo_ba_01/pdo_lifting_ba (1594/1595) for /pdo-threads/ (1,247 impr, pos 46.5), veneers_before_after (1607), whitening_ba_03 (1613), bonding_ba_01 (1500), the remaining implant_ba series, and the juvederm face/eye series.
 
+### Google Drive is the photo archive — connected and usable (Sep 3)
+**The Drive connector works and is authenticated as `loukasgendentistry@gmail.com`.** This is where the owner's "hundreds of before and afters" actually are. Search with `mcp__Google_Drive__search_files` (`parentId = '<id>'`, or `title contains`), read with `download_file_content`.
+
+**THE KEY FOLDER: `FB PICS` (id `1_RzpKzKTJG_lvtDaReRhKZk1ApGoVYV3`)** — ~30 clean, web-ready, neutrally-named before/afters: composite bonding x3, dental implant x8, implant crowns, invisalign x2, botox x3, lip filler x5, white filling x2, buckle composite, juvederm. **These filenames match the 2026/06 media-library batch (2991-3014), so FB PICS is where the site's images originally came from — most are ALREADY uploaded and sitting orphaned.** Place from the media library first; only download from Drive for genuinely missing assets.
+Other useful folders: `before after manus` (only 7 files — NOT the lost gallery), `Kids Dentistry` (4 files), `before and after Dr. Maria`, `Implant beforeafter`, `PT pics`, `Patient Pictures`, `Offie lips`, `Elena G filler and pdo pics`, `m fernandez implant surgery`, `Cindy Vasquez...implant crowns`, `Vanessa Doyle invisalign ortho`, `eye fi photos` (~25 dated 2013-14 subfolders).
+**MANY DRIVE FOLDERS AND FILES CARRY PATIENT NAMES.** Consent to use is settled, but names must NEVER reach a filename, URL, alt text or caption on the site. Rename to neutral descriptive filenames on the way in. Some images also show full faces — fine to use, but caption accordingly.
+
+### Image placement round 2 (Sep 3) — /cosmetic-dentistry/ done
+Placed 1607 + 1613 on **/cosmetic-dentistry/ (108)** — 7,160 impr and only 2 B/A images before. Captioned as "porcelain restorations" because vision could not separate veneers from crowns, and overclaiming either would be wrong.
+
+**VISION REJECTED 3 OF 4 CANDIDATES THIS ROUND — the filenames were wrong:**
+- **1613 `whitening_ba_03`** is NOT whitening. Vision: shape/length/shade changes indicate **veneers or crowns**. Putting it on the whitening page would have misrepresented the treatment. Used on /cosmetic-dentistry/ instead.
+- **1566 `invisalign_before_after_01`** shows **brackets in the before photo — that is BRACES, not Invisalign.** Must not go on the Invisalign page. Candidate for /orthodontics/ (104) with accurate wording. Subject's face is visible.
+- **1594 `pdo_ba_01`** is a **single intra-procedure photo**, not a before/after.
+**Running total: vision has now rejected 6 of 13 candidates. Roughly half these filenames are wrong. NEVER bulk-place by filename.**
+
+Live after both rounds: /fillings/ 9 imgs, /cosmetic-dentistry/ 12, /botox/ 16, /lip-fillers-park-ridge/ 14, /dental-implants/ 12, /all-on-4/ 9 — all 200, all 1 h1. Cache purged, IndexNow pinged, GSC URL Inspection re-run on 98/108/2559 (all verdict PASS).
+**Note on "request recrawl": the Indexing API only accepts JobPosting/BroadcastEvent, so it CANNOT be used to force recrawl of normal pages.** The real levers are IndexNow (Bing/Yandex, automated here), the sitemap, and the owner clicking "Request Indexing" in the GSC UI. Do not claim a Google recrawl was requested programmatically.
+
 ## PENDING / OPEN ITEMS
 0. ~~P0: rotate the OpenAI API key~~ — **DONE Aug 30 night**: owner entered a new key in AI Engine, verified working end-to-end via $mwai->simpleTextQuery ("KEY OK"); final revoke of the old key at platform.openai.com on owner (confirm done). **ARYA upgrades same night:** chatbot_discussions logging ENABLED (was off — conversations/leads were never being saved; view at AI Engine → Chatbots → Discussions, 90-day retention); canonical office hours + Thursday evenings/Saturday mornings/parking/new-patients lines ADDED to her instructions (they were missing entirely). Her training is otherwise solid (procedures, safety rules, lead capture, tone). NO email hookup exists — captured leads only live in Discussions; future win: wire lead capture to email the front desk via AI Engine functions/webhook. ~~Reconnect AIOSEO Search Statistics~~ — DONE Aug 26, now authed to `https://www.drloukas.com/`; re-check Search Statistics data in a day or two.
 1. ~~Sitemap post types click~~ — verified ALREADY CORRECT Aug 26 (posts/pages/products only, no attachments, author/date off). Nothing to do.
