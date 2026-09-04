@@ -1,7 +1,7 @@
 # CLAUDE.md
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
-**Last updated: 2026-09-04 (Site Health triaged; the paid broken-link plugin proven to have never run; free replacement built). Treat this as the session handoff — read it fully before touching the site.**
+**Last updated: 2026-09-04 (Site Health triaged; paid broken-link plugin cancelled and replaced by an automated weekly scan; Jetpack question settled). Treat this as the session handoff — read it fully before touching the site.**
 
 ## Project Overview
 
@@ -23,7 +23,7 @@ Workspace for Loukas Dentistry of Park Ridge (www.drloukas.com) — SEO, content
 - **GitHub:** repo `thanasiloukas-svg/drloukas` via `mcp__github__` tools.
 - **Google Drive** via `mcp__Google_Drive__`.
 - **AIOSEO Search Statistics / GSC link — FIXED Aug 26 ~14:00 UTC:** was authed against the wrong property (`http://drloukas.com`); user reconnected via AIOSEO → Search Statistics → Reconnect and picked `https://www.drloukas.com/`. Verified server-side: `aioseo_options_internal` authedsite now `https://www.drloukas.com/`, verified true, sitemap reports point at the correct resource_id with 0 errors/warnings. Search Statistics data should backfill within a day or two of the reconnect. Note: sitemap `indexed` counts read 0 permanently — Google removed indexed counts from the Sitemaps API; not a symptom. **Rule stands: verify `profile.authedsite` matches the canonical host before trusting any Search Statistics output.** The account also has a `drloukas.com` Domain property in GSC (kept; either property is valid). Site Kit separately has no Search Console module (pagespeed, GA4, RRM, tagmanager only).
-- **Google Search Console:** NO remote access. A GSC MCP server (`mcp-server-gsc`, service account `gsc-reader@numeric-anthem-506400-v4.iam.gserviceaccount.com`, key at `D:\claude Drloukas.com\gsc-key.json`) is wired on the user's Windows PC for BOTH Claude Code CLI and Claude Desktop. GSC data must be pulled in a LOCAL session or pasted in. Note: the mcp-server-gsc token refresh can fail transiently ("premature close"); a local helper with a working OAuth token lives in the `google-search-console\` folder of the user's local project.
+- **Google Search Console: FULL REMOTE ACCESS via the on-server bridge (see "Google API bridge LIVE" below) — this line used to say "NO remote access" and that is obsolete.** Legacy note kept for the local setup only: A GSC MCP server (`mcp-server-gsc`, service account `gsc-reader@numeric-anthem-506400-v4.iam.gserviceaccount.com`, key at `D:\claude Drloukas.com\gsc-key.json`) is wired on the user's Windows PC for BOTH Claude Code CLI and Claude Desktop. GSC data must be pulled in a LOCAL session or pasted in. Note: the mcp-server-gsc token refresh can fail transiently ("premature close"); a local helper with a working OAuth token lives in the `google-search-console\` folder of the user's local project.
 - **Ahrefs / Semrush:** connected but useless via API — Ahrefs returns "Insufficient plan", Semrush "API units balance is zero".
 - Remote sessions CANNOT fetch drloukas.com or google.com (network egress blocked); audit the site through the WordPress/Novamira MCPs.
 
@@ -426,6 +426,29 @@ It is a **cloud** checker: links are sent to AIOSEO's servers against a quota, a
 The third was **on `/two-sides-of-a-coin.../` (1005) — the site's single best-earning page** — and was a nonsense pairing: anchor text "dental appointment" pointing at a veneers FAQ, so it was repointed to /contact-us/ to match the anchor's actual intent rather than to a veneers page. Backups `ld_bak_blcfix_719_20260904`, `ld_bak_blcfix_1005_20260904`. Both pages verified 200, 1 h1, zero `/article/` references left; targets all 200; cache purged; IndexNow pinged. Temp options `ld_blc_queue`/`ld_blc_map`/`ld_blc_results` deleted after the run.
 
 **Do NOT install the legacy wordpress.org "Broken Link Checker" (WPMU DEV) local-scan version** — it background-crawls continuously and is a known cause of shared-host load problems; this site already has no OPcache and MySQL 5.7. On-demand scanning plus GSC's own 404 report covers it for free.
+
+### Jetpack question answered + weekly link scan automated (Sep 4, second pass)
+
+**THERE IS NO FULL "JETPACK" PLUGIN ON THIS SITE. Only `jetpack-boost` 4.7.0.** The "Jetpack" item in the admin sidebar is Boost's own menu. Any future session asked "should we drop Jetpack" must check this first — the answer is about Boost, not about the Jetpack suite.
+
+**Boost is earning its place — verified on a live uncached fetch, not assumed:**
+- Page cache working: **67 cached HTML files** on disk, and the core `page_cache` Site Health test returns **good** ("server response time is good").
+- Minify working: the homepage serves ONE combined `/wp-content/boost-cache/static/<hash>.min.css` and ONE `/wp-content/boost-cache/static/<hash>.min.js`.
+- **PATH CORRECTION — the Aug 30 note saying Boost serves `/_jb_static/` bundles is WRONG for 4.7.0.** That directory does not exist (`is_dir` false). Grepping delivered HTML for `_jb_static` returns 0 and will make you wrongly conclude minify is broken. The real path is **`wp-content/boost-cache/static/`**.
+- Critical CSS inlined as `<style id="jetpack-boost-critical-css">`; zero `rel="stylesheet"` links in the head because Boost defers the full sheet behind the inlined critical CSS. That is correct behaviour, not a missing stylesheet.
+- 5 scripts carrying `defer` (the Aug 30 deferral work still holds).
+
+**The "WordPress.com requests are being blocked" banner costs nothing.** Only three Boost features need that connection — **Cloud CSS, Image CDN, Performance History — and all three are `unset` (off).** Everything actually in use (page cache, minify, critical CSS, render-blocking JS) runs entirely on the server. `xmlrpc.php` returns 503 because IONOS blocks it, Jetpack tests itself through xmlrpc, hence the false alarm. **Verdict: KEEP Boost, dismiss the banner, do not unblock xmlrpc.** Dropping Boost would remove the site's only page cache and minifier on a host with no OPcache and MySQL 5.7 — it would be a clear downgrade.
+
+**WEEKLY BROKEN LINK SCAN IS NOW AUTOMATED.** Routine `trig_01DYjREoZFVXCFgAgKGzS2ju`, cron `0 13 * * 5` (Fridays 13:00 UTC / 08:00 CDT), **self-bound to session_01B2ASpL494CmCuqR2M623Hr**.
+- **It had to be self-bound.** A fresh-session-per-fire routine cannot carry the Novamira connector — `create_trigger`'s `connectors` parameter returns *"the connectors parameter is not available for this organization"*, and a fresh session with no connectors cannot reach the site at all. Self-binding fires into a session that already holds the connection. The tool still prints a boilerplate "stores no MCP connectors" warning on self-bind routines; ignore it there, it refers to the trigger record, not the target session.
+- If that routine ever reports it cannot reach the site, recreate it self-bound to a live session rather than as a fresh-session routine.
+
+**Scan run 2026-09-04 (second run, after the morning fixes): 151 pages, 238 unique links, ZERO broken.** 119 resolved instantly via `url_to_postid`, 119 HTTP-checked, 237 x 200 and one 429. **The 429 is instagram.com/loukasdentistry/ and it is a false positive every time** — Instagram rate-limits datacenter IPs; 429 means the server answered, so it is not a dead link. Do not "fix" it.
+
+**LEFTOVER FOUND — `mu-plugins/elementor-safe-mode.php`** (3,894 bytes, dated 2026-08-07). Elementor itself is genuinely gone: no `plugins/elementor` or `plugins/elementor-pro` directory, `class_exists('Elementor\Plugin')` false, nothing elementor-shaped in `active_plugins`. But this Elementor.com mu-plugin survived the Aug 30 deletion and **mu-plugins load on every single request**. It contains no `admin_menu`/`add_menu_page` call, so it is NOT what draws the sidebar item. It is dead code with nothing left to do (its whole purpose is loading Elementor's editor in isolation). Safe to delete; flagged to owner, not removed unilaterally. Current mu-plugins: `arya-lead-notifications.php` (1,979 b, 2026-07-16 — so ARYA lead email DOES now exist, contradicting the old PENDING #0 note), `elementor-safe-mode.php`, `fix-auth-header.php`, `loukas-preserved-redirects.php`.
+
+Active plugin count now **26** (was 28) after the owner deleted the Broken Link Checker.
 
 ## PENDING / OPEN ITEMS
 0. ~~P0: rotate the OpenAI API key~~ — **DONE Aug 30 night**: owner entered a new key in AI Engine, verified working end-to-end via $mwai->simpleTextQuery ("KEY OK"); final revoke of the old key at platform.openai.com on owner (confirm done). **ARYA upgrades same night:** chatbot_discussions logging ENABLED (was off — conversations/leads were never being saved; view at AI Engine → Chatbots → Discussions, 90-day retention); canonical office hours + Thursday evenings/Saturday mornings/parking/new-patients lines ADDED to her instructions (they were missing entirely). Her training is otherwise solid (procedures, safety rules, lead capture, tone). NO email hookup exists — captured leads only live in Discussions; future win: wire lead capture to email the front desk via AI Engine functions/webhook. ~~Reconnect AIOSEO Search Statistics~~ — DONE Aug 26, now authed to `https://www.drloukas.com/`; re-check Search Statistics data in a day or two.
