@@ -1,7 +1,7 @@
 # CLAUDE.md
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
-**Last updated: 2026-09-03 (video indexing audit closed, strike-zone CTR cause proven, image round 3). Treat this as the session handoff — read it fully before touching the site.**
+**Last updated: 2026-09-04 (three-week trend proves rankings are improving while local clicks stay at zero). Treat this as the session handoff — read it fully before touching the site.**
 
 ## Project Overview
 
@@ -368,6 +368,23 @@ Backups `ld_bak_1860_img_20260903`, `ld_bak_461_img2_20260903`, `ld_bak_3303_img
 - IndexNow is reached via **`aioseoIndexNow()->ping->pingPost($url,'publish')`**. `aioseo()->indexNow` is null and fatals.
 - Jetpack Boost's `Boost_Cache` class is not loadable from execute-php; purge by `do_action('jetpack_boost_clear_page_cache_all')` plus deleting `*.html` under `wp-content/boost-cache/cache`.
 - A 502 from the API mid-call does **not** mean the PHP failed — verify server-side before retrying. And when checking whether an attachment was created, query `_wp_attached_file` rather than `guid` (a guid LIKE match returned empty for an attachment that existed).
+
+### THE MEASUREMENT THAT SETTLES THE STRATEGY (Sep 4, live GSC pull)
+Three consecutive weeks of non-branded **"park ridge"** queries, web type, branded excluded:
+
+| Window | Queries | Impressions | Clicks | Avg position |
+|---|---|---|---|---|
+| Aug 13–19 | 166 | 3,556 | **1** | 15.4 |
+| Aug 20–26 | 148 | 4,144 | **0** | 14.6 |
+| Aug 27–Sep 2 | 142 | 4,582 | **0** | **12.9** |
+
+**Impressions +29% and average position improved 2.5 places across three weeks, and clicks went to zero and stayed there.** This is the finding that matters: the on-page work IS moving rankings — the site is being shown more, and higher — and none of it converts. Ranking improvement is therefore **not the lever**; the click is being taken before the organic result is reached.
+
+Sitewide same period also improved (last 7 days 12,416 impr / 39 clicks / pos 23.0 vs prior 7 at 11,334 / 31 / pos 27.0), so this is not a site health problem.
+
+**The contrast, last 7 days:** branded 68 impr / 6 clicks / **8.82% CTR**; non-branded 10,202 impr / 5 clicks / **0.049% CTR** — a ~180x gap at comparable positions. And the five non-branded clicks were NOT local service queries: "chin filler placement", "cosmetic botox injections", "pdo threads", "sore throat after dental work", "sore throat after root canal". **Zero clicks on any "<service> park ridge" query in seven days from 4,582 impressions at average position 12.9.**
+
+**Conclusion, stated plainly for the owner:** SEO is doing its job and has hit its ceiling. Every further hour of on-page work on these queries buys more impressions at a 0% conversion rate. The remaining levers are Google Business Profile, reviews, and whatever occupies the space above the blue links. **Do not authorise more on-page work aimed at these local service queries until someone has looked at one of these SERPs on a phone.**
 
 ## PENDING / OPEN ITEMS
 0. ~~P0: rotate the OpenAI API key~~ — **DONE Aug 30 night**: owner entered a new key in AI Engine, verified working end-to-end via $mwai->simpleTextQuery ("KEY OK"); final revoke of the old key at platform.openai.com on owner (confirm done). **ARYA upgrades same night:** chatbot_discussions logging ENABLED (was off — conversations/leads were never being saved; view at AI Engine → Chatbots → Discussions, 90-day retention); canonical office hours + Thursday evenings/Saturday mornings/parking/new-patients lines ADDED to her instructions (they were missing entirely). Her training is otherwise solid (procedures, safety rules, lead capture, tone). NO email hookup exists — captured leads only live in Discussions; future win: wire lead capture to email the front desk via AI Engine functions/webhook. ~~Reconnect AIOSEO Search Statistics~~ — DONE Aug 26, now authed to `https://www.drloukas.com/`; re-check Search Statistics data in a day or two.
