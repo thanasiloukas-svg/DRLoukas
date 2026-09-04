@@ -1,7 +1,7 @@
 # CLAUDE.md
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
-**Last updated: 2026-09-04 (three-week trend proves rankings are improving while local clicks stay at zero). Treat this as the session handoff — read it fully before touching the site.**
+**Last updated: 2026-09-04 (Site Health triaged; the paid broken-link plugin proven to have never run; free replacement built). Treat this as the session handoff — read it fully before touching the site.**
 
 ## Project Overview
 
@@ -385,6 +385,47 @@ Sitewide same period also improved (last 7 days 12,416 impr / 39 clicks / pos 23
 **The contrast, last 7 days:** branded 68 impr / 6 clicks / **8.82% CTR**; non-branded 10,202 impr / 5 clicks / **0.049% CTR** — a ~180x gap at comparable positions. And the five non-branded clicks were NOT local service queries: "chin filler placement", "cosmetic botox injections", "pdo threads", "sore throat after dental work", "sore throat after root canal". **Zero clicks on any "<service> park ridge" query in seven days from 4,582 impressions at average position 12.9.**
 
 **Conclusion, stated plainly for the owner:** SEO is doing its job and has hit its ceiling. Every further hour of on-page work on these queries buys more impressions at a 0% conversion rate. The remaining levers are Google Business Profile, reviews, and whatever occupies the space above the blue links. **Do not authorise more on-page work aimed at these local service queries until someone has looked at one of these SERPs on a phone.**
+
+### Site Health cleared + the $5/month plugin that never ran (Sep 4)
+Owner sent the Site Health screen (3 critical, 5 recommended). Every item was diagnosed server-side rather than from the label.
+
+**FIXED:** `twentynineteen` **3.3 -> 3.4** (the only "themes waiting to be updated" item; it is the inactive fallback theme, kept deliberately). Pending theme updates now 0.
+
+**NOT A PROBLEM — leave alone (verified, do not "fix"):**
+- **Wpcom Connection Test** — Jetpack `is_connected: true`, `has_connected_owner: false`, `connection_errors: none`, and **`xmlrpc.php` returns 503** because IONOS blocks it. Jetpack tests its connection *through* xmlrpc, so the test fails while the thing it tests is fine. Boost's modules (page cache, minify JS/CSS, critical CSS, render-blocking JS — all verified `1`/on) run locally and need no Wpcom link. **Never unblock xmlrpc to silence this** — it is brute-force and pingback-DDoS surface, and blocking it is a security win.
+- **Page cache test = GOOD** ("server response time is good"). Boost is working.
+
+**HOST-SIDE — only IONOS can change these (owner action, not a site defect):**
+- **Outdated SQL server:** MySQL **5.7.42**. WP wants 8.0+; 5.7 hit end-of-life Oct 2023. This is the one with a real security dimension — worth an IONOS ticket.
+- **Opcode cache not enabled:** OPcache is **not installed at all** in PHP 8.4.24. Biggest free speed win available; check the IONOS PHP settings panel or ask support.
+- **Persistent object cache:** no `object-cache.php` dropin; needs Redis/Memcached, which IONOS shared hosting generally does not offer. Low priority.
+- **Recommended module missing = `imagick` only** (optional). WP falls back to GD. Cosmetic unless image quality matters.
+
+**Inactive plugins (the "remove inactive plugins" item):** exactly two — `aioseo-rest-api` 1.0.9 and `all-in-one-seo-pack` (free) 5.0.1.1. Both deliberate keeps from the Aug 30 cleanup. AIOSEO Pro is standalone and does not need the free plugin, so deleting it is safe and closes the item; left in place pending owner's word.
+
+### THE $5/MONTH FINDING: Broken Link Checker by AIOSEO has never run — not once
+`wp_aioseo_blc_link_status` holds 283 rows created between **2025-10-28 and 2026-09-01**, and:
+- `last_scan_date IS NOT NULL` -> **0**
+- `http_status_code IS NOT NULL` -> **0**
+- `broken = 1` -> **0**
+- `SUM(scan_count)` -> **0**
+- `aioseo_blc_scan_status` = `{lastRun: null, startTime: null, status: "queued"}` — queued since first activation
+- `aioseo_blc_options_internal` license block: `level: null, quota: 0, quotaRemaining: 0`
+
+It is a **cloud** checker: links are sent to AIOSEO's servers against a quota, and the quota is zero. **It has been billing for ~10 months and has checked zero links.** Cancel it.
+
+**FREE REPLACEMENT — built and proven the same session, no plugin required.** Method (repeatable from any session with Novamira): extract every `href` from all published `post_content`; skip mailto/tel/javascript; normalise protocol-relative and root-relative to absolute; **resolve internal URLs with `url_to_postid()` + `get_post_status()` first** (instant, and a hit is proof the page is live), then HTTP-check only what does not resolve, HEAD with a GET fallback on 0/403/405/501. Store queue/results in options and batch, because **HTTP checking runs ~1.4s per link and 50 links exceeds the 60s MCP timeout** — the DB pre-pass cut 240 links down to 119 needing HTTP.
+
+**First run: 151 published pages, 240 unique links -> 3 genuine 404s** (plus Instagram returning 429 rate-limit, a false positive — always sanity-check 429/403 before reporting a link dead):
+| Broken URL | Was on | Anchor | Repointed to |
+|---|---|---|---|
+| /article/replace-missing-tooth/ | 719 | "partials can be removed" | /partial-dentures/ |
+| /article/faqs-dental-bridge/ | 719 | "cement a prosthetic tooth..." | /dental-bridges/ |
+| /article/faqs-dental-veneers/ | **1005** | "dental appointment" | /contact-us/ |
+
+The third was **on `/two-sides-of-a-coin.../` (1005) — the site's single best-earning page** — and was a nonsense pairing: anchor text "dental appointment" pointing at a veneers FAQ, so it was repointed to /contact-us/ to match the anchor's actual intent rather than to a veneers page. Backups `ld_bak_blcfix_719_20260904`, `ld_bak_blcfix_1005_20260904`. Both pages verified 200, 1 h1, zero `/article/` references left; targets all 200; cache purged; IndexNow pinged. Temp options `ld_blc_queue`/`ld_blc_map`/`ld_blc_results` deleted after the run.
+
+**Do NOT install the legacy wordpress.org "Broken Link Checker" (WPMU DEV) local-scan version** — it background-crawls continuously and is a known cause of shared-host load problems; this site already has no OPcache and MySQL 5.7. On-demand scanning plus GSC's own 404 report covers it for free.
 
 ## PENDING / OPEN ITEMS
 0. ~~P0: rotate the OpenAI API key~~ — **DONE Aug 30 night**: owner entered a new key in AI Engine, verified working end-to-end via $mwai->simpleTextQuery ("KEY OK"); final revoke of the old key at platform.openai.com on owner (confirm done). **ARYA upgrades same night:** chatbot_discussions logging ENABLED (was off — conversations/leads were never being saved; view at AI Engine → Chatbots → Discussions, 90-day retention); canonical office hours + Thursday evenings/Saturday mornings/parking/new-patients lines ADDED to her instructions (they were missing entirely). Her training is otherwise solid (procedures, safety rules, lead capture, tone). NO email hookup exists — captured leads only live in Discussions; future win: wire lead capture to email the front desk via AI Engine functions/webhook. ~~Reconnect AIOSEO Search Statistics~~ — DONE Aug 26, now authed to `https://www.drloukas.com/`; re-check Search Statistics data in a day or two.
