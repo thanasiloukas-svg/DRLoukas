@@ -841,3 +841,27 @@ Owner sent the Meow Apps -> Health screen and said he does not do image generati
 **Modules turned OFF (owner's word on images, my Sep 5 audit evidence on the other two):** `module_generator_images`, `module_generator_videos`, `module_finetunes`. Written with the safe single-key pattern into `mwai_options` — backup of just those three keys in option **`ld_bak_mwai_modules_20260905`**; verified 116 keys before and after, `ai_envs` 4 before and after (the API key block untouched). Homepage re-checked on a clean URL: **200, 1 h1, ARYA container still present, no fatals.**
 - **`module_generator_content` LEFT ON** because the owner said "barely any", not none, and the statistics table shows real historical image-generation units (Jun 19,478 / Aug 27,351) — that usage was almost certainly prior agent sessions, not him, but it means image generation was a working capability, not a dead toggle. Flipping any of the three back on is one checkbox.
 - **These are admin-only modules. Turning them off does NOT speed up the front end** — do not report it as a performance win.
+
+### ARYA lead capture: logging was never broken, the EMAIL HOOK never existed (Sep 5)
+Owner said "fix the logging". Diagnosed before changing anything, and **my own earlier claim was wrong — correct the record.**
+
+**DISCUSSIONS LOGGING WORKS AND ALWAYS DID. `wp_mwai_chats` was empty because nobody had chatted with ARYA, not because writes were failing.** Proven by running a real query: `$mwai->simpleChatbotQuery('chatbot-arya2026','...')` took the table **0 -> 1 rows**, with the full transcript stored. `has_filter('mwai_chatbot_reply')` is YES, `Meow_MWAI_Modules_Discussions` is instantiated, `chatbot_discussions` true. Do NOT repeat the "logging is silently dropping leads" claim.
+- The task log line `"Discussions table does not exist yet"` (id 476, 03:00:50) is stale: `information_schema` says the table was created 02:59:27 the same morning. Unreconcilable and moot — the table exists and writes work. The next 03:00 cleanup run will confirm.
+- Chatbots registered: `default` (stock, not rendered on the front end) and `chatbot-arya2026` (ARYA).
+
+**THE ACTUAL BUG, and it is a real one: `mu-plugins/arya-lead-notifications.php` (v1.0, by Manus) hooked a filter that DOES NOT EXIST.** It used `add_filter('mwai_chat_reply', ...)`. A full scan of `plugins/ai-engine` for `apply_filters('mwai_chat_reply')` returns **zero call sites**; the real filter is **`mwai_chatbot_reply`**, applied in `classes/modules/chatbot.php` with the signature `($rawText, $reply, $params, $extra)` — 4 args, not 2. **So that callback never ran once, and no lead email has ever been sent since it was installed 2026-07-16.**
+
+**REWRITTEN to v2.0** (4,749 b, md5 `07c20076448695722a8512c0b75f4bf9`). Backup of the original 1,979-byte v1.0 in option **`ld_bak_arya_leadnotify_20260905`**, md5-verified against the file before overwriting.
+- Hooks `mwai_chatbot_reply` at **priority 20** — after the Discussions module's priority 10 — so the transcript row is already written and the email carries the whole conversation read from `wp_mwai_chats`, not just the current turn.
+- Detects name / phone / email with real capture groups and reports what it found in a `=== CAPTURED ===` block.
+- **De-duplicates on a signature of the detected details per `chatId`** (12 h transient), so a repeated phone number does not re-notify, but a visitor who gives a name first and a phone later still triggers a second, fuller email.
+- Whole body wrapped in try/catch with `error_log` — a mail failure can never break a visitor's chat reply.
+- Installed through the chunked-base64 path with `md5` verification AND a real syntax check via **`token_get_all($code, TOKEN_PARSE)`** before writing. **Use that for any mu-plugin write** — mu-plugins load on every request including wp-admin, so a parse error white-screens the site and the login page with it.
+
+**TWO BUGS OF MY OWN, both caught by testing rather than by reading:**
+1. First version keyed everything off `$params['newMessage']`, which **AI Engine only sets on the front-end REST path**. The test fired the chat, logged the row, and sent no mail. Fixed by falling back to `$reply->query->get_message()`, exactly as `discussions.php` does.
+2. Second version still read an empty transcript because `$params['chatId']` is also absent on non-REST paths. Fixed by resolving it with `$mwai_core->fix_chat_id($reply->query, $params)` — the same call the Discussions module makes, so both look up the same row.
+**LESSON: `$params` on `mwai_chatbot_reply` is populated by the front-end REST handler. Anything hooking that filter must fall back to the query object, or it will work in the browser and silently no-op everywhere else.**
+
+**VERIFIED END TO END:** a chat containing a name, phone and email produced exactly **1 `wp_mail()` call to `loukasgendentistry@gmail.com`**, subject "ARYA chatbot lead captured - Loukas Dentistry", body carrying the captured details plus the complete 3-message transcript and a link to the Discussions screen. **Zero `wp_mail_failed` errors.** Note `wp_mail` returning true means PHPMailer accepted it, NOT that Gmail delivered it — first real lead should be checked in spam.
+- Close-out: 4 test rows deleted from `wp_mwai_chats` (back to 0) and the test transients removed, so the owner's Discussions screen starts clean. Homepage 200, **wp-login.php 200**, no fatals.
