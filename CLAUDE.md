@@ -810,3 +810,22 @@ That makes it a **split-face comparison**, which is stronger evidence than any t
 **/pdo-threads/ now carries 5 images** (was 3 this morning): the relabelled lip collage, the side-by-side thread lift, this split-face comparison, plus the two originals.
 
 **LESSON: a drawn-on guideline is not automatically a quality defect.** In clinical photography a marking often IS the information. Before rejecting a marked-up image, ask what the marking denotes — the owner is the only one who can say, and here it turned a "reject" into the strongest single piece of evidence on the page.
+
+### Split-face divider corrected to her real facial midline (Sep 5)
+Owner: "the line in the middle by the patient's face is not going down the middle of their face... kinda slanting to her right." He was right, and the cause was a bad assumption of mine: **I drew the divider at the frame's geometric centre (x = W/2 = 539.5) and assumed that was the facial midline. It is not.**
+
+**Measured her actual midline instead of guessing again.** Built a skin mask (`r>95, g>40, b>20, max-min>15, |r-g|>15, r>g, r>b`), took the midpoint of the skin span every 10px across the face band y=120 to 470, rejected outliers more than 28px from the median (4 of 36 points, mostly hair and shoulder intrusions), then least-squares fitted the remaining 32:
+
+**midline x = 550.7 + 0.02848 y** — 550.7 at the top, 562 at mid face, **573.8 at the caption band. A 1.63 degree lean.**
+
+So the old line sat **11 to 34 pixels onto her right side** and was dead vertical while her head leans. That is exactly the complaint.
+
+**Rebuilt from the original source:** the gold divider now follows the fitted midline down the full height of the photo and fades into the caption band, and the **right hand label was repositioned to `midline_at_band + 26` (x=600)** so each label sits under its own half rather than under a fixed geometric half.
+
+**Verified on pixels before publishing:**
+- Divider found within 1-5px of the expected midline at y = 100, 300, 500 and 700.
+- **Orange marking still entirely on the untreated side: 323 pixels right of the line, ZERO left** — the split assignment is unchanged, which was the thing that most needed re-proving after moving the boundary.
+- Band navy `6,31,46` both halves, gold markers both sides, **0 stray white pixels in the old burned-in text zone**.
+- Written over the SAME filename so attachment 4312 and the page reference stay valid. Live check: disk 74,378 bytes, **served content-length 74,378** — the server is delivering the new bytes, not a cached copy. Page 200, 1 h1, image present, no fatals. Boost purged, attachment metadata regenerated.
+
+**LESSON: the centre of the frame is not the centre of the subject.** Any divider, crop focal point or split-face overlay must be measured against the anatomy in the photo, not against the image dimensions. A 1.6 degree error was visible to the clinician immediately.
