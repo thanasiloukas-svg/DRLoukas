@@ -1,31 +1,41 @@
 <footer class="site-footer">
   <div class="footer-inner">
     <div class="footer-col footer-brand">
-      <img src="https://www.drloukas.com/wp-content/uploads/2026/05/loukas_logo_master_transparent.png" alt="Loukas Dentistry" width="180" height="48" class="footer-logo" loading="lazy">
+      <picture><source srcset="https://www.drloukas.com/wp-content/uploads/2026/08/loukas-logo-header.webp" type="image/webp"><img src="https://www.drloukas.com/wp-content/uploads/2026/08/loukas-logo-header.png" alt="Loukas Dentistry" width="161" height="120" class="footer-logo" loading="lazy"></picture>
       <p class="footer-address">714 W Higgins Rd<br>Park Ridge, IL 60068</p>
       <a href="tel:<?php echo loukas_phone_raw(); ?>" class="footer-phone"><?php echo loukas_phone(); ?></a>
       <table class="footer-hours">
-        <tr><td>Mon</td><td>9am&ndash;6pm</td></tr>
-        <tr><td>Tue</td><td>10am&ndash;7:30pm</td></tr>
+        <tr><td>Mon</td><td>10am&ndash;4pm</td></tr>
+        <tr><td>Tue</td><td>10am&ndash;6pm</td></tr>
         <tr><td>Wed</td><td class="closed">Closed</td></tr>
-        <tr><td>Thu</td><td>10am&ndash;7:30pm</td></tr>
-        <tr><td>Fri</td><td>9am&ndash;2pm</td></tr>
-        <tr><td>Sat</td><td>9am&ndash;3pm</td></tr>
+        <tr><td>Thu</td><td>10am&ndash;6:30pm</td></tr>
+        <tr><td>Fri</td><td>By appointment</td></tr>
+        <tr><td>Sat</td><td>9am&ndash;2pm</td></tr>
+        <tr><td>Sun</td><td class="closed">Closed</td></tr>
       </table>
     </div>
     <div class="footer-col">
       <h4>Quick Links</h4>
       <ul>
         <li><a href="/dental-implants/">Dental Implants</a></li>
-        <li><a href="/invisalign/">Invisalign</a></li>
-        <li><a href="/porcelain-veneers/">Porcelain Veneers</a></li>
-        <li><a href="/botox-dysport/">Botox &amp; Dysport</a></li>
+        <li><a href="/invisalign-park-ridge/">Invisalign</a></li>
+        <li><a href="/cosmetic-dentistry/porcelain-veneers/">Porcelain Veneers</a></li>
+        <li><a href="/botox/">Botox &amp; Dysport</a></li>
         <li><a href="/about-us/">About Us</a></li>
         <li><a href="/blog/">Blog</a></li>
         <li><a href="/contact-us/">Contact</a></li>
         <li><a href="/virtual-tour/">Virtual Tour</a></li>
         <li><a href="/smile-gallery/">Smile Gallery</a></li>
         <li><a href="/emergency-dentistry/">Emergency Dentistry</a></li>
+      </ul>
+      <h4 style="margin-top:18px">Areas We Serve</h4>
+      <ul>
+        <li><a href="/des-plaines-dentist/">Dentist near Des Plaines</a></li>
+        <li><a href="/dentist-near-niles/">Dentist near Niles</a></li>
+        <li><a href="/norridge-dentist/">Norridge Dentist</a></li>
+        <li><a href="/harwood-heights-dentist/">Harwood Heights Dentist</a></li>
+        <li><a href="/rosemont-dentist/">Rosemont Dentist</a></li>
+        <li><a href="/chicago-dentist/">Chicago Northwest Side</a></li>
       </ul>
     </div>
     <div class="footer-col">
@@ -42,12 +52,14 @@
         </a>
       </div>
       <a href="https://g.page/loukas-dentistry/review" target="_blank" rel="noopener" class="footer-review-link">Leave a Google Review</a>
-      <a href="<?php echo esc_url(get_option('loukas_appointment_url', 'https://www.mogo.com/Registration/Appointment/Index')); ?>" class="hp-btn hp-btn-teal footer-book-btn" target="_blank" rel="noopener">Book Appointment</a>
+      <a href="/contact-us/" class="hp-btn hp-btn-teal footer-book-btn">Book Appointment</a>
     </div>
   </div>
   <div class="footer-bottom">
     <p>&copy; <?php echo date('Y'); ?> Loukas Dentistry of Park Ridge. All rights reserved.</p>
     <p class="footer-legal">Unauthorized use of the names Dr. Thanasi Loukas or Dr. Maria Loukas is prohibited.</p>
+      <p class="footer-legal"><a href="/privacy-policy/">Privacy Policy</a></p>
+      <p class="footer-sitelock" style="margin-top:10px"><a href="#" onclick="window.open('https://www.sitelock.com/verify.php?site=drloukas.com','SiteLock','width=600,height=600,left=160,top=170');"><img alt="SiteLock" title="SiteLock" src="https://shield.sitelock.com/shield/drloukas.com" style="height:34px;width:auto" loading="lazy" /></a></p>
   </div>
 </footer>
 <?php wp_footer(); ?>
