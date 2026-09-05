@@ -904,3 +904,32 @@ Owner asked how to enable embeddings, what Novamira Chat (now wired to Gemini 3.
 **CONCURRENCY RULE — NEW, and it matters:** Novamira Chat runs server-side inside wp-admin, so it does NOT hit the MCP endpoint that caused the August IONOS 429s; running it while a Claude session works is safe from a rate-limit view. **The real hazard is a lost-update collision: there is no post locking.** This session reads `post_content`, builds an edit, and writes it back; a second agent writing the same post in between has its change silently discarded (or discards ours). **Rule: two agents must never edit the same page at the same time.** Keep Novamira Chat's "Allow everything" toggle OFF while a Claude session is making changes — that keeps it advisory.
 
 **Deliverable: a standing house-rules primer was given to the owner to paste at the top of any Novamira Chat**, carrying the non-negotiables (never write `aioseo_options` or `.htaccess`, never change titles/slugs/H1s, never publish unasked, no patient names in filenames, phone and address formats, no hyphens in patient-facing sentences, verify a photo's treatment before placing it). Without it a fresh chat has no way to know any of this.
+
+### THE HOMEPAGE IS ALREADY ON PAGE 1 — the "why isn't it ranking" premise is false (Sep 5)
+Owner ran two homepage-audit prompts through Novamira Chat (Gemini) and brought the output here. Both were generic checklists; the second claimed to be a live read and was not — its own JSON-LD block contained the placeholder `"streetAddress": "Your Park Ridge Street Address"`, and it named the practice **"Loukas General & Cosmetic Dentistry"**, which is wrong.
+
+**LIVE GSC, page-level, Jun 7 to Sep 2:**
+| Query | Page | Impr | Pos | Clicks |
+|---|---|---|---|---|
+| dentists park ridge il | **homepage** | 3,141 | **6.9** | **0** |
+| dentist park ridge il | homepage | 676 | 12.3 | 0 |
+| dentist park ridge | homepage | 667 | 12.2 | 2 |
+All 98 non-branded "dentist + park ridge" queries: **18,868 impressions, 7 clicks.** The homepage is the ranking page and it is on page one for the biggest query in the cluster. **Do not accept a brief premised on "the homepage does not rank."**
+
+**Homepage measured against every item both audits raised — all already correct:**
+- Title `Park Ridge Dentist | Loukas Dentistry, Cosmetic and Implants`, **60 chars**, exact keyword first.
+- Meta description 165 chars with city, street address, Saturday hours and phone.
+- H1 `Your Park Ridge Dentist for the Whole Family` (single h1).
+- "Park Ridge" **18x in visible text**, 65x in HTML. Address 3x, phone 7x, **5 tel: links**, Google Map embedded.
+- **Schema: 2 blocks, 0 invalid**, types include `Dentist`, `PostalAddress`, `OpeningHoursSpecification`, `Organization`, `FAQPage`, `BreadcrumbList`.
+- **32 internal link targets** from the homepage, covering every service silo asked for: cosmetic, veneers, crowns, implants, all-on-4, implant dentures, preventive, root canal, bonding, whitening, wisdom teeth, emergency, Invisalign, plus six geo pages.
+
+**DO NOT ADOPT THE SUGGESTED TITLE REWRITE.** `Dentist in Park Ridge, IL | Loukas General & Cosmetic Dentistry` buries the exact query behind "Dentist in", drops the cosmetic/implant qualifiers, and **uses a practice name that does not match the site or GBP** — the schema's own `Dentist.name` is **"Loukas Dentistry of Park Ridge"**. Changing the title of a page that ranks 6.9 on 3,159 impressions to chase an untested theory risks the position for nothing.
+
+**THE ONE GENUINE FIND from either audit:** the homepage links to 32 pages but **NOT to `/preventive-dentistry/gum-disease-treatment/` (78)** — 1,027 impressions, position 27, zero images, no homepage link. Periodontal/gum care is the only service silo with no homepage entry point. Small, real, worth adding. Also fair: its point that Google reviews mentioning specific procedures and "Park Ridge" feed the map pack — that matches the standing GBP conclusion.
+
+**METHOD CORRECTION for the GSC bridge:** `Loukas_Google_API::gsc_query()` already wraps `$filters` as `array(array('filters' => $filters))` internally. **Pass a FLAT array of filter objects** — `array(array('dimension'=>'QUERY','operator'=>'equals','expression'=>$q))`. Wrapping it yourself produces `'dimension' field is required`. Simpler still for exploratory work: pull all queries with a large rowLimit and filter in PHP.
+
+**Bonus fix this session: `/lip-fillers-park-ridge/` (1623) carried a broken `<img src="" alt="" />`** rendering on the live page. Removed; 30,283 -> 30,262 bytes, backup `ld_bak_1623_emptyimg_20260905`, page verified 200 with 1 h1 and 13 images.
+
+**IMAGE ALT AUDIT — alt text is NOT missing, it is DUPLICATED.** 783 images, **zero** without attachment alt; 340 content images, **zero** without an alt attribute. The real defect is that **178 images share eight descriptions**: "Loukas Dentistry Park Ridge IL" x50, mission-trip Guatemala x32, "Invisalign Results – Park Ridge IL" x14, "Porcelain Veneers – Loukas Dentistry" x14, implants x13, Botox x13, Dominican Republic x13, logo x7. Fifty images described identically tell Google nothing, which fits image search sitting at 26,776 impressions / 7 clicks / position 43.5. Rewriting these per-image is **the ideal parallel job for a second agent** — alt lives in `_wp_attachment_image_alt` postmeta, so it cannot collide with page-content edits. Also cosmetic, not SEO: 138 attachment titles are still raw filenames, 130 captions and 243 descriptions empty (attachment pages redirect, so low value).
