@@ -577,3 +577,38 @@ Redirect count 362 -> 379. **Two redirects existed but sat `enabled = 0`** and w
 - This is the same shape as **Broken Link Checker** (billed 10 months, scanned zero links) and **Image Optimization** (active since forever, zero options stored, has never converted a file). **Standing lesson: on this site, "the toggle is on" proves nothing. Always verify the plugin has a provider, a key, a quota or a stored config before believing it does anything.**
 - Note also that `meta-description` and `title-generation` overlap with AIOSEO, which already owns those fields. If this plugin is ever wired to a provider, leave those two OFF or it will fight AIOSEO.
 - The export contained **no credentials** (checked before reading, per the standing redaction rule).
+
+### GBP API CONNECTED end to end, and the "site looks like shit" cause found (Sep 5, late)
+
+**GBP OAuth IS DONE AND PROVEN. Only Google's quota stands in the way.** Owner completed the browser consent. Verified by making a real call:
+- `oauth-client.php` holds client_id + client_secret + **refresh_token** (all on server, never through chat)
+- Refresh -> access token exchange returns **HTTP 200**, granted scope `https://www.googleapis.com/auth/business.manage`
+- `GET https://mybusinessaccountmanagement.googleapis.com/v1/accounts` returns **429 RESOURCE_EXHAUSTED** with `"quota_limit_value": "0"`
+**So the plumbing is finished. The ONLY remaining blocker is Google raising quota from zero, which is the Basic API Access form.** Every new Cloud project starts at 0; this is not a misconfiguration. Re-test with the same call after approval.
+- **CORRECTION to an earlier claim in this session: the Business Profile APIs are NOT hidden from the Cloud Console library until approved.** Owner enabled My Business Q&A API himself and it shows "API Enabled". What hid Account Management from his search was the console's own `visibility:private` + `category:enterprise` filter chips. The gate is **quota**, not visibility. Direct library links bypass the filters: `console.cloud.google.com/apis/library/<service>?project=numeric-anthem-506400-v4` for `mybusinessaccountmanagement`, `mybusinessbusinessinformation`, `businessprofileperformance`.
+- Client is a **Web application** type, redirect URI `https://www.drloukas.com/wp-content/loukas-google/oauth-callback.php`. The old Sep 3 client was a Desktop app (localhost redirect) and genuinely could not work here. Project `numeric-anthem-506400-v4`, project number `351609807361`.
+- `oauth-callback.php` (2,219 b) does both halves: no `code` param starts the consent, Google redirects back to it, it exchanges and stores. Guards: `current_user_can('manage_options')` and a `state` transient. Verified over HTTP: **403 with the intended message** when not logged in.
+
+**CONNECTOR APPROVAL WAS SILENTLY BLOCKING VISION WORK.** `$mwai->simpleVisionQuery()` failed with *"The 'openai' AI connector has not been approved for use by 'novamira/novamira.php'"*. Novamira calls `AiClient` (2 files) so it is subject to the `ai/ai.php` approval matrix. **Granted `novamira/novamira.php` -> `openai`** (backup `ld_bak_connector_approvals_20260905`). The owner had already approved AIOSEO Pro, video-sitemap, local-business and the provider plugins himself. **Any session whose vision or AI call fails with that message: check `wpai_connector_approvals`.**
+
+**THE REAL "IT LOOKS LIKE SHIT" CAUSE: 107 images across 30 published pages are under 400px wide, stretched to full card width with `object-fit:cover`.** Sitewide scan of 336 content images: 229 fine, **107 undersized**. The worst are 2014 era files at **173x130**, and `/orthodontics/` was rendering two images at **187x69**.
+- These sit inside a generated "Before & After Results" template (almost certainly Manus) that also repeats the false line *"Every transformation represents actual work performed by Dr. Thanasi Loukas, DMD"* — the same template and the same false claim as the whitening page.
+- **REMOVED 12 undersized images / 5 before-after cards** from pages that still keep good imagery, via a **balanced-div walk** (count `<div>`/`</div>` depth from the card's opening tag) rather than regex, with div balance asserted before every save:
+
+| Page | Removed | Kept |
+|---|---|---|
+| 100 dental-crowns | 2 cards (4 imgs @173x130) | 900x900 porcelain crowns pair |
+| 104 orthodontics | 1 card (2 imgs @**187x69**) | 1200x1200 Invisalign pair |
+| 116 dermal-fillers | 2 cards (4 **GIFs** @177x136) | 720x480 lip filler result |
+| 114 porcelain-veneers | flattened pair (2 @173x105) | 9 good images incl. 1536x1024 |
+
+Backups `ld_bak_tinyimg_<id>_20260905`. All four verified live: 200, exactly 1 h1, no fatals. Cache purged, IndexNow pinged. **Sitewide undersized 107 -> 95.**
+- Vision on the crowns page also found `img_crowns_before.jpg` and `img_crowns_after.jpg` show **no restorations at all** — an "after" photo with no crowns in it. Doubly justified removal. `img_crowns1_after.jpg` was genuine crowns but at 173x130 it was unusable anyway.
+
+**DELIBERATELY LEFT — these need a replacement image, not deletion:**
+- **61 /about-us/: Dr. Maria Loukas is 222x168 while Dr. Thanasi is 1114x1412 on the same page.** A visible quality mismatch between the two doctors. Needs a proper headshot from the owner. `Peggy.jpg` is 182x148, same problem.
+- **68 /services/: 3 of ~30 service cards** carry 226x186 / 173x221 thumbnails (Dentures, Root Canal, Tooth Extraction). Removing the img leaves an empty `<figure>` and breaks the grid — these need swapping, not cutting.
+- **106 bridges-dentures, 670 wisdom-tooth-extractions, 719 partials, 66 our-technology: removing their tiny images would leave the page with ZERO images.** Source replacements first.
+- ~70 of the remaining 95 are mission trip gallery photos at 300x224 on `/chihuauwa-mexico/`, `/guatemala/`, `/poptun-peten-guatemala/`, `/dominican-republic/`, `/honduras/` — low traffic legacy galleries, acceptable at gallery size, low priority.
+
+**METHOD NOTE: judge a photo by `getimagesize()` on the file, not by the `width`/`height` attributes in the markup.** Several of these carried correct small attributes and were still stretched to full width by inline CSS. And do not trust vision verdicts on a 173x130 source — at that size "no restoration margins visible" may be compression, not clinical fact. Check dimensions first, then decide whether vision is even meaningful.
