@@ -660,3 +660,34 @@ Owner asked whether to enable the lightbox and build new galleries.
 **RESPONSIVE-LIGHTBOX: KEEP IT.** Owner asked whether to remove it. `responsive_lightbox_settings` has `script: glightbox`, `image_links: true`, and `conditional_loading` was set to **true** this session (backup `ld_bak_rl_settings_20260905`) — it had been loading its assets on ~150 pages while nothing on the site used it. It now loads only where image links exist, and /smile-gallery/ is the page that uses it.
 
 **NO NEW GALLERIES — recommended against, with the reason.** /smile-gallery/ draws **1,045 impressions at position 10.0 and 0 clicks**, the same non-branded pattern as the rest of the site. More gallery pages multiply a page type that does not convert. The gallery's real value is (a) proof to link to from service pages and (b) a source of verified images. **The higher-value use of these photos is the service pages that still have ZERO images and real traffic:** /oral-surgery/ (4,211 impr), /tmj-treatment/ (2,455), /dental-bridges/ (1,044), /bone-grafting/ (575), /sedation-dentistry/, /partial-dentures/.
+
+### Zero-image audit rebuilt from LIVE GSC (Sep 5) — the old list in this file was stale
+Do not trust the "REMAINING GAPS with no matching orphan" list from Sep 3; several of those pages have since been filled. Rebuilt properly: pulled page-level GSC (Jun 7 to Sep 4, 395 pages) and joined it against `substr_count(post_content,'<img')` for every published post/page. **Repeat this join rather than reading a list from this file.**
+
+**Published pages with 200+ impressions and ZERO content images (highest first):**
+| Impr | Clicks | Pos | Page |
+|---|---|---|---|
+| 15,204 | 1 | 25.7 | 110 /cosmetic-dentistry/teeth-whitening/ **(zero because the fake veneer photos were removed today, correctly)** |
+| 4,186 | 2 | 26.3 | 124 /oral-surgery/ |
+| 2,040 | 0 | 39.8 | 799 /park-ridge-dentists-better-dental-hygiene/ |
+| 1,893 | 0 | 45.5 | 3753 /emergency-dentist-chicago/ |
+| 1,715 | 0 | **9.0** | 1849 /invisalign-vs-braces-park-ridge-il/ **(FIXED, below)** |
+| 1,621 | 4 | 41.2 | 543 /dental-payment-plans/ |
+| 1,563 | 25 | 22.2 | 91 /contact-us/ |
+| 1,556 | 0 | **10.9** | 126 /oral-surgery/tooth-extractions/ |
+| 1,027 | 0 | 27.0 | 78 /preventive-dentistry/gum-disease-treatment/ |
+| 969 | 0 | 45.5 | 3300 /sleep-apnea-snoring-treatment/ |
+| 612 | 1 | 68.4 | 1812 /dental-implant-consultation/ |
+| 545 | 0 | 44.4 | 1426 /bone-grafting/ |
+| 249 | 0 | 64.6 | 3306 /sedation-dentistry/ |
+Also thin at 1 image: 1005 two-sides-of-a-coin (10,341 impr, 64 clicks), 1860 kids-dentistry (5,019), 1859 tmj-treatment (2,342 — **it already has a masseter Botox injection photo; the old "zero images" note here was wrong**), 1850 botox-tmj (576).
+
+**PLACED on /invisalign-vs-braces-park-ridge-il/ (1849)** — chosen because it is the highest-position page (9.0) with zero images, and it is the page Google actually serves for "invisalign park ridge il" ahead of the service page 1409.
+- **1484** `invisalign_service.webp` (1024x1024) after the Invisalign section: a clear aligner tray. Vision: staged product shot, no clinical claim made in the caption.
+- **1565** `invisalign_ba_02` (1200x1200) before the consultation CTA. Vision: real four-frame before/after, crowded lower incisors to aligned, **no brackets visible in any frame**, but vision could NOT confirm which system produced it, so the caption claims only "orthodontic treatment" and names no system. A 900x900 WebP (53KB vs 185KB jpg) was generated server-side with GD and served via `<picture>`.
+- Alt text rewritten on both attachments. 5,364 -> 6,925 bytes. Backup `ld_bak_1849_img_20260905`. Verified live: 200, 1 h1, 2 figcaptions, all 3 image files 200. Cache purged, IndexNow pinged.
+
+**VISION REJECTION #7: `wisdom_teeth.jpg` (1494) is not wisdom teeth.** Vision reads it as a **chin and lip filler before/after**, and the attachment's own alt text says the same. It must never go on /oral-surgery/ or any extraction page. **/oral-surgery/ (4,186 impr) has NO honest match in the orphan pool and genuinely needs new photography.** Also rejected as stock/undated: 1044 `Denture-Apple-Guy.jpg`, 1063 `Jaw-Pain-Lady.jpg` (2014 files, no EXIF).
+- Verified clean and genuine: **4126** `medial-pterygoid-injection-jaw-pain-park-ridge-il.jpg` (1440x1440) — real clinical procedural photo of a medial pterygoid injection. Orphaned. It is a good SECOND image for /tmj-treatment/ (1859) alongside the masseter photo already there, showing a different injection point. Not placed yet.
+
+**PRIVACY: a patient first name is in the media library again.** Attachments **1387, 1388, 1389** (`Murun-after-Invisalign*.jpg`) and **1568-1572** (`invisalign_murun_0X_*.jpg`) carry it in the filename and therefore the URL. Same class as the August `shannon` cleanup. **All 8 are orphaned (on no published page), so nothing is publicly linked, but the files are still publicly reachable by URL.** Do not place them. Rename on-server plus scrub DB references when the owner next authorises a privacy pass, exactly as was done in August.
