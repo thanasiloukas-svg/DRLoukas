@@ -644,3 +644,19 @@ Folder `1ftsYGJUz0zEa9ubdft7R4HPvN6dkjZiz` held 7 files. Four were named `Copilo
 4. Vision check for *what treatment it shows* — this step is for clinical accuracy only, NOT for authenticity.
 5. Neutral filename, no patient names.
 6. Resize/WebP with GD, insert with `wp_insert_attachment` + accurate alt text + width/height.
+
+### Smile Gallery lightbox + crop fixed (Sep 5) — DONE
+Owner asked whether to enable the lightbox and build new galleries.
+
+**CORRECTION to earlier notes: page 87 already HAD a working lightbox** — a hand-written `#sg-lb` div plus an inline `cards.forEach(... lb.classList.add('open'))` handler. It was single-image only: no prev/next, no swipe, no keyboard. Do not repeat the claim that gallery images could not be enlarged.
+
+**What changed:**
+1. **All 40 images wrapped in links to their full-size originals.** Responsive Lightbox rewrote every one into a single gallery group (`data-rel="lightbox-gallery-..."`), so the 40 images are now one navigable set. `glightbox.min.js` confirmed loading on the page. Backup `ld_bak_87_lightbox_20260905`.
+2. **Removed the hand-written lightbox** (the `#sg-lb` div and its JS block). **This was a bug I introduced in step 1 and fixed in the same pass** — with both in place a single click fires the anchor (glightbox) AND the card handler, opening two lightboxes. Any future session adding image links to a page must check for an existing custom click handler first.
+3. **Crop fixed.** CSS forced `.sg-card img{height:220px;object-fit:cover}` in a ~300px column. **29 of the 40 gallery images are exactly 1:1** (1440x1440, 1600x1600, 1080x1080), so a square lost ~26% of its height — top and bottom of every before/after. Changed to `aspect-ratio:1/1;height:auto`, plus `.sg-ba img` the same, and cleared the `height:150px` / `max-height:380px` mobile overrides. Backup `ld_bak_87_lbcss_20260905`.
+- Range of source ratios is 0.56 (phone-screenshot portraits) to 2.71 (one hallway pano); 1:1 was chosen because it is the modal ratio and leaves the square B/A composites uncropped.
+- Verified live on a clean URL: 200, 1 h1, 40 gallery anchors, glightbox loading, `id="sg-lb"` and `lb.classList.add` both gone, no fatals. 48,835 -> 48,468 bytes. Cache purged, IndexNow pinged.
+
+**RESPONSIVE-LIGHTBOX: KEEP IT.** Owner asked whether to remove it. `responsive_lightbox_settings` has `script: glightbox`, `image_links: true`, and `conditional_loading` was set to **true** this session (backup `ld_bak_rl_settings_20260905`) — it had been loading its assets on ~150 pages while nothing on the site used it. It now loads only where image links exist, and /smile-gallery/ is the page that uses it.
+
+**NO NEW GALLERIES — recommended against, with the reason.** /smile-gallery/ draws **1,045 impressions at position 10.0 and 0 clicks**, the same non-branded pattern as the rest of the site. More gallery pages multiply a page type that does not convert. The gallery's real value is (a) proof to link to from service pages and (b) a source of verified images. **The higher-value use of these photos is the service pages that still have ZERO images and real traffic:** /oral-surgery/ (4,211 impr), /tmj-treatment/ (2,455), /dental-bridges/ (1,044), /bone-grafting/ (575), /sedation-dentistry/, /partial-dentures/.
