@@ -793,3 +793,20 @@ Both stacked composites were rebuilt in the same navy/gold labelled template as 
 - `Dr t ortho` is a composite of Dr. Loukas himself; `Michelle ortho` is a records set, not a result.
 
 **STILL ZERO IMAGES AND STILL NO HONEST MATCH IN THIS ARCHIVE:** **124 /oral-surgery/ (4,186 impr)**, **126 /oral-surgery/tooth-extractions/ (1,556 impr, pos 10.9)**, **110 /cosmetic-dentistry/teeth-whitening/ (15,204 impr)**, 78 gum-disease-treatment, 1426 bone-grafting, 3306 sedation-dentistry. These need new photography. The whitening page in particular must NOT be refilled from any `whitening_*` file or the "Veneers + teeth whitening" combo without a verified whitening-only case.
+
+### CORRECTION — the split-face PDO image is the BEST evidence on the page, not a reject (Sep 5)
+**I was wrong to set `pdo_lifting_thread_half_` aside as a "marked-up clinical demo, not service-page quality." Strike that from the previous entry.** The owner explained what it actually is: **one side of the face has been lifted with PDO threads and the other has not, in a single photograph. The orange line marks the UNTREATED side.**
+
+That makes it a **split-face comparison**, which is stronger evidence than any two-photo before/after on this site — same patient, same lighting, same angle, same instant, so none of the usual "different light, different day" objections apply. The marking is the whole point of the picture.
+
+**Verified the direction against PIXELS, not vision** (vision had guessed the same answer, but a guess is not proof): scanned for saturated orange (`r>170, g 40-150, b<90, r-b>110, r-g>60`) and found **364 orange pixels, every one in the RIGHT half (x 666-962), zero in the left**. So the marked, untreated side is the viewer's right and the lifted side is the viewer's left, exactly as the owner described.
+
+**BUILT: `2026/09/pdo-thread-lift-split-face-park-ridge-il.webp`**, 1079x1078, **72KB**, attachment **4312**.
+- The source carried **burned-in explanatory text across rows 826-1006** (the bottom fifth). Located it by near-white row profile, then covered it with a navy `#06202D` band alpha-faded in from y=752 and solid from y=812 — the same technique as the lip collage.
+- Two gold-marked labels in the band, positioned under their own half: **TREATED / "Lifted with PDO threads"** on the left, **NOT TREATED / "Marked in orange"** on the right. A 3px gold divider runs down the midline of the photo so the split reads instantly. Footer: "One patient, one photograph, one side treated." with the practice name and "Individual results vary."
+- **Close-out verified on pixels:** band navy on both halves, gold markers both sides, gold divider present, photo still visible above the band, **0 stray white pixels anywhere in the old text zone**, and **the orange marking survives intact at 329 pixels, right half only, zero left** — so the clinical evidence was preserved, not cropped away.
+- **Placed on 1856 /pdo-threads/** before "What the Threads Actually Do to Your Skin", which is the section that explains the mechanism. 22,308 -> 23,132 bytes. Backup `ld_bak_1856_splitface_20260905`. Verified live: 200, 1 h1, 12 images, file 200, no fatals. Cache purged, IndexNow pinged.
+
+**/pdo-threads/ now carries 5 images** (was 3 this morning): the relabelled lip collage, the side-by-side thread lift, this split-face comparison, plus the two originals.
+
+**LESSON: a drawn-on guideline is not automatically a quality defect.** In clinical photography a marking often IS the information. Before rejecting a marked-up image, ask what the marking denotes — the owner is the only one who can say, and here it turned a "reject" into the strongest single piece of evidence on the page.
