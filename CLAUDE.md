@@ -767,3 +767,29 @@ Owner answered the blocking question directly, with the clinical read: **top fra
 - Verified live: both pages 200, exactly 1 h1, image present on each, file 200, no fatals or warnings. Cache purged, IndexNow pinged.
 
 **/kids-dentistry/ went from 1 image to 3 today** (5,019 impr), and **/preventive-dentistry/ from 3 to 4**.
+
+### Archive placement round: four more before/afters live (Sep 5)
+Owner: "go through all the other folders and content and use them all. Label them clearly." Continued through the `1wDZ...` archive. Every image AI-scanned clean, vision-checked for treatment and layout, then labelled.
+
+**Vision was decisive this round because the evidence was physical, not inferred** — exposed implant abutments in the before frames, rebuilt incisal edges in the after. That is the difference between a usable verdict and the guesswork that produced rejections 1 through 8.
+
+| Built | Att | Source | Layout found | Page (before) |
+|---|---|---|---|---|
+| `composite-bonding-before-after-park-ridge-il.webp` 1400x1576, 122KB | 4294 | Bonding folder, 2880x2880 stacked | top=before (chipped, worn upper incisors), bottom=after | **1855 /dental-bonding/** under "Real Dental Bonding Results" (8 imgs) |
+| `dental-implant-crown-before-after-park-ridge-il.webp` 1400x1576, 97KB | 4295 | Implants folder, 2880x2880 stacked | top=before (**metal implant abutment visible in the gap**), bottom=after (crown seated) | **474 /single-implant-crown/** before "What to Expect from the Single Dental Implant Procedure" (5 imgs, 1,688 impr) |
+| `chin-and-lip-filler-before-after-park-ridge-il.webp` 1080x1042, 107KB | 4298 | loose `chin and lip filler.jpg` | stacked, **already carries its own BEFORE/AFTER labels and arrows** so no relabelling | **1628 /chin-filler-park-ridge/** (had **1** image) |
+| `pdo-thread-lift-before-after-park-ridge-il.webp` 976x733, 47KB | 4299 | PDO folder | **side by side**, left=before (deeper nasolabial folds, softer jawline) | **1856 /pdo-threads/** before "Areas We Treat" (3 imgs) |
+
+Both stacked composites were rebuilt in the same navy/gold labelled template as the sealant card and **pixel-verified that the two panels are genuinely different frames** (903/960 and 779/960 sample points differing) before publishing. Backups `ld_bak_1855_bonding_`, `ld_bak_474_implantcrown_`, `ld_bak_1628_chin_`, `ld_bak_1856_pdoba_20260905`. All four pages verified live 200, 1 h1, image present, file 200, no fatals. Cache purged, IndexNow pinged.
+
+**`/chin-filler-park-ridge/` is worth noting: its "Before & After Results" section contained only VIDEOS, under the Manus line "Every transformation represents actual work performed by Dr. Thanasi Loukas, DMD."** The heading promised results the page did not show. It now shows one.
+
+**ONE CAPTION UNCERTAINTY WORTH THE OWNER'S EYE:** on the PDO thread lift image, vision reads the change as facial rejuvenation and **cannot distinguish threads from dermal filler**. It is captioned by what is demonstrable ("the change is in the nasolabial folds and along the jawline") and lives on the PDO page, where context supplies the modality. If that case had filler as well, the caption should say so.
+
+**Deliberately NOT used:**
+- `pdo_lifting_thread_half_` (1079x1078) — a half-face demo with an **orange guideline drawn on the cheek** and burned-in explanatory text. Marked-up clinical demo, not service-page quality.
+- `Implants (before and after).jpg` 2880x2880 — genuine (bottom=before, two exposed anterior abutments; top=after, crowns) but carries **burned-in white text of unverified content**. The clean Implants composite was used instead. Revisit only after reading that text against pixels, not vision.
+- Botox folder — all 10 entries are either the excluded `shannon` files or `.HEIC`, which GD cannot open.
+- `Dr t ortho` is a composite of Dr. Loukas himself; `Michelle ortho` is a records set, not a result.
+
+**STILL ZERO IMAGES AND STILL NO HONEST MATCH IN THIS ARCHIVE:** **124 /oral-surgery/ (4,186 impr)**, **126 /oral-surgery/tooth-extractions/ (1,556 impr, pos 10.9)**, **110 /cosmetic-dentistry/teeth-whitening/ (15,204 impr)**, 78 gum-disease-treatment, 1426 bone-grafting, 3306 sedation-dentistry. These need new photography. The whitening page in particular must NOT be refilled from any `whitening_*` file or the "Veneers + teeth whitening" combo without a verified whitening-only case.
