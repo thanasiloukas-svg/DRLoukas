@@ -1,7 +1,7 @@
 # CLAUDE.md
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
-**Last updated: 2026-09-04 (Site Health triaged; paid broken-link plugin cancelled and replaced by an automated weekly scan; Jetpack question settled). Treat this as the session handoff — read it fully before touching the site.**
+**Last updated: 2026-09-05 (theme screenshot generated; theme/editor questions answered; weekly link scan automated). Treat this as the session handoff — read it fully before touching the site.**
 
 ## Project Overview
 
@@ -449,6 +449,22 @@ The third was **on `/two-sides-of-a-coin.../` (1005) — the site's single best-
 **LEFTOVER FOUND — `mu-plugins/elementor-safe-mode.php`** (3,894 bytes, dated 2026-08-07). Elementor itself is genuinely gone: no `plugins/elementor` or `plugins/elementor-pro` directory, `class_exists('Elementor\Plugin')` false, nothing elementor-shaped in `active_plugins`. But this Elementor.com mu-plugin survived the Aug 30 deletion and **mu-plugins load on every single request**. It contains no `admin_menu`/`add_menu_page` call, so it is NOT what draws the sidebar item. It is dead code with nothing left to do (its whole purpose is loading Elementor's editor in isolation). Safe to delete; flagged to owner, not removed unilaterally. Current mu-plugins: `arya-lead-notifications.php` (1,979 b, 2026-07-16 — so ARYA lead email DOES now exist, contradicting the old PENDING #0 note), `elementor-safe-mode.php`, `fix-auth-header.php`, `loukas-preserved-redirects.php`.
 
 Active plugin count now **26** (was 28) after the owner deleted the Broken Link Checker.
+
+### "Nothing in my theme" answered — it was a missing screenshot.png (Sep 5)
+Owner asked why his theme looks empty in wp-admin, why the other theme "needs updating", and why the old theme is still there. All three diagnosed server-side.
+
+**CAUSE: `loukas-custom` had NO `screenshot.png`.** A theme with no screenshot renders as a **blank grey card** in Appearance -> Themes. That is the "nothing in there". Twentynineteen ships one, so it looked normal by comparison. **FIXED:** generated a branded 1200x900 `screenshot.png` server-side with GD (no upload needed, no context cost) — navy vertical gradient (#06202D -> #0B3446) with the master logo (`2026/05/loukas_logo_master_transparent.png`, 1000x746) resampled to 640px wide and centred, plus a teal `#18C6B3` accent bar. **Checked the logo's luminance BEFORE committing to a dark background** — avg 134.5, 4772 light vs 2010 dark pixels, so it reads correctly on navy. WP now serves it at `/wp-content/themes/loukas-custom/screenshot.png`. 131KB. Delete the file to revert.
+- **GD 2.3.3 with FreeType IS available on this host** even though imagick is not. Any future admin-side image (screenshot, placeholder, simple composite) should be generated on the server with GD rather than built locally and pushed through the chunked-base64 pipeline.
+
+**The theme is NOT broken and NOT locked down — verified:** `DISALLOW_FILE_EDIT` and `DISALLOW_FILE_MODS` both **not defined**; `current_user_can('edit_themes')` yes; `wp_is_file_mod_allowed('capability_edit_themes')` yes; theme dir 0755 and writable; style.css and functions.php writable; PHP runs as `u39618116` which owns both theme directories. `WP_Theme::get_files()` returns **13 editable files** for loukas-custom (404, archive, assets/css/main.css, assets/js/canvas.js, assets/js/main.js, footer, front-page, functions, header, index, page, single, style) vs 42 for twentynineteen. So the Theme File Editor has everything it needs.
+
+**Appearance -> Editor (the visual Site Editor) genuinely does not exist for this site, and that is normal.** `wp_is_block_theme()` = **false**; loukas-custom is a **classic theme** (`is_block_theme: no`, no `templates/` dir). The Site Editor only works with block themes. Converting to a block theme would mean rebuilding the whole theme — not worth it, and the custom `front-page.php` canvas hero would have to be re-engineered. Classic theme edits go through the Theme File Editor or, better, execute-php file ops with a `.bak-` backup.
+
+**Twentynineteen does NOT need updating — it is 3.4, the current release** (I updated it 3.3 -> 3.4 on Sep 4). `wp_update_themes()` + `update_themes` transient: **pending updates NONE**. What the owner saw was a pre-update or cached admin screen.
+
+**Twentynineteen is NOT "the old theme".** The old `loukas` theme was deleted Aug 30 and is gone. Twentynineteen is WordPress's **default fallback**: if loukas-custom ever throws a fatal, WP switches to it automatically so visitors get a working page instead of a white screen. **Keep exactly one default theme installed and inactive.** Themes on disk: loukas-custom 1.0.4 (active) + twentynineteen 3.4 (fallback).
+
+**Minor latent item spotted in the owner's Site Health -> Info screenshot:** `WP_DEBUG` Disabled but **`WP_DEBUG_DISPLAY` Enabled**. Harmless today because WP_DEBUG is off, but if anyone ever flips WP_DEBUG on for troubleshooting, PHP errors would print to visitors. If debugging is ever needed, set `WP_DEBUG_DISPLAY` false and `WP_DEBUG_LOG` true in the same change.
 
 ## PENDING / OPEN ITEMS
 0. ~~P0: rotate the OpenAI API key~~ — **DONE Aug 30 night**: owner entered a new key in AI Engine, verified working end-to-end via $mwai->simpleTextQuery ("KEY OK"); final revoke of the old key at platform.openai.com on owner (confirm done). **ARYA upgrades same night:** chatbot_discussions logging ENABLED (was off — conversations/leads were never being saved; view at AI Engine → Chatbots → Discussions, 90-day retention); canonical office hours + Thursday evenings/Saturday mornings/parking/new-patients lines ADDED to her instructions (they were missing entirely). Her training is otherwise solid (procedures, safety rules, lead capture, tone). NO email hookup exists — captured leads only live in Discussions; future win: wire lead capture to email the front desk via AI Engine functions/webhook. ~~Reconnect AIOSEO Search Statistics~~ — DONE Aug 26, now authed to `https://www.drloukas.com/`; re-check Search Statistics data in a day or two.
