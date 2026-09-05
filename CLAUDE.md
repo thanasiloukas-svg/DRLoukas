@@ -865,3 +865,26 @@ Owner said "fix the logging". Diagnosed before changing anything, and **my own e
 
 **VERIFIED END TO END:** a chat containing a name, phone and email produced exactly **1 `wp_mail()` call to `loukasgendentistry@gmail.com`**, subject "ARYA chatbot lead captured - Loukas Dentistry", body carrying the captured details plus the complete 3-message transcript and a link to the Discussions screen. **Zero `wp_mail_failed` errors.** Note `wp_mail` returning true means PHPMailer accepted it, NOT that Gmail delivered it — first real lead should be checked in spam.
 - Close-out: 4 test rows deleted from `wp_mwai_chats` (back to 0) and the test transients removed, so the owner's Discussions screen starts clean. Homepage 200, **wp-login.php 200**, no fatals.
+
+### AI Engine MCP OAuth pruned, and the real answer to Site Kit's "unused JS" (Sep 5)
+
+**AI ENGINE'S MCP OAUTH TABLES PRUNED: 9 clients -> 1, 226 tokens -> 1.** Owner approved.
+- **Checked first that this could not cut the live connection:** Novamira keeps its OAuth in entirely separate tables (`wp_novamira_oauth_clients`, `_access_tokens`, `_refresh_tokens`, `_auth_codes`, `_device_codes`, `_pending_authorizations`). The `wp_mwai_mcp_oauth_*` tables belong to **AI Engine's own MCP module** and are unrelated to Novamira.
+- Full verbatim backups first: tables **`claude_mwai_oauth_clients_bak_20260905`** (9 rows) and **`claude_mwai_oauth_tokens_bak_20260905`** (226 rows), row counts asserted before any DELETE.
+- Only **1 of 226 tokens was actually live and recently used** — id 226 on client row 11, last used 2026-09-05 00:32. Kept that client and that token; deleted the other 8 clients and 225 tokens, then `OPTIMIZE TABLE` on both.
+- **Clients 5, 6, 8 and 10 were created within SIX MINUTES of each other on 2026-08-20 (03:42 to 03:49) and never issued a single token** — the fingerprint of the OAuth re-registration loop this file has blamed for the August 429s.
+- If the owner ever finds an AI Engine MCP connector in claude.ai that stopped working, it is one of the 8 removed and simply needs reconnecting. Restore from the backup tables if that is ever preferable.
+
+**NOVAMIRA'S OWN OAUTH TABLES ARE THE ACTUAL BLOAT, and the loop is STILL RUNNING — but it looks like this session, not a rogue client.** Read-only, nothing deleted (it is the live connection):
+- `novamira_oauth_access_tokens`: **260 rows, 255 expired, 246 revoked, 2 live.**
+- `novamira_oauth_refresh_tokens`: 285 rows. `novamira_oauth_clients`: **16**.
+- **Nine clients named "Novamira CLI" were registered on 2026-09-05 between 00:02 and 09:36, and six have `last_used_at` NULL** — registered, never used. Those timestamps line up with this remote session's own MCP disconnect/reconnect churn, so the honest read is that **every reconnect mints a fresh OAuth client**, which is precisely the mechanism behind the IONOS per-IP rate limit. The two genuinely live clients are id 40 ("Claude") and id 9 ("ChatGPT"), both last used 09:03.
+- **Do not prune these from a session that depends on them.** Safe order if it is ever done: delete only `revoked=1 OR expires_at<=NOW()` tokens, then clients with no surviving tokens AND `last_used_at` NULL, keeping ids 40 and 9.
+
+**SITE KIT "Reduce unused CSS / JavaScript" — measured, and the answer is one thing, not many.** Homepage fetched clean and every asset sized on disk.
+- **Total JS on the homepage is 691 KB.** Breakdown: **chatbot.js 311.4 KB**, react-dom 128.7, jQuery 85.5, Boost bundle 78.4, frontend.js 25.4, sbi-scripts (Instagram Feed) 24.2, jquery-migrate 13.3, wp-element 12.2, react 10.5, escape-html 1.1, aioseo-gtm 0.4.
+- **ARYA's stack is react + react-dom + wp-element + escape-html + chatbot.js = 463.9 KB, which is 67% of all JavaScript on the site, downloaded on every single page view** — and `wp_mwai_chats` recorded **zero conversations** before today's tests. That is the unused JavaScript Site Kit is pointing at. Everything else is rounding error next to it.
+- Render-blocking (no defer/async): jQuery 85.5 + migrate 13.3 + sbi 24.2 + frontend 25.4 + Boost bundle 78.4 + gtm 0.4 = **227 KB**. The Aug 30 deferral work still holds on the React/chatbot half (all 5 carry `defer`).
+- **THE FIX WORTH DOING: load ARYA on interaction.** Dequeue the `mwai_*` handles on the front end and inject them on first click of a lightweight launcher button. Saves ~464 KB per page view. NOT done unprompted — the Aug 30 defer work broke ARYA once, so this needs the owner's word and a careful test.
+
+**FALSE DEFECT I ALMOST REPORTED — check the surrounding bytes before believing a regex.** A `rel="stylesheet"` scan returned **4 links where only 2 sheets exist**, which looked like Boost emitting every stylesheet twice (168.3 KB duplicated). It is not. Each pair is `<noscript><link blocking></noscript>` followed by the real deferred `<link data-media onload=...>`. **Boost's CSS deferral is working exactly as designed**: 8.4 KB of critical CSS inlined, one 168.3 KB combined sheet loaded async, noscript fallback present. **Do not "fix" this.** Unused CSS is real but it is 168 KB behind an async load, versus 464 KB of blocking-adjacent chatbot JS — spend the effort on the JS.
