@@ -496,3 +496,44 @@ Content edits: prefer `wp_alter_post` (search/replace or regex, `\z` appends) ov
 ## Tone & Brand Voice
 
 Professional but approachable; confident, educational, never salesy. No hyphens in patient-facing sentences (use commas). No guaranteed outcomes. Content should feel like it comes from the practice. Always tag Park Ridge, IL.
+
+### Redirect layer audited + 17 live 404s healed (Sep 5) — PENDING #5 CLOSED
+Owner sent the AIOSEO Redirect Settings screen. Diagnosed the whole redirect layer server-side rather than answering from the screenshot.
+
+**KEEP Redirect Method = PHP. Do not switch to Web Server.** Web Server method makes AIOSEO write rules into `.htaccess`, which collides head-on with the standing **NEVER modify live .htaccess** rule. Verified `aioseo_redirect_options`: `main.method: php`, `server.autoWriteHtaccess: false`, `cache.httpHeader` on at 1 hour, `monitor.postTypes.all: true` (auto-redirect on slug change — a genuine safety net, leave on). PHP method costs one early hook per request and is the correct choice here.
+
+**PENDING #5 IS CLOSED — the redirects were never failing to log; I was reading the wrong table.** `wp_aioseo_redirects` has **no `hits` column at all**. Hit counts live in **`wp_aioseo_redirects_hits`** (345 rows, real counts) and detail in `wp_aioseo_redirects_logs`. Top hitters: #49 `/toothache-quiz-from-oakland-dentist/` 1,153; #19 `/niles-dentist/` 711; #15 `/before-after-gallery/` 620; #35 `/testimonials/` 601; #13 `/cosmetic-dentistry/facial-rejuvenation/` 539. The layer works and always has.
+
+**`mu-plugins/loukas-preserved-redirects.php` is NOT shadowing AIOSEO.** It handles exactly 10 hard-coded legacy paths on `template_redirect` priority 1, and **zero of those 10 exist as AIOSEO redirect sources** — complementary, not competing. Leave it.
+
+**THE REAL FIND: the 404 log is a live map of lost traffic, and nobody had ever read it.** `wp_aioseo_redirects_404_logs` holds 96k+ rows since 2026-05-25. Filtering to paths still 404ing in the last 14 days, stripping bot/malware probes, left obvious service paths with **no redirect at all**. 17 created/repaired, all verified live with `redirection=0` (301) and every target verified 200 — **0 chains**:
+
+| Source (all-time 404s) | -> Target | id |
+|---|---|---|
+| /porcelain-veneers/ (702) | /cosmetic-dentistry/porcelain-veneers/ | 367 |
+| /dental-crowns/ (575) | /restorative-dentistry/dental-crowns/ | 368 |
+| /lip-fillers/ (483) | /lip-fillers-park-ridge/ | 369 |
+| /lip-filler/ | /lip-fillers-park-ridge/ | 370 |
+| /dermal-fillers/ | /cosmetic-dentistry/dermal-fillers/ | 371 |
+| /wisdom-tooth-extractions/ (433) | /services/wisdom-tooth-extractions/ | 372 |
+| /teeth-whitening/ (425) | /cosmetic-dentistry/teeth-whitening/ | 373 |
+| /tooth-extractions/ (419) | /oral-surgery/tooth-extractions/ | 374 |
+| /jawline-filler/ (406) | /jawline-filler-park-ridge/ | 375 |
+| /gum-disease-treatment/ (403) | /preventive-dentistry/gum-disease-treatment/ | 376 |
+| /insurance/ (388) | /insurance-accepted/ | 377 |
+| /article/replace-missing-tooth/ | /partial-dentures/ | 378 |
+| /article/faqs-dental-bridge/ | /dental-bridges/ | 379 |
+| /article/faqs-dental-veneers/ | /cosmetic-dentistry/porcelain-veneers/ | 380 |
+| /hello-world/ | / | 381 |
+| /smile-bright-for-summer-with-teeth-whitening-2/ | /cosmetic-dentistry/teeth-whitening/ | **42 was DISABLED + pointed at /** |
+| /invisalign-vs-braces-park-ridge-il-2/ | /invisalign-vs-braces-park-ridge-il/ | **66 was DISABLED + pointed at /** |
+
+Redirect count 362 -> 379. **Two redirects existed but sat `enabled = 0`** and were silently 404ing — always check `enabled`, not just existence.
+- **The `/article/*` paths correct yesterday's work.** The Sep 4 broken-link pass fixed the *on-page* links, but those URLs kept getting requested (48/32/30 hits in 14 days) — meaning **external inbound links point at them**. Fixing an internal link does not heal an inbound one; a 404 log entry that keeps growing after the on-page fix is proof a redirect is still needed.
+- **Proof the method works:** `/contact/` logged 657 404s and stopped dead on 2026-08-26, the day redirect #366 was created. Same for `/dentures/` and `/fillers/` on 2026-08-22.
+
+**TWO THINGS FOR THE OWNER, both off-site:**
+1. **`/novamira/v1` is 404ing ~280 times a day** (6,499 all-time, 3,908 in 14 days). That is the **broken duplicate "drloukas.com" connector** CLAUDE.md has flagged since August, still pointed at the dead `/novamira/v1` path and retrying forever. It is pure waste and it feeds the IONOS per-IP rate limit that caused the August 429 incident. **Remove that connector in claude.ai settings** — the working one is "Novamira - Loukas Dentistry of Park Ridge".
+2. **Redirect + 404 logs are set to retain "Forever" and IP logging is "Full Logging".** Result: `wp_aioseo_redirects_logs` **108.75 MB** and `wp_aioseo_redirects_404_logs` **51.16 MB** — 160 MB, larger than the rest of the database combined, on a host with MySQL 5.7 and no OPcache. Full visitor IPs retained indefinitely on a medical practice site is also a data-retention question worth a look given WPConsent is installed. **Fix in AIOSEO -> Redirects -> Settings -> Logs:** set both retention lengths to 30 days (or 1 week) and drop IP logging to Anonymous. Two clicks, no code. Not changed from here because it is a settings write, and AIOSEO option writes through MCP corrupt their JSON storage format.
+
+**Method note for future sessions:** the 404 log is the cheapest SEO win on this site and should be re-read monthly. Group by `url`, filter to `created > DATE_SUB(NOW(), INTERVAL 14 DAY)`, then discard the bot noise — `.env*` variants, `/.aws/credentials`, `*.php` shell probes, `/graphql`, `/ads.txt`, `/.well-known/traffic-advice`, `//wp-includes/wlwmanifest.xml`. What is left is real.
