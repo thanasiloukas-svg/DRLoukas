@@ -829,3 +829,15 @@ So the old line sat **11 to 34 pixels onto her right side** and was dead vertica
 - Written over the SAME filename so attachment 4312 and the page reference stay valid. Live check: disk 74,378 bytes, **served content-length 74,378** — the server is delivering the new bytes, not a cached copy. Page 200, 1 h1, image present, no fatals. Boost purged, attachment metadata regenerated.
 
 **LESSON: the centre of the frame is not the centre of the subject.** Any divider, crop focal point or split-face overlay must be measured against the anatomy in the photo, not against the image dimensions. A 1.6 degree error was visible to the clinician immediately.
+
+### Meow Apps Health read + three AI Engine modules turned off (Sep 5)
+Owner sent the Meow Apps -> Health screen and said he does not do image generation and barely any content generation.
+
+**The Health card's two recommendations are BOTH host-side, and neither is a site defect.** Verified server-side rather than read off the card:
+- `memory_limit = -1` (unbounded) and `opcache` **not loaded at all** (`extension_loaded('Zend OPcache')` false, `opcache.enable` false) in PHP **8.4.24**. MySQL **5.7.42-log**, EOL since Oct 2023.
+- **"Reduce backend response times" (~1.7s) is explained by exactly those two facts** — no opcode cache means every request recompiles all PHP, and MySQL 5.7 on shared hosting is the other half. Both were already logged Sep 4 as IONOS-only changes. There is nothing to fix in WordPress here.
+- **"Limit PHP memory and timeout" is generic advice and should be IGNORED on this site.** `memory_limit = -1` is what makes the server-side GD image pipeline (6000x4000 source resampling) possible; capping it would break the photo work and buy nothing. Note also a measurement discrepancy: Health reports `max_execution_time` 50000, but a live `ini_get` in the MCP/web context returns **30**. AI Engine raises its own limit on its admin screens; do not treat the 50000 figure as the site's real setting.
+
+**Modules turned OFF (owner's word on images, my Sep 5 audit evidence on the other two):** `module_generator_images`, `module_generator_videos`, `module_finetunes`. Written with the safe single-key pattern into `mwai_options` — backup of just those three keys in option **`ld_bak_mwai_modules_20260905`**; verified 116 keys before and after, `ai_envs` 4 before and after (the API key block untouched). Homepage re-checked on a clean URL: **200, 1 h1, ARYA container still present, no fatals.**
+- **`module_generator_content` LEFT ON** because the owner said "barely any", not none, and the statistics table shows real historical image-generation units (Jun 19,478 / Aug 27,351) — that usage was almost certainly prior agent sessions, not him, but it means image generation was a working capability, not a dead toggle. Flipping any of the three back on is one checkbox.
+- **These are admin-only modules. Turning them off does NOT speed up the front end** — do not report it as a performance win.
