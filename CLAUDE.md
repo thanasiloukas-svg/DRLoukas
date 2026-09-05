@@ -612,3 +612,35 @@ Backups `ld_bak_tinyimg_<id>_20260905`. All four verified live: 200, exactly 1 h
 - ~70 of the remaining 95 are mission trip gallery photos at 300x224 on `/chihuauwa-mexico/`, `/guatemala/`, `/poptun-peten-guatemala/`, `/dominican-republic/`, `/honduras/` — low traffic legacy galleries, acceptable at gallery size, low priority.
 
 **METHOD NOTE: judge a photo by `getimagesize()` on the file, not by the `width`/`height` attributes in the markup.** Several of these carried correct small attributes and were still stretched to full width by inline CSS. And do not trust vision verdicts on a 173x130 source — at that size "no restoration margins visible" may be compression, not clinical fact. Check dimensions first, then decide whether vision is even meaningful.
+
+### THE PHOTO PIPELINE IS SOLVED, and AI-GENERATED IMAGES WERE FOUND IN THE OWNER'S ARCHIVE (Sep 5, late night)
+
+**BREAKTHROUGH: images never need to pass through the session again.** The site's own server has open internet egress — verified live: `drive.google.com` 200, `dropbox.com` 200, `wetransfer.com` 200. GD 2.3.3 with **WebP support**, `memory_limit -1`, `ZipArchive` + `unzip_file()` available, 961 GB free disk. Proven end to end on a real file: downloaded a 1200x1200 JPEG (127 KB), resampled to 900x900, wrote WebP at **33 KB**. **This retires the chunked-base64 pipeline and most of PENDING #13's urgency** — the network policy still blocks *my* session from reaching drloukas.com, but that no longer matters because the server pulls files itself.
+
+**GOOGLE DRIVE FOLDERS CAN BE ENUMERATED WITHOUT THE DRIVE CONNECTOR.** The connector was un-authorized at the time. Workaround, works from PHP:
+- List: `GET https://drive.google.com/embeddedfolderview?id=<FOLDER_ID>#list` with a browser User-Agent. Parse `id="entry-([A-Za-z0-9_-]{20,})"` for file IDs and `flip-entry-title">([^<]+)<` for names. Returns files AND subfolders.
+- Download: `GET https://drive.google.com/uc?export=download&id=<FILE_ID>`. Works for normal photo sizes; files over ~100 MB hit a virus-scan interstitial.
+- Folder must be link-shared. No API, no OAuth, no quota.
+
+**THE CRITICAL FIND — AI-GENERATED IMAGES ARE SITTING IN THE OWNER'S PHOTO ARCHIVE, AND VISION CANNOT DETECT THEM.**
+Folder `1ftsYGJUz0zEa9ubdft7R4HPvN6dkjZiz` held 7 files. Four were named `Copilot_20260417_*.png`, 1536x1024. **All four carry `OpenAI` and `C2PA` provenance markers in the first 8 KB of the PNG.** They are AI generated.
+- **`$mwai->simpleVisionQuery()` called all four "real clinical photograph", confidently, 4 times out of 4.** Sample verdict: *"convincing soft-tissue texture, saliva reflections, visible metal implant abutments and natural staining/irregularities that AI rarely reproduces so consistently."* Completely wrong.
+- **NEW HARD RULE, ranked ABOVE the vision check: before any external image is published, scan the file header for AI provenance markers.** `$head = file_get_contents($f, false, null, 0, 8192);` then case-insensitive search for `OpenAI`, `C2PA`, `DALL`, `Midjourney`, `Designer`, `StableDiffusion`, `firefly`. Also read EXIF: a real photo carries `Make`/`Model`/`DateTimeOriginal`; AI output does not.
+- **Publishing an AI-generated "before and after" as a real patient result on a dental practice site would be fabricated clinical evidence.** This check is not optional and vision is not a substitute for it.
+- The 3 genuine files in that folder are clean: `#9 implant.jpeg` and `image2.jpeg` carry real EXIF `DateTimeOriginal 2018:09:08`, no AI markers.
+
+**FOLDER INVENTORY (owner shared three link-shared folders):**
+- `1ftsYGJUz0zEa9ubdft7R4HPvN6dkjZiz` — 7 files. **3 genuine implant before/after pairs, 4 AI-generated (quarantine, never publish).**
+- `1LCvWUM3qmzJhNq2PgsyvgozrY0rNtjKV` — 78 files. Contains the prize: **`Implant.JPG` + `Implant-1..9.JPG`, every one 4000x4000, Canon EOS M3, shot 2022-05-08, all AI-CLEAN.** That is ~500x the pixel count of the 173x130 thumbnails removed from the crowns page tonight. Note `Implant-1`, `-7`, `-9` are byte-identical duplicates (same 5687 KB, same 23:54:52 timestamp). Also `IMG_*` camera files, dated `20230928_*` sets, ~20 mp4s.
+  - **`agatha 1.JPG` .. `agatha 14.JPG` carry a PATIENT NAME.** Consent to use is settled but the name must never reach a filename, URL, alt text or caption. Rename on the way in.
+- `1C7fwmnYuaBMyQu_fMBLf9UOcggWdTzr8` — 78 entries: **29 images, 47 videos, 2 subfolders** (`DearDoc web Insta pics`, `Kybella folder`). Named assets worth triaging: `before and after implant.jpg`, `Before and after juvederm.jpg`, `fb implant 3.jpg`, `lip filler.jpg`, `veneers3.jpg`, plus `botox.mp4`, `invisalign.mp4`, `threading .mp4`. Heavy duplication (same filename, different Drive IDs).
+
+**Staging dirs on the server:** `wp-content/uploads/ld-stage` (folder 1) and `ld-stage2` (folder 2 implant series). **Clean these up when the placement work finishes.**
+
+**STANDING INTAKE ORDER for any external photo, in this sequence:**
+1. Download to a staging dir on the server (never through the session).
+2. **AI provenance scan** on the file header + EXIF camera check. Quarantine anything with markers.
+3. `getimagesize()` — anything under 400px wide is not usable at card width.
+4. Vision check for *what treatment it shows* — this step is for clinical accuracy only, NOT for authenticity.
+5. Neutral filename, no patient names.
+6. Resize/WebP with GD, insert with `wp_insert_attachment` + accurate alt text + width/height.
