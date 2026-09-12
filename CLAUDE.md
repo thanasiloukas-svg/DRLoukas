@@ -953,3 +953,63 @@ The Aug 30 note said the Image Optimization plugin was active but never configur
 - **GOTCHA THAT COST TWO BROKEN IMAGES:** the same filename can exist in more than one `uploads/YYYY/MM/` folder. `glob()` returns the first match, so the conversion wrote a WebP next to the *wrong* copy while the page referenced the other. Always resolve the webp target from the **URL path in the content**, not from a basename glob. Both (`bonding-before-and-after-scaled`, `Invisalign-before-and-after-scaled` on page 68) were regenerated at the referenced path.
 - Close-out: 10 pages sampled — all 200, exactly 1 h1, **0 broken image references sitewide**, 0 invalid JSON-LD, no fatals. Boost cache purged, IndexNow pinged for 10 URLs. Per-page content backups in `ld_bak_webp_<id>_20260905` / `ld_bak_webp2_<id>_20260905` (72 stored); template backups `front-page.php.bak-20260905-webp`. Temp options `ld_webp_queue`/`ld_webp_done`/`ld_webp_swap_done` deleted.
 - **Not a defect, do not chase:** the footer SiteLock badge (`shield.sitelock.com`) is an EXTERNAL 43.7 KB SVG on every page. A local file-exists check flags it as broken because its URL contains "drloukas.com". It returns 200 in 0.19s.
+
+### Full GSC / video / GBP audit, and 36 ORPHANED PAGES FOUND (Sep 12)
+Owner asked for a Chrome-driven audit. **This environment's network policy denies outbound HTTPS to google.com, search.google.com AND drloukas.com** (proxy answers 403 to CONNECT; Chromium is installed but cannot reach anything). Everything below came from the on-server Google API bridge and execute-php instead, which returns the real numbers rather than a screenshot. PENDING #13 now also covers google.com.
+
+**METHOD CORRECTION — `Loukas_Google_API::request()` signature is `($url, $scope, $payload = null, $method = 'GET')`.** The scope is the SECOND argument, not the method. Passing `'POST'` there signs a JWT with `aud: POST` and fails with "Token request failed". For search-type splits use `request($url, 'https://www.googleapis.com/auth/webmasters.readonly', $payload, 'POST')` with a top-level `type` of WEB/IMAGE/VIDEO.
+**Also: the query dimension is anonymised.** Query-dim totals (37,518 impr / 41 clicks) do NOT match date-dim totals (45,686 / 132) for the same window. Roughly two thirds of clicks sit in queries GSC will not name. **Always take sitewide totals from the date dimension**, or you will report a click collapse that has not happened.
+
+**RANKINGS, Aug 12 to Sep 8 (28d), with the page Google actually serves** (90d query+page pull):
+| Query | Pos | Impr | Clicks | Ranking page |
+|---|---|---|---|---|
+| dentists park ridge il | **6.9** | 3,120 | 0 | homepage |
+| best dentist park ridge | 9.5 | 23 | 0 | homepage |
+| cosmetic dentist park ridge | **9.3** | 562 | 0 | homepage |
+| invisalign park ridge | 10.0 | 512 | 0 | /invisalign-park-ridge/ |
+| dentist park ridge | 12.3 | 654 | 1 | homepage |
+| botox park ridge | 12.6 | 152 | 1 | /botox/ |
+| dentist park ridge il | 13.1 | 674 | 0 | homepage |
+| park ridge dentist | 15.3 | 133 | 0 | homepage |
+| park ridge dentists | 15.9 | 519 | 1 | homepage |
+| dental implants park ridge | 28.5 | 508 | 0 | **/oral-surgery/**, not the hub |
+| teeth whitening park ridge | **4.8** | 648 | 0 | /cosmetic-dentistry/teeth-whitening/ |
+Also live: tmj park ridge 8.7, teeth extraction park ridge 6.5, invisible braces park ridge 8.8, dental bonding park ridge 9.5, zoom whitening park ridge 9.2, dental crown park ridge 15.3, dental veneers park ridge 13.7.
+
+**THE CTR GAP IS NOW MEASURED THREE WAYS AND IS THE WHOLE STORY.** 28d: branded 334 impr / 24 clicks / **7.19%**; non-branded 37,184 impr / 17 clicks / **0.046%** — a 156x gap. Trend is flat, not declining: 123 clicks (Jun 16 to Jul 13), 129 (Jul 14 to Aug 10), 132 (Aug 12 to Sep 8) while impressions rose to 45,686. **Ranking is not the constraint and more on-page work on these queries buys nothing.** Every query that earned a click in 28 days: 11 branded, and the rest single clicks on non-local terms (botox procedure, pdo threads, sore throat after root canal).
+- Search type 28d: web 45,686 / 132 / pos 24.0; image 8,864 / 5 / pos 40.9; **video 24 impressions / 0 clicks**.
+- Noise to segment out before judging anything: "chin filler the ridges" alone is **1,614 impressions at position 2.1** and is not Park Ridge; the Itasca / Elk Grove Village / Schaumburg cluster adds thousands more.
+
+**VIDEO — CLOSED AGAIN, and the sitemap "gap" is DELIBERATE. Do not fix it.**
+- 31 VideoObject blocks across 26 published pages. **0 invalid JSON.** Every Google-required field present after the one fix below.
+- **18 of 31 clips are under 30 seconds**, 8 are 30s or longer, 5 YouTube embeds carry no duration (optional field, all 4 are genuinely embedded, so not an invalidation risk).
+- `videoIndexingResult` is **ABSENT** on every page inspected. Not "not indexed with a reason" — never queued.
+- **AIOSEO's video sitemap has an explicit exclusion list: `3258, 116, 104, 1623, 1624, 2563, 3839`** (read via `aioseo()->sitemap->type='video'; aioseo()->sitemap->helpers->excludedPosts()`). Those are exactly the 7 service pages "missing" from the sitemap, and **every one of their clips already has a dedicated /videos/ watch page in the sitemap**. This is correct de-duplication, not a bug. A future session that "repairs" it will create duplicate video canonical claims.
+- Sitemaps all clean: video 27 videos / 0 err, sitemap.xml 151 web + 396 image / 0 err, all 20 video URLs 200 and published.
+- **FIXED: 2563 /implant-supported-dentures/** — the "Locator Attachment Snap-In Denture" VideoObject had **no `contentUrl`** (a required field) and the "Implant Overdenture" one had no duration. Added the real mp4 URL and `PT43S`, both durations read from the file headers (`mvhd` atom; the 34 MB file's moov is at the END, so read the tail, not the head). Backup `ld_bak_2563_videoschema_20260912`.
+- **NEW, AND IT MATTERS FOR MOBILE: 14 mp4s are over 8 MB and they are unencoded originals.** `jaw_facial_augmentation_filler_treatment.mp4` is **60.8 MB for a 30 second clip**; `video_20220414_2.mp4` **29.4 MB for 7 seconds**; `kybella_treatment_video.mp4` 32.1 MB for 16 seconds. `preload="none"` limits the damage, but anyone who taps play on mobile pulls tens of megabytes. **There is no ffmpeg on the server** (`which ffmpeg` fails), so this cannot be fixed from a remote session. Owner or a local session must re-encode.
+
+**GOOGLE BUSINESS PROFILE — plumbing still perfect, still quota-blocked, unchanged since Sep 5.** Refresh token exchange returns HTTP 200 with scope `business.manage`; `mybusinessaccountmanagement/v1/accounts` returns **429 RESOURCE_EXHAUSTED, `quota_limit_value: "0"`**. Nothing is misconfigured. The Basic API Access form is the only remaining step and Google can take weeks. **GBP content stays a manual owner task.**
+- Site side verified against what the profile should say, and it is all correct: homepage carries `(847) 696-1919` 17 times with **zero** wrong formats, `714 W Higgins Rd` 9 times with **zero** suite references, 5 tel: links, and the `Dentist` schema matches GBP exactly (name, +18476961919, 714 W Higgins Rd / Park Ridge / Illinois / 60068, url, $$, Mon 10-16, Tue 10-18, Thu 10-18:30, Sat 09-14). Nothing to repair here.
+
+**THE REAL FIND: 36 PUBLISHED PAGES HAD ZERO INBOUND INTERNAL LINKS.** Built the link graph from all 151 published pages plus header/footer/front-page templates. Worst of it:
+| Impr | Clk | Pos | Orphan |
+|---|---|---|---|
+| **10,370** | **65** | 9.5 | **1005 /two-sides-of-a-coin-dental-care-and-sore-throat-care/** |
+| 2,013 | 0 | 39.3 | 799 /park-ridge-dentists-better-dental-hygiene/ |
+| 1,829 | 0 | 37.7 | 1027 /iv-sedation-dental-innovation/ |
+| 1,282 | 7 | 11.0 | 974 /can-oral-hygiene-help-you-lose-weight/ |
+| 874 | 3 | 19.8 | 900 /thyroid-oral-health/ |
+| 237 | 0 | 15.8 | 2787 /what-is-a-screw-retained-implant-crown/ |
+**The single best earning page on the site had no internal link pointing at it.** Also orphaned: 1418 (the top Bing page), 1405 /faq/, 1428 soft tissue grafting, 719 partials, 1011 crown history, 964, 773, 750, 775.
+**FIXED — a brand styled "Related reading" block added to 8 hub pages, linking 15 orphans**, teal `#18C6B3` left rule on `#f6fbfb`, navy headings, one sentence of real context per link (no hyphens, full drloukas.com URLs), inserted before the first JSON-LD block where one exists:
+70 preventive-dentistry -> 1005, 799, 974, 1418, 900 · 78 gum-disease-treatment -> 1428, 750 · 3306 sedation-dentistry -> 1027 · 474 single-implant-crown -> 2787 · 524 partial-dentures -> 719 · 100 dental-crowns -> 1011, 775 · 1852 new-patients -> 1405 · 1771 emergency-dentistry -> 964, 773.
+Backups `ld_bak_orphanlinks_<id>_20260912`. All 8 verified live: 200, exactly 1 h1, block present, 0 invalid JSON-LD.
+
+**THE HOMEPAGE WAS MISSING FOUR OF ITS BIGGEST SILOS — bigger than the single gum-disease gap noted Sep 5.** Rendered homepage had 37 internal paths and **none** to `/kids-dentistry/` (5,163 impr), `/oral-surgery/` (4,289), `/tmj-treatment/` (2,442), `/preventive-dentistry/gum-disease-treatment/` (1,027) or `/restorative-dentistry/`.
+- **FIXED in `front-page.php`.** The services grid is `hp-grid6` and a 7th tile would break the layout, so a centred text link row was added directly under it: "Also offered in Park Ridge, IL:" with 8 links (kids, oral surgery, TMJ, gum disease, restorative, whitening, sedation, full arch implants). 22,320 -> 23,906 bytes. Backup `front-page.php.bak-20260912-silolinks`, `token_get_all(TOKEN_PARSE)` syntax check before writing, **theme Version bumped 1.0.4 -> 1.0.5** (required whenever a theme asset changes). Homepage verified 200 / 152 KB / 1 h1 / 0 fatals, all 7 targets linked.
+- Note the template uses root-relative hrefs throughout; the added links use full URLs per the standing rule.
+
+**META TRUNCATION — 60 published pages, reported not fixed** (the meta lock rule stands; every previous exception was owner-ordered). 50 titles over 62 chars, 30 descriptions over 165. Worst by traffic: 108 cosmetic-dentistry (desc 175, 7,534 impr), 1860 kids-dentistry (title 72, 5,163), 68 services (title 65, 4,983), 124 oral-surgery (title 69 / desc 187, 4,289), **1409 invisalign (title 72 / desc 218, 4,167)**, 3970 (title 83), 104 (title 81 / desc 208). Every published page has a title and description — **nothing is missing, they are too long.** Given CTR is the binding constraint this is the highest value on-page work left.
+
+**Clean, do not chase:** 0 published pages accidentally noindexed. 0 redirect chains — `/implant-dentistry/`, `/invisalign/`, `/implants-patient-education/`, `/tag/teeth-whitening-park-ridge-il/`, `/invisalign-video/`, `/lip-fillers-video/`, `/videos/botox-cosmetic-treatment-park-ridge/` all single hop 301 to a 200. They are stale index entries still drawing impressions, which is normal and self resolving. Page **78 gum-disease-treatment is only 2.6 KB** of content on 1,027 impressions, which is genuinely thin.
