@@ -1094,3 +1094,36 @@ Owner: "strengthen the bonding page, and then any other pages that you see are c
 Backups `ld_bak_126_strengthen_`, `ld_bak_72_strengthen_`, `ld_bak_faq2_<id>_20260912`.
 
 **Close-out:** all 8 strengthened pages verified live at 200 with exactly 1 h1 and 0 fatals; all 15 consolidated pages verified 200 with correct canonical and media intact; **104 JSON-LD blocks across 73 published pages, 0 invalid**; Boost cache purged; IndexNow pinged for 33 URLs.
+
+### THE 1:38 EMERGENCY VIDEO WAS ORPHANED — restored to the page with the traffic (Sep 12)
+Owner asked "what about my long emergency dentist video?" It exists, it is the best video asset on the site, and **it was on no published page at all.**
+
+**Read every mp4's real duration from the `mvhd` atom rather than trusting schema.** Full inventory of all 37 mp4s on the server, longest first: park-ridge-invisalign **3:11** (32.4 MB), **emergency-dental-trauma-park-ridge.mp4 1:38 (3.5 MB)**, implant-supported-dentures 1:00 (25.8 MB), botox-treatment 0:50, implant-denture-locator 0:46, locator-overdenture 0:43, jaw_facial_augmentation **0:30 in 60.8 MB**, everything else 0:28 and under. **The emergency clip is the third longest AND by far the best encoded** — 3.5 MB for 98 seconds against 60.8 MB for 30 seconds.
+
+**IT HAD BEEN REMOVED FROM `/emergency-dentistry/` (1771) AND NOBODY NOTICED.** Revision history is unambiguous:
+| Revision | Date | Bytes | Video |
+|---|---|---|---|
+| 3250 | 2026-08-01 22:33 | 30,408 | no |
+| 3251 | 2026-08-01 22:34 | 30,868 | **YES, added** |
+| 3307 | 2026-08-06 22:57 | 31,617 | YES |
+| **3314** | **2026-08-06 23:59** | 31,874 | **removed** |
+| 4325 | 2026-09-11 20:56 | 29,345 | no |
+All 9 database references to the file were in revisions only. That removal predates this engagement, so it was not one of ours. **Always check `post_parent` revisions for a missing asset before concluding it never existed.**
+
+**The consequence was the worst possible split:**
+| Page | Impr | Pos | Video |
+|---|---|---|---|
+| 1771 /emergency-dentistry/ | 2,306 | **16.8** | none |
+| 2876 /videos/emergency-dental-trauma-video/ | 2 | **92.0** | YouTube embed `ntoOp5lmp1w` |
+The only live copy of the trauma video sat on a page at position 92, while the emergency page drawing 2,306 impressions had no video at all.
+
+**RESTORED to 1771**, inserted immediately before the "Severe Trauma Recovery: Avulsion, Intrusion, and Restoration" H2, which is the section the footage actually depicts. 29,345 -> 31,253 bytes. Backup `ld_bak_1771_video_20260912`.
+- Real `<video controls preload="metadata" playsinline>` with width/height, the existing 1080x1080 poster (attachment 2871, 37 KB), a download fallback link, and a figcaption stating the running time and "Individual results vary."
+- **VideoObject schema with the REAL duration `PT1M38S`** read from the file, real uploadDate `2026-06-17T00:49:36-05:00` taken from attachment 2870, local `contentUrl`, thumbnailUrl and publisher logo.
+- Verified live: **200, 1 h1, 1 video tag, 4 JSON-LD blocks 0 invalid**, mp4 serves 3,681,713 bytes at 200, poster 37,052 bytes at 200.
+- **`aioseo_posts.video_scan_date` was set to NULL to force a rescan**, and it worked: the `videos` column repopulated with the mp4 and **`/emergency-dentistry/` now appears in `page-video-sitemap.xml`** (20 entries). That is the mechanism to use whenever a video is added to an existing page.
+- 2876 gained a "Main page for this treatment" block pointing at 1771. Backup `ld_bak_2876_link_20260912`. Both pages 200, IndexNow pinged, cache purged. Sitewide JSON-LD: **105 blocks, 0 invalid.**
+
+**THIS CORRECTS THE STANDING VIDEO ADVICE, PARTLY.** The conclusion "stop making 10 second clips, one 2 to 3 minute explainer beats the library" still holds. But the owner already HAD a 98 second explainer on the single topic where he has real local demand, and it was invisible. **Before recommending new filming to this owner again, inventory durations from the files first.** Note the YouTube copy on 2876 could not be length-checked from a remote session (network policy blocks youtube.com), so whether it is the same footage is unverified; its VideoObject still carries no duration and that should not be invented.
+
+**Emergency demand for reference:** 1771 2,306 impr pos 16.8, plus 652 impressions of pediatric emergency intent ("emergency toothache relief for kids park ridge" 493 at 18.5). That is where a second video belongs if one is ever filmed.
