@@ -1041,3 +1041,56 @@ Owner pasted a "Weekly Ranking Report" from another session. Its central claims 
 **Data-source claim is not credible as written:** it says the numbers came through "Site Kit's authenticated Search Console connection". **Site Kit on this site has no Search Console module** (pagespeed, GA4, RRM, tagmanager only, verified repeatedly). The figures themselves are broadly consistent with the bridge, so they are probably AIOSEO Search Statistics, but the provenance line is wrong.
 **Right, and matches this session independently:** the implant hub is indexed and rising (0 -> 124 impressions on implant+park ridge queries, verdict PASS); impressions and average position are both up; clicks are flat at about 5/day; every target keyword has zero clicks in both windows. Its "honest assessment" section is sound.
 **LESSON for any future cross-session review: resolve every URL with `redirection=0` before treating it as a page.** Roughly a third of the URLs in that report's tables are redirects, and three of its four recommendations were shaped by that.
+
+### Bonding rebuilt + 15 cannibalising pages consolidated (Sep 12, later)
+Owner: "strengthen the bonding page, and then any other pages that you see are cannibalizing each other consolidate them into one main page for the entire site... Don't lose any photos or videos in the transfer."
+
+**THE MECHANISM MATTERS AND IT IS WHY NOTHING WAS LOST.** Consolidation here means setting `wp_aioseo_posts.canonical_url` on the weaker page, **not deleting, merging or redirecting it**. Every consolidated page stays published with all of its images and video intact and reachable; only the ranking signal moves. Verified after the fact on all 15: **200, correct canonical rendered, images present, the one video present.** Previous canonical values backed up in option `ld_bak_canon_20260912`.
+
+**BONDING: 1855 `/dental-bonding/` 7,431 -> 22,713 bytes.** It was inheriting roughly 570 impressions from three redirecting URLs while sitting at position 46.1.
+- Added: a **bonding vs veneer vs crown comparison table** (8 rows: visits, tooth structure removed, material, best for, stain resistance, lifespan, reversibility, cost), a **tooth contouring** section (the topic from draft post 112, which is the old `/cosmetic-dentistry/bonding-contouring/` page and is a DRAFT, not a live competitor), longevity and care, cost and insurance, a Park Ridge geography section, and **7 FAQ items with FAQPage schema** (the page had zero JSON-LD).
+- Written to the two queries that actually carry the demand: **"teeth bonding park ridge" 654 impr at 11.9** and **"dental bonding park ridge" 603 at 10.7**. "Teeth bonding" is the bigger of the two and was absent from the page, so it now appears in the copy.
+- **All 9 existing images kept.** Draft 112's five images were checked and are 173x130 to 500x225, i.e. below the 400px usability floor, so nothing was worth transferring. Backup `ld_bak_1855_strengthen_20260912`.
+- **REDIRECT #330 WAS POINTING THE WRONG WAY AND IS FIXED.** `/park-ridge-cosmetic-dentist-answers-faqs-about-dental-bonding/` was 301ing to **/cosmetic-dentistry/porcelain-veneers/** — a bonding FAQ post sending its authority to the veneers page. Repointed to `/dental-bonding/`, verified live 301.
+
+**CANNIBALISATION MAP — the method matters, the first attempt was wrong.** Scoring co-occurring page pairs by impressions produced garbage: the top "competing pairs" were homepage + /about-us/ + /services/ + /contact-us/, which is just Google showing several site pages for a brand query. **The correct definition is two LIVE published pages on the SAME procedure.** Built by matching every published page slug and title against 22 procedure keyword groups, joined to page-level GSC. Of 241 distinct page paths in GSC: **135 live, 71 redirects, 21 archives, 7 drafts, 7 unresolved** — so roughly a third of anything that looks like a competing URL is not a page at all.
+
+**15 CONSOLIDATED (loser -> main page), each with a brand styled "Main page for this treatment" routing block added:**
+| Impr at stake | Consolidated | Into |
+|---|---|---|
+| 2,013 | 799 /park-ridge-dentists-better-dental-hygiene/ | 70 /preventive-dentistry/ |
+| 1,829 | **1027 /iv-sedation-dental-innovation/** (pos 37.7, outranked the service page 3.5x) | 3306 /sedation-dentistry/ |
+| 1,299 | 807 /endodontics-history/ | 102 /root-canal-therapy/ |
+| 1,005 | 2744 /chin-filler-video/ | 3837 /videos/chin-augmentation-filler-park-ridge/ |
+| 542 | 1011 /a-short-history-of-dental-crowns/ | 100 /dental-crowns/ |
+| 525 | 867 /what-to-do-when-a-dental-filling-isnt-enough/ | 98 /fillings/ |
+| 137 | 750 /park-ridge-prevent-gum-disease/ | 78 /gum-disease-treatment/ |
+| 129 | 719 /partials-dentures-and-bridges/ | 524 /partial-dentures/ |
+| 89 | 990 /clear-answers-from-this-invisalign-quiz/ | 1409 /invisalign-park-ridge/ |
+| 86 | 993 /test-your-wisdom-with-this-third-molar-quiz/ | 1857 /wisdom-teeth/ |
+| 65 | 775 /dental-crown-tooth-replacement/ | 474 /single-implant-crown/ |
+| 26 | 748 /tmj-disorder-higher-risk-for-tooth-loss/ | 1859 /tmj-treatment/ |
+| 12 | 106 /restorative-dentistry/bridges-dentures/ | 519 /dental-bridges/ |
+| 12 | 2827 /implant-supported-denture-before-after-transformation/ | 2563 /implant-supported-dentures/ |
+| 6 | 670 /services/wisdom-tooth-extractions/ | 1857 /wisdom-teeth/ |
+**Sitewide after: 34 canonicalised pages, 0 chains, 0 self-canonicals.** Routing-block backups `ld_bak_route_<id>_20260912`.
+
+**TWO ASSETS WERE CHECKED PIXEL-WISE BEFORE CONSOLIDATING, and both justified keeping the page live rather than merging:**
+- **2827's two implant denture photos (1600x620, 1600x532) are NOT duplicates of the pair already on 2563** — a 9x9 luminance-grid comparison found 43 and 46 of 81 sample points differing. They are different crops or a different case. Merging would have risked showing one case twice; canonicalising keeps both sets published.
+- **2744's `restylane_chin_filler_treatment.mp4` (9,656 KB) is a different file from 3837's `chin-filler-restylane-park-ridge-il.mp4` (1,533 KB)** — different sizes and different header md5s. Probably the same footage re-encoded, but not provably, so the page and its video stay live under canonical.
+
+**DELIBERATELY NOT CONSOLIDATED, with reasons:** every `/videos/` watch page (a distinct intent, and the video sitemap dedup depends on them); 2787 article vs 2778 video on screw retained crowns (legitimate article/video pair); 1624 and 1849 (already canonicalised Aug 26); 974 `/can-oral-hygiene-help-you-lose-weight/` (**1,282 impr at position 11.0 with 7 clicks — it earns, and it is a distinct oral-systemic topic**); 126 vs 1857 (general extractions vs wisdom teeth are different intents); 116 dermal-fillers hub vs the three product pages.
+
+**MAIN PAGES STRENGTHENED after absorbing the authority** — all now carry FAQ sections with valid FAQPage schema, which none of them had:
+| Page | Before | After | Added |
+|---|---|---|---|
+| 126 /oral-surgery/tooth-extractions/ (1,577 impr, **pos 11.7**) | 4,422 b | **14,665 b** | 24 hour aftercare and dry socket prevention, cost, sedation, replacing the tooth, geography, tel: link (it had none), 6 FAQ |
+| 72 /preventive-dentistry/checkups-cleanings/ | 3,551 b | **10,931 b** | **4 H3s promoted to H2 — the page had ZERO H2s and jumped H1 to H3**, visit frequency, what the x rays are for, cost, booking, 5 FAQ |
+| 519 /dental-bridges/ (1,182 impr) | 6,384 b | 10,951 b | 5 FAQ |
+| 524 /partial-dentures/ | 6,702 b | 11,277 b | 5 FAQ |
+| 98 /restorative-dentistry/fillings/ (982 impr) | 5,533 b | 10,125 b | 5 FAQ |
+| 78 /gum-disease-treatment/ (924 impr) | 3,563 b | 8,140 b | 5 FAQ |
+| 1857 /wisdom-teeth/ | 4,059 b | 8,607 b | 5 FAQ |
+Backups `ld_bak_126_strengthen_`, `ld_bak_72_strengthen_`, `ld_bak_faq2_<id>_20260912`.
+
+**Close-out:** all 8 strengthened pages verified live at 200 with exactly 1 h1 and 0 fatals; all 15 consolidated pages verified 200 with correct canonical and media intact; **104 JSON-LD blocks across 73 published pages, 0 invalid**; Boost cache purged; IndexNow pinged for 33 URLs.
