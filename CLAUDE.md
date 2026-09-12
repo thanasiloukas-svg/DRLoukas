@@ -1310,3 +1310,32 @@ Caption and alt text on **110 `/cosmetic-dentistry/teeth-whitening/`** rewritten
 **THE STANDING RULE HOLDS AND IS NOW BETTER EVIDENCED: this practice still has NO verified whitening only before and after.** Every `whitening_*` file in the media library failed vision as veneers or crowns, Instagram's 17 whitening posts are all hashtags on restorative or Invisalign cases, and the owner's own supplied photo turned out to be combination treatment. **A whitening only case remains the single most valuable photo he could shoot**, because that page draws 15,645 impressions.
 
 **METHOD NOTE, and it cuts both ways.** This file has twice recorded vision being badly wrong (4 of 4 AI images passed as real, an entire image's contents invented). Here it was right, and the owner's confirmation is what established that. **The resolution is not "trust vision" or "ignore vision" — it is: treat a vision verdict as a question to put to the clinician, never as a finding to publish or to overrule him with.** Asking took one line and turned a hedge into an accurate caption, exactly as it did with the sealant ordering and the two emergency video edits.
+
+### Drive folder `1MY4E3w` triaged: the best quality archive yet, and TWO more pages filled (Sep 12)
+Owner shared a fourth Drive folder. **69 entries, all neutrally named by procedure, no patient names anywhere** — the cleanest intake so far. Pulled server side in two timed batches, **305 MB, zero failures**, staged at `wp-content/uploads/ld-stage5`.
+
+**Intake results: 64 unique files (5 byte-identical dupes), AI PROVENANCE HITS 0.**
+- **Nine files are 2880x2880 or 2048x2048** — the highest resolution material in any archive: `before-and-after-filling`, five `before-and-after-juvederm`, `implant-before-and-after`, `juvederm-treatment`, plus two white filling replacements.
+- 21 more at 1440x1440, then a tail of phone-screenshot portraits and a few under 400px (`fb-implant-3` at 220x267, `fb-botox` at 368x368) that are unusable at card width.
+- 13 videos, 4.7 MB to 54.8 MB. **Two are 0 bytes** (`11_botox-treatment-forehead`, `54_juvederm-lips`) — Drive returned them empty, not a download failure to retry blindly.
+
+**THE WHITENING ANSWER IS NOW DEFINITIVE, AND IT IS NO.** Both `fb whitening (1).jpg` and `fb whitening.jpg` (1440x1440) were vision checked with the strict shade versus shape prompt. **Both are combination cases**, same as the file the owner confirmed earlier: closed spacing, widened laterals, levelled incisal edges and reshaped canines alongside the shade change. **Three independent "whitening" named files from this practice have now failed the same test, and the owner confirmed the third involved restorative work.** Treat "whitening" in this practice's own filenames as meaning "a brighter smile", not "the whitening procedure". **Do not caption any of them as whitening alone.**
+
+**THE DUPLICATE CHECK CAUGHT TWO MORE.** `50_full-white-replacement.jpg` and `69_white-filling-replacment.jpg`, both 2048x2048, are **0/64 matches** for existing attachments **3009** and **1526**. Running the 8x8 luminance fingerprint against all 788 library entries costs about 14 seconds and has now prevented six duplicate uploads in one day. **Always run it.** Note the aspect-ratio prefilter matters: comparing only entries within 3% of the candidate's ratio is what makes a full-library sweep fast enough.
+
+**PLACED — two more zero-image pages closed:**
+| Page | Impr | Placed |
+|---|---|---|
+| 1812 /dental-implant-consultation/ | 619 @ 68.4 | **4414** dental-implant-tooth-replacement-before-after, built from the 2880x2880 source |
+| 3753 /emergency-dentist-chicago/ | 1,894 @ 45.4 | **4400** the trauma card, at "What can be done in a single visit" |
+- 4414's panels were pixel verified as different frames (4,079 of 4,465 points differing) before publishing.
+- **Caption honesty on 4414:** vision confirmed a missing tooth replaced but **could not see implant hardware** and could not distinguish implant from bridge or denture. The owner's filename says implant and the page is the implant consultation page, so context carries the modality; the caption states only the gap and the restored space, and uses the consultation angle (bone volume deciding immediate placement versus grafting).
+- 4400 is deliberately reused across 124 and 3753. Different silos, same genuine same-day case, and it is the only true emergency asset the practice has.
+
+**NOT USED, with reasons:** `03_before-and-after-filling.jpg` (2880x2880, genuinely excellent) shows composite repair of chipped upper incisors, which reads as bonding success — **the wrong message for page 867, whose whole topic is when a filling is NOT enough.** 867 is also canonicalised into 98 now, so it was the wrong target anyway. The juvederm and botox sets are strong but their pages already carry images.
+
+Close-out: both pages verified live 200, 1 h1, image present, 0 invalid JSON-LD, no fatals; attachment 4414 serves 200; **sitewide 107 JSON-LD blocks, 0 invalid**; Boost purged; IndexNow pinged. Backups `ld_bak_ig_1812_20260912`, `ld_bak_ig_3753_20260912`.
+
+**STILL ZERO IMAGES AND STILL NOTHING HONEST IN ANY OF THE FOUR ARCHIVES:** 3300 /sleep-apnea-snoring-treatment/ (970 impr), 1426 /bone-grafting/ (548), 3306 /sedation-dentistry/ (335). **These three need new photography and no amount of searching will fix them.**
+
+**Staging dirs now: `ld-stage`, `ld-stage2`, `ld-stage3`, `ld-stage5`, `ld-ig` (248 files, 87 MB).** All under `/wp-content/uploads/` and publicly reachable, all carrying an `index.php` guard, none containing a patient-named file. Clean up when the placement work is genuinely finished.
