@@ -1282,3 +1282,17 @@ Owner: "Download the post. Ignore the first one about the special. Continue ever
 **REMAINING UNPLACED AND WORTH A LATER PASS:** the Instagram set still holds 42 botox posts (9 video), 52 filler and lip posts (8 video), 26 invisalign, 23 veneer and crown, 12 PDO. Those service pages already carry images, so this was not the priority, but the material is staged and inventoried at `ld-ig-manifest.json`.
 
 **WORDPRESS CONNECTOR:** the owner added one, but both `www_drloukas_com` and `drloukas_com` **failed to connect this session** (404, `CLIENT_HTTP_NOT_IMPLEMENTED`). Nothing was blocked by this — every operation above ran through Novamira execute-php. Worth a reconnect if he wants that path.
+
+### Owner supplied a whitening before/after, and it is now live on page 110 (Sep 12)
+Owner sent a Drive link (`1DhYJwF5IF4SRv_SOPg7pTDorGU5hpXIi`) and then said "pictures on the tooth whitening page, please, get it done."
+
+**Pulled server side with the `uc?export=download` method, no session transfer.** File `before and after whitening treatment.jpg`, **1564x1564, 678 KB, AI provenance scan CLEAN**, EXIF `Make: Layout from Instagram` (so it is a two panel collage the owner assembled), top panel before.
+
+**BUILT AND PLACED: `2026/09/teeth-whitening-before-after-park-ridge-il.webp`, 1400x1636, 70 KB, attachment 4411**, in the same navy `#06202D` and gold `#CCA968` BEFORE/AFTER template as the sealant, bonding and bridge cards. Placed on **110 `/cosmetic-dentistry/teeth-whitening/`** at the "Achieving Optimal Results" heading. 13,719 -> 14,397 bytes. Backup `ld_bak_ig_110b_20260912`. **The site's highest impression page (15,645) now carries two images**, this one and the Pola Light kit placed earlier the same day.
+
+**OPEN CLINICAL QUESTION FOR THE OWNER — flagged, not resolved.** `simpleVisionQuery` read this collage as **restorative work rather than whitening**: it reported the upper centrals longer with different incisal edges, the laterals broader, and minor spacing closed between panels. Whitening changes shade only. **If that reading is right the caption needs to say veneers or crowns, and this is the same defect removed from this exact page on Sep 5.**
+- It was placed anyway because **the owner is the treating dentist, he named the file whitening, and he gave a direct instruction twice.** That is the same authority that resolved the sealant before/after ordering, and it outranks a vision verdict, which this file has already recorded as unreliable (it passed 4 of 4 AI generated images and hallucinated an entire image's contents).
+- Caption and alt text currently say whitening. **One line changes both if the owner confirms restorations were involved.**
+- **A PIXEL TEST WAS ATTEMPTED AND IS NOT USABLE — do not repeat it in this form.** Masking "tooth coloured" pixels by brightness and low saturation also captures lip and gum tissue, so the resulting edge shifts (61 px and 89 px) measured framing differences between two separately shot photos, not tooth geometry, and the yellowness metric moved the wrong way (13.7 -> 29.9), which is the tell that the mask was wrong. **A shade versus shape test needs landmark registration between the two panels, not a global colour mask.** It was reported to the owner as inconclusive rather than dressed up as evidence.
+
+Close-out: 110 verified live 200, 1 h1, 9 images, 2 figcaptions, 2 JSON-LD blocks 0 invalid, no fatals; both image files 200; Boost purged; IndexNow pinged; staging dir `ld-stage4` removed.
