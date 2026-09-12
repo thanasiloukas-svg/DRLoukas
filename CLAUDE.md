@@ -1381,3 +1381,31 @@ Owner: "Evaluate all those pictures in the folders and place them where they're 
 **STILL ZERO IMAGES AND NOW PROVEN UNFILLABLE FROM EXISTING MATERIAL — 323 images were scored against these three and nothing matched:** 3300 /sleep-apnea-snoring-treatment/ (973 impr), 3306 /sedation-dentistry/ (563), 1426 /bone-grafting/ (522). **These need new photography. That conclusion is now evidence-based across every archive the owner has, not a guess.**
 
 **Remaining unplaced: roughly 120 new images whose topics map to pages that ALREADY carry images** (botox 25, filler 16, perio 13, invisalign 13). Adding them would be padding, not improvement. They stay staged and inventoried in `ld-new-staged.json` for any page that later needs one.
+
+### Cowork session handoff absorbed, and one of its changes needs reversing (Sep 12)
+A parallel Cowork session (Novamira + Claude in Chrome + Desktop Commander) worked the site and GBP the same day and handed off. Its work was verified server-side rather than accepted from the notes. **Most of it is good. Two things are wrong and one is a real problem.**
+
+**NO COLLISION — today's meta work survived.** The concurrency rule warns about lost updates when two agents edit the same records. Cowork rewrote descriptions on 10 post_ids that my Sep 12 pass had already trimmed. Checked all 10 plus a sitewide sweep: **0 published rows over 62 chars title or 165 description**, and `ld_bak_meta_20260912` is intact. Their rewrites landed on top of mine cleanly.
+
+**THE REAL PROBLEM: all 31 canonicalised pages were removed from the XML sitemap, including the 15 I canonicalised HOURS EARLIER.** Verified: `sitemap.general.advancedSettings.excludePosts` holds 31 ids, published pages carrying a canonical = 31, overlap = **31 of 31**, and **15 of 15** of today's consolidation set (799, 1027, 807, 2744, 1011, 867, 750, 719, 990, 993, 775, 748, 106, 2827, 670).
+- **Google has to CRAWL a page to see its canonical tag.** A canonical set today has not been re-crawled yet. Pulling those URLs out of the sitemap on the same day removes the fastest signal telling Google to come back and look.
+- Excluding canonicalised URLs is defensible **once consolidation has settled**; doing it the day the canonicals are set is backwards and will delay the implant hub and bonding work by weeks.
+- **RECOMMENDED: put at least the 15 back until GSC shows the canonical consolidated, then re-exclude.** Not reversed from here because the other session owns that option and two agents must not write the same option. Note the format landmine they documented: each array element must be its own JSON string, `['{"value":748,"type":"post",...}', ...]`. A plain PHP array 500s every sitemap.
+
+**THE FRIDAY HOURS SCOPE IN THE HANDOFF IS WRONG — it is not two places, it is ten.** Verified in the theme files and the database:
+| Where | What it says |
+|---|---|
+| front-page.php visible FAQ answer | "Friday by appointment only (surgical cases)" |
+| front-page.php **contact hours table** | `<tr><td>Friday</td><td>By appointment only — surgical cases</td></tr>` |
+| front-page.php FAQPage JSON-LD | same text inside the structured data |
+| **footer.php, SITEWIDE** | `<tr><td>Fri</td><td>By appointment</td></tr>` on **every page** |
+| 6 published pages | 61 /about-us/, 91 /contact-us/, 633 /rosemont-dentist/, 643 /des-plaines-dentist/, 1812 /dental-implant-consultation/, 3100 /our-office/ |
+- The handoff named only the front-page FAQ answer and its JSON-LD. **It missed the front-page hours table and footer.php entirely.** Fixing only front-page.php would leave the footer contradicting the fix on the homepage itself and on all 150 other pages. Live counts confirm it: homepage delivers "by appointment" **4 times**, /contact-us/ **2 times**.
+- **THE SCHEMA IS ALREADY CORRECT AND NOBODY NEEDS TO TOUCH IT.** The `Dentist` node's `openingHoursSpecification` lists Monday, Tuesday, Thursday and Saturday only — **no Friday entry at all, which already means closed**. So Google's structured data says Friday closed while the page text says by appointment. The FAQPage answer text is the one piece of structured data that disagrees.
+- **NOT CHANGED. Owner approval required and not yet given.** This reverses a decision this file records as deliberate (Aug 26: "Fri Closed on GBP but 'By appointment' on site, surgical cases nuance, intentional"). It is also outward-facing published business hours. One yes should cover all ten locations at once, not front-page.php alone.
+
+**OWNERSHIP ANSWER: Claude Code takes the theme files.** This session made the `.bak-2026*` backups, bumped the theme Version 1.0.4 -> 1.0.5 today, and keeps the repo copies synced from live. Cowork should not edit front-page.php or footer.php. Everything else in that handoff (GBP, AIOSEO options, Local SEO, sitemap settings) stays with Cowork.
+
+**Minor, flagged not fixed:** Cowork expanded AIOSEO Local SEO `areaServed` to ten areas including Chicago, Arlington Heights and O'Hare on the same day this session retargeted `/emergency-dentist-chicago/` **away** from citywide Chicago, on evidence that 39 citywide Chicago queries draw 1,459 impressions at position 47.6 with **zero clicks**. Schema areaServed is a weak signal so this is not urgent, but the two changes push in opposite directions and someone should pick one.
+
+**Good and verified from that session, no action needed:** free AIOSEO plugin deleted (closes the Site Health inactive-plugin item; Pro is standalone, this was always safe), Place ID set, foundingDate 1981-04-08 on the Organization node, payment methods, aboutPage/contactPage URLs.
