@@ -1236,3 +1236,49 @@ By year: 2018 39, 2019 35, 2020 30, **2021 61**, 2022 25, 2023 1, 2026 6.
 - **FLAG: the most recent post (2026-08-17) is a `BOTOX SPECIAL, ONLY $11 PER UNIT` promo.** Promotional pricing has been cropped off before publishing in this engagement already (Aug 26). That post is not site material as it stands.
 
 **Staging note:** inventory file `wp-content/uploads/ld-ig-media.json` (240 KB). Delete it when the placement work finishes, along with `ld-stage`, `ld-stage2`, `ld-stage3`.
+
+### INSTAGRAM ARCHIVE PULLED AND PLACED — 8 pages went from zero images to one (Sep 12)
+Owner: "Download the post. Ignore the first one about the special. Continue everything you think." Full pull executed through the plugin token method logged in the previous entry.
+
+**THE PULL: 247 files, 87.3 MB, ZERO failures.** 197 posts enumerated, 3 promo posts skipped on a `PER UNIT|BOTOX SPECIAL` caption match (the owner said the eleven dollar special is not for the website), 27 carousels expanded via the `/children` endpoint into their individual slides. Final set **214 images and 33 videos**, staged at `wp-content/uploads/ld-ig/` with an `index.php` guard.
+- Downloads were run in timed batches with a `microtime()` guard at 42 s, resuming on file existence. 148 files in batch one, 99 in batch two.
+
+**I WAS WRONG ABOUT INSTAGRAM QUALITY — correct the record.** The previous entry said Instagram "recompresses everything" based on one 1054x1420 sample. That sample was the promo graphic. **Across the real archive the median image is 1440x1440**: 90 files at 1440x1440, 54 at 1080x1080, 7 at 1440x1800. Only **4 of 214 fall under the 400px floor**. This is genuinely usable service page imagery, not a fallback source.
+
+**AI PROVENANCE SCAN: 0 hits across all 247 files.** Every one is genuine.
+
+**THE DUPLICATE CHECK EARNED ITS KEEP — 4 of 9 candidates were already in the media library.** Method: filter library attachments by exact width and height, then compare an 8x8 luminance grid, flagging anything under 12 of 64 sample points differing.
+- `ig_18215989066157044_1` = attachment **4126** at **0/64 difference** — the orphaned medial pterygoid injection photo this file flagged Sep 5 as "a good SECOND image for /tmj-treatment/, not placed yet".
+- `ig_17902573912755369_0` = attachment **3000** at 0/64 — an orphaned implant before/after.
+- Two more matched 2786 at 0 and 11. **Without this check I would have uploaded four duplicates of photos already sitting in the library.** Run it before every external image upload.
+
+**ALSO FOUND: 24 Instagram images were imported by a previous session and NEVER PLACED.** `ig_botox_01..04`, `ig_lip_filler_01..05`, `ig_pdo_threads_01`, `ig_treatment_01..14` (attachment ids 1527 to 1550), every one on **0 published pages**. Sizes 540x540 to 1200x1200. Check these before importing anything else from Instagram.
+
+**PLACED — 8 pages, every image vision checked for what treatment it shows before it went anywhere:**
+| Page | Impr | Was | Placed |
+|---|---|---|---|
+| 124 /oral-surgery/ | 4,186 | **0 imgs** | **4400** dental-trauma-before-after, a navy/gold two panel card built from carousel frames 1 and 5 |
+| 126 /oral-surgery/tooth-extractions/ | 1,556 @ 10.9 | **0 imgs** | **4398** surgical-tooth-extraction, two extracted teeth with full root anatomy |
+| 519 /dental-bridges/ | 1,182 | **0 imgs** | **4401** dental-bridge-before-after, built from a stacked 1440x1440 source |
+| 78 /gum-disease-treatment/ | 1,027 | **0 imgs** | **4399** brushing-along-the-gumline |
+| **110 /cosmetic-dentistry/teeth-whitening/** | **15,645** | **0 imgs** | **4135** Pola Light kit, an existing orphaned attachment |
+| 1859 /tmj-treatment/ | 2,342 | 1 img | **4126** medial pterygoid injection (existing, orphaned since Sep 5) |
+| 3970 /teeth-grinding-tmj-guide-park-ridge/ | 340 @ 11.4 | **0 imgs** | **4407** masseter-botox-injection |
+| 2787 /what-is-a-screw-retained-implant-crown/ | 228 @ 16 | **0 imgs** | **3000** implant before/after (existing, orphaned) |
+
+**THE WHITENING PAGE IS SOLVED HONESTLY, AND NOT THE WAY I PREDICTED.** I expected Instagram to hold a genuine whitening case. **It does not.** All 17 whitening captions are either hashtags on veneers, crowns or Invisalign posts, or the free-whitening-with-Invisalign offer. The one explicit case reads "ortho, crown restorations, **and** whitening treatments", so it cannot be captioned as whitening alone. **This confirms the standing rule: there is still no verified whitening only before/after anywhere in this practice's material.**
+- What went on the page instead is **attachment 4135, a Pola Light product photograph** — vision confirmed a studio product shot with box, four gel syringes and an LED tray, reading "POLA LIGHT" and "9.5%", **no patient and no tooth visible**. It makes no treatment claim. Placed at 400px max width, not stretched, under the "How Professional Teeth Whitening Works" heading. The site's highest impression page now has an honest image.
+
+**Method notes worth keeping:**
+- Both two panel cards were **pixel verified as genuinely different frames before publishing** (the bridge source scored 2,837 of 2,964 sample points differing). Same guard as the sealant and bonding cards.
+- The figure inserter aborts on a missing anchor rather than appending blind. It caught one: 3970's heading is `<h2 class="wp-block-heading">`, so a bare `<h2>Treatment Options` match failed. **Match the tag with `[^>]*` or read the real markup first.**
+- `update_option()` silently refused to store the 197 item array, and the next call read `false`, producing a convincing zero-match result. **Large API pulls go to a file.**
+
+**Close-out:** all 8 pages verified live at 200 with exactly 1 h1 and 0 fatals; all 8 image files serve 200; **107 JSON-LD blocks across 74 published pages, 0 invalid**; Boost cache purged; IndexNow pinged for 8 URLs. Backups `ld_bak_ig_<id>_20260912`.
+- **The one "broken image" the checker reports on every page is the SiteLock badge** (`shield.sitelock.com`), which returns 200 live. Known false positive, already documented Sep 5. Do not chase it.
+
+**STILL ZERO IMAGES WITH NO HONEST MATCH IN EITHER ARCHIVE** (these need new photography, not searching): 3300 /sleep-apnea-snoring-treatment/ 970 impr, 1426 /bone-grafting/ 548 impr, 3306 /sedation-dentistry/ 335 impr, plus 543 /dental-payment-plans/ and 91 /contact-us/ where an image is optional. Published pages with zero content images are now **75 of 151**, most of them legacy posts.
+
+**REMAINING UNPLACED AND WORTH A LATER PASS:** the Instagram set still holds 42 botox posts (9 video), 52 filler and lip posts (8 video), 26 invisalign, 23 veneer and crown, 12 PDO. Those service pages already carry images, so this was not the priority, but the material is staged and inventoried at `ld-ig-manifest.json`.
+
+**WORDPRESS CONNECTOR:** the owner added one, but both `www_drloukas_com` and `drloukas_com` **failed to connect this session** (404, `CLIENT_HTTP_NOT_IMPLEMENTED`). Nothing was blocked by this — every operation above ran through Novamira execute-php. Worth a reconnect if he wants that path.
