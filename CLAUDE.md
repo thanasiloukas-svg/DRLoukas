@@ -1191,3 +1191,48 @@ Owner: "Continue doing SEO for Park Ridge dentist. That's the main thing." Mappe
 Close-out: 22 URLs IndexNow pinged, Boost cache purged, 7 pages sampled live — all 200, 1 h1, 0 invalid JSON-LD, 0 fatals, **0 remaining occurrences of the wrong business name and 0 remaining `http://` internal links.**
 
 **VIDEO CONSOLIDATION — answered for the owner, and the honest limits stated.** He asked about cutting the short per-procedure clips into long per-topic videos with before/after stills and his own voiceover, and whether ChatGPT or Claude can do it. **Neither can. There is no ffmpeg on this server and no video tooling in a remote session** — every "duration" and "different file" finding in this file came from reading mp4 header atoms, not from processing video. The editing itself is a desktop job (Descript for transcript-driven editing plus voice, DaVinci Resolve free, CapCut). **The idea is right for conversion and wrong as a ranking play:** video search on this property is 24 impressions and 0 clicks over 28 days, and the standing finding is that clip length under 30 seconds is why nothing gets queued for video indexing. Material that exists per topic: Botox 0:50 + 0:15 + 0:10, lip filler 0:28 + 0:28 + 0:19 + 0:07, implant dentures 1:00 + 0:46 + 0:43. **Do NOT let him commission new filming before someone inventories what he already has — that mistake has been made once in this engagement already (the 3:36 emergency explainer).**
+
+### THE INSTAGRAM ARCHIVE IS REACHABLE — 197 posts, 26 videos, via the site's own plugin token (Sep 12)
+Owner asked whether his Instagram videos and before/afters can be reached. **They can, and this is a significant new asset source.** I cannot browse Instagram from this session (the network policy blocks it, same as drloukas.com and google.com), but I do not need to: the **site's server has open internet egress** and the **Instagram Feed plugin holds a live API token**.
+
+**THE METHOD, and every step was verified, not assumed:**
+1. `instagram-feed/instagram-feed.php` is active. Source row in `wp_sbi_sources`: account **`loukasdentistry`**, id 17841407641543200, `connect_type: business_basic`, token **expires 2026-11-10**, last refreshed 2026-09-11 (the plugin auto-refreshes, so this keeps working).
+2. **The token is encrypted at rest.** Reading `access_token` raw and calling the API returns `OAuthException 190, Cannot parse access token`. Decrypt it in memory with the plugin's own class: `$e = new SB_Instagram_Data_Encryption(); $tok = $e->decrypt($row['access_token']);` — 360 stored chars decrypt to a 161 char `IG...` token. **Never print it; the standing redaction rule applies.**
+3. Enumerate: `https://graph.instagram.com/me/media?fields=id,media_type,media_url,thumbnail_url,permalink,timestamp,caption&limit=100&access_token=...`, then follow `paging.next`. **2 pages, 197 posts, HTTP 200.**
+4. Carousel slides need a second call: `https://graph.instagram.com/<id>/children?fields=id,media_type,media_url,thumbnail_url&access_token=...`. Verified on the emergency trauma album — **5 children, every one with a working media_url.**
+5. **Downloads work.** Pulled a real VIDEO (1,568 KB, valid MP4 `ftyp` header) and a real IMAGE (**1054x1420** JPEG, 320 KB), both HTTP 200, straight to a staging dir on the server. Test files deleted after.
+
+**GOTCHA THAT COST A WHOLE DIAGNOSTIC PASS:** `update_option('ld_ig_media', $array, false)` silently failed to store the 197-item array, and the next call read `false`, so every caption keyword search returned **0 matches** and looked like the captions were empty. They are not. **Write large API pulls to a FILE** (`wp_upload_dir()['basedir'].'/ld-ig-media.json'`, 240 KB) and read that back. A zero-match result on data you just fetched means check the storage before believing the finding.
+
+**THE INVENTORY (197 posts, 2018 to 2026):**
+| Type | Count |
+|---|---|
+| IMAGE | 143 |
+| CAROUSEL_ALBUM | 28 |
+| VIDEO | **26** |
+
+By year: 2018 39, 2019 35, 2020 30, **2021 61**, 2022 25, 2023 1, 2026 6.
+**193 of 197 posts have captions, 56,839 characters of the owner's own procedure copy** — an asset in its own right for writing page content in his voice.
+
+**BY TREATMENT, from captions (total / video / carousel):**
+| Topic | Posts | Video | Carousel |
+|---|---|---|---|
+| filler and lip | 52 | 8 | 10 |
+| botox | 42 | 9 | 10 |
+| invisalign and ortho | 26 | 6 | 1 |
+| implants | 25 | 3 | 2 |
+| veneers, crowns, bonding | 23 | 3 | 3 |
+| **whitening** | **17** | **5** | 0 |
+| before and after (explicit) | 16 | 0 | 1 |
+| pdo threads | 12 | 1 | 4 |
+| kybella | 3 | 0 | 2 |
+
+**WHY THIS MATTERS MOST — the whitening page.** `/cosmetic-dentistry/teeth-whitening/` (110) carries **15,204 impressions, the most on the site, and ZERO images**, because every `whitening_*` file in the media library failed vision as veneers or crowns and was correctly removed Sep 5. **Instagram has 17 whitening posts, 5 of them video.** If any one is a genuine whitening only case, it closes the single biggest content gap on the site. Same for `/oral-surgery/` (4,186 impr, zero images) and `/oral-surgery/tooth-extractions/` (1,556 impr, position 10.9, zero images), which the Drive archive had no honest match for.
+
+**LIMITS, stated honestly:**
+- **Instagram re-compresses everything.** The image pulled back at 1054x1420 against the owner's 4000x4000 Canon originals in Drive. **Where a Drive copy exists, Drive is the better source.** Instagram is the right source for anything that exists only there, and for video.
+- **CDN URLs expire**, so download in the same pass as the enumeration. The JSON inventory is still useful afterwards because `permalink` and `id` stay valid and the media_url can be re-fetched.
+- **Every standing intake rule still applies in order:** AI provenance header scan, `getimagesize()` floor of 400px, vision for what treatment is shown (never for authenticity), neutral filename with no patient name, GD resize to WebP.
+- **FLAG: the most recent post (2026-08-17) is a `BOTOX SPECIAL, ONLY $11 PER UNIT` promo.** Promotional pricing has been cropped off before publishing in this engagement already (Aug 26). That post is not site material as it stands.
+
+**Staging note:** inventory file `wp-content/uploads/ld-ig-media.json` (240 KB). Delete it when the placement work finishes, along with `ld-stage`, `ld-stage2`, `ld-stage3`.
