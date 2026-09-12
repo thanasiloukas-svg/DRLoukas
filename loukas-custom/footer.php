@@ -9,7 +9,7 @@
         <tr><td>Tue</td><td>10am&ndash;6pm</td></tr>
         <tr><td>Wed</td><td class="closed">Closed</td></tr>
         <tr><td>Thu</td><td>10am&ndash;6:30pm</td></tr>
-        <tr><td>Fri</td><td>By appointment</td></tr>
+        <tr><td>Fri</td><td>Closed</td></tr>
         <tr><td>Sat</td><td>9am&ndash;2pm</td></tr>
         <tr><td>Sun</td><td class="closed">Closed</td></tr>
       </table>
