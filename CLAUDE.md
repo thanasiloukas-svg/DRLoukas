@@ -1147,3 +1147,17 @@ Owner supplied the length I could not check: **`ntoOp5lmp1w` on the practice You
 **Verified live:** 1771 returns 200 / 124.9 KB / 1 h1 / 1 video tag / **5 JSON-LD blocks, 0 invalid, durations `[PT3M36S, PT1M38S]`** / 0 fatals. 2876 returns 200 with `PT3M36S` present. **Both `/emergency-dentistry/` and `/videos/emergency-dental-trauma-video/` are in `page-video-sitemap.xml`.** Cache purged, `video_scan_date` nulled again to force an AIOSEO rescan, IndexNow pinged for both.
 
 **Structure to preserve:** the self hosted 1:38 clip is the one that gives the site its own watch page claim (local `contentUrl`); the YouTube 3:36 is the full explainer and also feeds the channel. Keeping the short cut self hosted and the long cut on YouTube, with both on the traffic page, is deliberate. Do not consolidate them.
+
+### Owner confirmed: the two emergency edits are the SAME PATIENT (Sep 12)
+**Owner: "Yes, same case, different edits of the same patient."** That closes the one thing the previous entry recorded as unverified, and it is the owner supplying clinical fact, which is the authority nothing else here can substitute for.
+
+Captions and schema on **1771 `/emergency-dentistry/`** rewritten to state the relationship, because two unrelated videos on one page reads as padding while one case shown twice reads as evidence:
+- Short clip figcaption now: *"...This is the short version, 1 minute 38 seconds. The same case in full runs below."*
+- Long version figcaption now: *"The same case in full, 3 minutes 36 seconds, walking step by step through same day emergency treatment..."*
+- Both VideoObject `description` fields now say which edit they are and that the other is on the same page.
+- The 3:36 VideoObject `name` changed from "Emergency Dentist in Park Ridge, IL: Same Day Treatment, Full Case" to **"Emergency Dental Trauma Treatment in Park Ridge, IL: Full Case"** so the two schema names match as a pair.
+- 4 replacements applied, guarded by an abort if fewer than 2 matched. 32,837 -> 33,082 bytes. Backup `ld_bak_1771_samecase_20260912`.
+
+**Verified live:** 200, 1 h1, **5 JSON-LD blocks, 0 invalid**, both VideoObjects present reading `PT3M36S` and `PT1M38S`, both captions rendering as written, 0 fatals. IndexNow pinged, cache purged.
+
+**Note the sequencing, because it is the lesson:** the caption originally avoided claiming the two clips were the same case, precisely because that was unverified. One question to the owner turned a hedge into a true statement. **Where a claim is clinical or about the owner's own patients, ask him rather than inferring or hedging forever.**
