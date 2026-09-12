@@ -1339,3 +1339,45 @@ Close-out: both pages verified live 200, 1 h1, image present, 0 invalid JSON-LD,
 **STILL ZERO IMAGES AND STILL NOTHING HONEST IN ANY OF THE FOUR ARCHIVES:** 3300 /sleep-apnea-snoring-treatment/ (970 impr), 1426 /bone-grafting/ (548), 3306 /sedation-dentistry/ (335). **These three need new photography and no amount of searching will fix them.**
 
 **Staging dirs now: `ld-stage`, `ld-stage2`, `ld-stage3`, `ld-stage5`, `ld-ig` (248 files, 87 MB).** All under `/wp-content/uploads/` and publicly reachable, all carrying an `index.php` guard, none containing a patient-named file. Clean up when the placement work is genuinely finished.
+
+### ALL FOUR ARCHIVES EVALUATED IN ONE PASS — 323 images scored, 7 more pages filled (Sep 12)
+Owner: "Evaluate all those pictures in the folders and place them where they're needed on the site immediately."
+
+**THE FULL INVENTORY, across every staging dir (`ld-stage`, `ld-stage2`, `ld-stage3`, `ld-stage5`, `ld-ig`): 388 files, of which 323 are unique usable images** (400px floor, cross-directory duplicates removed). Written to `ld-all-staged.json`.
+
+**THE DEDUPE METHOD THAT MADE THIS FEASIBLE, and it is the reusable part.** Comparing 323 candidates against 788 library attachments one at a time was going to take about 19 minutes of 60-second calls. Instead:
+1. **Cache the library fingerprints ONCE** to `ld-libfp.json` — 8x8 luminance grid plus aspect ratio for every attachment over 300px. **704 fingerprints in 9.6 seconds.**
+2. Fingerprint each candidate once, then match in memory against the cache with an aspect-ratio prefilter (±3%) and an early break at 12 of 64 differing points.
+**Whole 323-candidate sweep: 10.5 seconds.** Re-run `ld-libfp.json` after any bulk upload and this stays cheap.
+
+**THE RESULT, and it is the headline: 187 of 323 staged images (58%) were ALREADY IN THE MEDIA LIBRARY.** Only **136 were new, 127 after internal dedupe.** The four Drive folders and the Instagram account overlap enormously with each other and with what earlier sessions already uploaded. **Any future archive the owner shares should be fingerprint-matched before a single file is placed** — the default assumption should be that most of it is already on the server.
+
+**WHAT THE 127 NEW IMAGES ACTUALLY COVER**, classified by Instagram caption or filename: botox 25, filler/lip/PDO 16, perio and hygiene 13, invisalign and ortho 13, kids and sealants 9, crowns/veneers/bonding 9, office and team 6, implants 5, fillings 1, bridges 1, **sedation 0, sleep apnea 0, bone grafting 0**.
+
+**PLACED — 7 more pages, taking today's total to 17:**
+| Page | Impr | Was | Placed |
+|---|---|---|---|
+| **1005 /two-sides-of-a-coin/** | **10,615 / 68 clicks** | 1 img | **4104** the two doctors, at the author bio |
+| 91 /contact-us/ | 1,614 / 25 clicks | **0 imgs** | **2124** the building exterior, at "Visit Us" |
+| 978 /the-intricacies-of-different-types-of-smiles/ | 1,660 | 1 img | **4425** porcelain smile makeover |
+| 98 /restorative-dentistry/fillings/ | 1,008 | 2 imgs | **4421** composite filling before/after card |
+| 3970 /teeth-grinding-tmj-guide-park-ridge/ | 505 @ 12.0 | 1 img | **4422** abfraction before/after |
+| 565 /location/ | 330 @ 7.3 | **0 imgs** | **2479** the reception area |
+| 1852 /new-patients/ | 263 @ 9.7 | **0 imgs** | **4130** the team in an operatory |
+
+**THE BEST MOVE OF THE ROUND WAS NOT AN UPLOAD.** For the trust pages — contact, location, new patients, and the doctors' bio on the site's best earning post — the right images were **already in the library and orphaned**: `photo_07_exterior_building`, `loukas-reception-hero-desktop`, `loukas-dentistry-team-in-operatory`, `loukas-dentistry-team-park-ridge-il`. Four good office photographs sitting on zero pages. **Check the library for office and team photography before importing anything for a non-clinical page.**
+
+**TWO GENUINE CLINICAL FINDS, both verified frame by frame:**
+- **Composite filling before/after** from an Instagram carousel. Vision on frame 1: fractured cusp with exposed dentin and staining. Frame 2: intact, smooth, tooth coloured. Pixel check: **87% of sampled points differ**, so genuinely two states. Built side by side in the navy and gold template as attachment **4421**.
+- **Abfraction from clenching** — the owner's own caption reads "fluoride releasing composite ... to correct abfraction areas caused by grinding". Vision confirmed notched, discoloured cervical margins in one frame and filled margins in the other, and **read the bottom frame as the before**, so the card was reordered to put BEFORE first. Attachment **4422**, placed on the grinding guide, which is the exact topic. Panels differ 3,347 of 3,784 points.
+
+**VISION REJECTION #10: `ig_17844335584702754_0.jpg` is not a hygiene photo, it is third-party marketing.** Caption said "#nationaloralhygienemonth". Vision found a brochure-style Invisalign ad with burned-in marketing copy and six labelled schematic diagrams (Crossbite, Crowding, Open Bite, Gapped Teeth, Overbite, Underbite). **Almost certainly Align Technology's material, not the practice's.** Do not publish it.
+- Also rejected for the contact page: `ig_17856918865991579_0.jpg`, a real waiting room photo but with **teddy bears in surgical masks**, which dates it to 2020. Honest, just wrong for a current page.
+
+**NO CROWN-SPECIFIC IMAGE EXISTS IN ANY ARCHIVE.** `/restorative-dentistry/dental-crowns/` draws 2,486 impressions on 2 images and every "crown" caption in the set turned out to describe veneers, composites or occlusal restorations. Left at 2.
+
+**Close-out:** all 7 pages verified live 200, exactly 1 h1, figcaption present, 0 invalid JSON-LD, 0 fatals; Boost purged; IndexNow pinged. Backups `ld_bak_ph_<id>_20260912`.
+
+**STILL ZERO IMAGES AND NOW PROVEN UNFILLABLE FROM EXISTING MATERIAL — 323 images were scored against these three and nothing matched:** 3300 /sleep-apnea-snoring-treatment/ (973 impr), 3306 /sedation-dentistry/ (563), 1426 /bone-grafting/ (522). **These need new photography. That conclusion is now evidence-based across every archive the owner has, not a guess.**
+
+**Remaining unplaced: roughly 120 new images whose topics map to pages that ALREADY carry images** (botox 25, filler 16, perio 13, invisalign 13). Adding them would be padding, not improvement. They stay staged and inventoried in `ld-new-staged.json` for any page that later needs one.
