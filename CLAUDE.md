@@ -1430,3 +1430,54 @@ Owner: "Change what you need to." Acting on that plus the fact he had already di
 **REPO SYNC — footer.php exact, front-page.php DELIBERATELY NOT SYNCED.** `loukas-custom/footer.php` in the repo now md5-matches live (`f1aa0e1500b7999629929bce0faba8d4`). **`loukas-custom/front-page.php` in the repo is STALE against live** — it predates the Sep 12 silo-links row, so it is 22,212 b where live is **23,810 b, md5 `bee68a8e9d9e7be81b2f603c7d3152f9`**. The same three Friday replacements were applied to the repo copy so it is correct-but-incomplete. **NEVER deploy the repo front-page.php over live.** Pulling the full file back through a session costs three large base64 transfers for a mirror that is never deployed, which is not worth it; recording the divergence addresses the actual risk.
 
 Close-out: Boost cache purged, AIOSEO cache cleared, IndexNow pinged for the homepage plus 6 pages.
+
+### Cannibalisation sweep + head-term build (Sep 12, later) — 12 pages edited
+
+Owner: "continue to find anything cannibalizing and improve our rankings for a park ridge dentist." Built the map from a **4,654 row query+page GSC pull** rather than from slug patterns.
+
+**THE HEADLINE METHOD FINDING, and it kills most cannibalisation reports on this site: of 241 distinct page paths in GSC, only 118 are live published pages.** 171 "park ridge" queries return 2+ URLs, but on nearly every one the extra URLs are **301s, drafts or attachments**. Verified individually with `redirection=0`:
+- `/preventive-dentistry/tmj-bruxism-treatment/` (draft 76) → 301 to /tmj-treatment/, yet holds **pos 8.4 on 677 impressions** while the live page sits at 21.5
+- `/cosmetic-dentistry/bonding-contouring/` (draft 112) → 301 to /dental-bonding/, 457 impr at 31.0
+- `/tooth-extractions-park-ridge/` (draft 1814), `/dental-implant-bridges-in-park-ridge/` (draft 767, **pos 8.7 on 524 impr**), `/implants-patient-education/` (draft 485), `/preventive-dentistry/at-home-dental-care/` (draft 74), `/invisalign/` (draft 2561), `/implant-dentistry/` (draft 118), `/invisalign-video/` (draft 2524) — all 301
+- `/invisalign_service/` and `/invisalign_ba/` are **published ATTACHMENTS** that 301; `/restorative-dentistry/dental-crowns/dentalcrowns-2/` is an attachment 301ing to a PNG
+- every `/tag/…` path 301s correctly (dental-bridges **7.5**, teeth-bonding **9.0**, dental-crowns 11.2, park-ridge-jaw-pain 16.0)
+**So the dominant pattern is not two live pages fighting. It is stale index entries outranking the live destination.** That is consolidation in progress and it resolves itself. Do NOT "fix" it, and do not report it as cannibalisation.
+
+**THE CHEAPEST WIN OF THE SESSION: three pages rank for phrases they never use.** Checked by counting the phrase in body and in the `wp_aioseo_posts` title/description:
+| Query | Impr | Ranking page | Occurrences before |
+|---|---|---|---|
+| invisible braces park ridge | 1,258 | 1849 (9.2), 1409 (17.0) | **0 and 0** |
+| tooth crown park ridge | 1,086 | 100 (19.2) | **0** |
+| teeth extraction in park ridge il | 1,235 | 126 (3.9) | **0** |
+Fixed on all three with real content, not keyword stuffing. 1849 now carries "invisible braces" 8x, 100 "tooth crown" 4x, 126 "teeth extraction" 2x.
+
+**GENUINE LIVE-PAGE OVERLAP — only four clusters qualified:**
+1. **Invisalign/braces, three live pages:** 1849 (7.8 and 9.2), 1409 (13.1 and 17.0), 104 (58.5). Fixed by differentiation, not canonical: 104 now opens with a routing callout sending aligner intent to 1409 and comparison intent to 1849, and owns fixed appliances.
+2. **Oral surgery absorbing implant and crown queries.** 124 drew **508 impr at 28.5 for "dental implants park ridge"** while the 36 KB hub 2559 got 51 at 32.8, plus crown queries at 70.7 and 92.8. Root cause: 124 was a **6,619 byte page** with nothing specific to anchor on.
+3. **TMJ:** the guide 3970 outranks the service page 1859 (14.3 vs 21.5, and 9.5 vs 19.1).
+4. **Pediatric emergency:** 1771 (29.5), 1785 (**13.2**), 1860 (69.1) on 680 impressions.
+
+**WORK DONE — 12 pages:**
+| Page | Before | After | What |
+|---|---|---|---|
+| 1849 invisalign-vs-braces | 6,925 b, **0 JSON-LD**, 1 inbound | 16,902 b | "What People Mean by Invisible Braces", decision criteria, cost and insurance, 6 FAQ + **first FAQPage schema**, 6 outlinks |
+| 124 oral-surgery | 6,619 b, 3 h2 | 15,880 b, 10 h2 | procedures list, oral surgeon vs dentist who operates, day of surgery, recovery and dry socket, sedation, cost, **explicit routing of implant/crown/bridge intent away**; FAQ 3 → 7; **2 relative hrefs fixed** |
+| 68 services | 28,331 b, **0 JSON-LD** | 35,788 b | 7 new-patient FAQ + FAQPage (hours, insurance, implants in house, accepting new patients), outlinks 28 → 31 |
+| 108 cosmetic-dentistry | 16,318 b, **4 outlinks** | 19,560 b, **15 outlinks** | full silo index of all 14 cosmetic and facial aesthetic pages with descriptive anchors |
+| 104 orthodontics | 11,188 b, 1 outlink | 16,119 b, **9 outlinks** | aligner routing callout, traditional braces, ceramic clear braces, timeline, children at age 7, retainers |
+| 1859 tmj-treatment | 12,929 b, 2 outlinks | 16,830 b, 7 outlinks | "temporomandibular joint" explained (0 → 5), "is there a TMJ specialist" answered honestly (no such specialty), treatment order, cross-links to 3970/1850/3303 |
+| 1860 kids-dentistry | 15,736 b, **1 outlink** | 17,588 b, 8 outlinks | related child care links + "if your child is in pain right now" routing to 1785 |
+| 1785 dental-emergency guide | 7,891 b | 10,183 b | pediatric emergency section, baby vs adult avulsion handled in opposite ways |
+| 100 dental-crowns | 18,575 b, 2 outlinks | 20,724 b | tooth crown terminology, where a crown sits among filling/root canal/implant/bridge/veneer |
+| 126 tooth-extractions | 15,403 b | 16,400 b | simple vs surgical extraction |
+| 114, 1623 | — | — | duplicate FAQPage merged (below) |
+
+**A REAL BUG IN MY OWN CLOSE-OUT VALIDATOR, found and fixed — every future session must use the corrected pattern.** I have been validating delivered HTML with `#<script type="application/ld\+json">#`. On this site the delivered tag is **`<script data-jetpack-boost="ignore" type="application/ld+json" class="aioseo-schema">`** — the `type` attribute is NOT first, so the regex matched **nothing** and cheerfully reported "0 blocks, 0 invalid". Every delivered-HTML schema check I have run was vacuously true. (Checks run against `post_content` were fine, because blocks I insert myself do start with `type=`.) **Correct pattern: `#<script[^>]*type="application/ld\+json"[^>]*>(.*?)</script>#s`.** Re-running with it immediately surfaced a defect the old pattern had been hiding.
+
+**THAT DEFECT: three published pages carried TWO FAQPage blocks each.** 126 (6 + 3 questions), **114 porcelain-veneers (3,862 impr)** and 1623 lip-fillers. Merged each into one block, de-duplicating questions by lowercased name: 126 → 9 questions, 114 → 8, 1623 → 9. Backups `ld_bak_<id>_faqmerge_20260912`. **Sitewide now: 76 pages, 106 JSON-LD blocks, 0 invalid, 0 duplicate FAQPage.**
+
+Close-out: all 12 pages verified live at 200 with exactly 1 h1 and no fatals; 22 schema blocks across the 10 main pages, 0 invalid; Boost cache purged; AIOSEO sitemap cache cleared; IndexNow pinged 12/12. Backups `ld_bak_1849_expand_`, `ld_bak_1849_faq_`, `ld_bak_124_expand_`, `ld_bak_124_faq_`, `ld_bak_68_faq_`, `ld_bak_108_silo_`, `ld_bak_104_expand_`, `ld_bak_1859_expand_`, `ld_bak_1860_links_`, `ld_bak_1785_kids_`, `ld_bak_100_terms_`, `ld_bak_126_terms_` (all `_20260912`).
+
+**MEASUREMENT, and set the expectation honestly.** Re-pull in 4 to 6 weeks with `gsc_query($s,$e,array('query','page'),25000)` and check: 1849 and 1409 above 104 on "invisible braces park ridge"; 2559 displacing 124 on "dental implants park ridge"; 100 moving on "tooth crown park ridge"; 1859 closing on 3970. **None of this changes the standing CTR finding** — non-branded local clicks are ~0.046% regardless of position, and GBP remains the lever. This work is about which page Google shows and how well the site explains itself, not about manufacturing clicks that the SERP layout is absorbing.
+
+**Timeout note reconfirmed:** the 68 write returned an MCP 60s timeout and had **succeeded**. Always verify server-side before retrying.
