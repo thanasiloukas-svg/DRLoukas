@@ -1127,3 +1127,23 @@ The only live copy of the trauma video sat on a page at position 92, while the e
 **THIS CORRECTS THE STANDING VIDEO ADVICE, PARTLY.** The conclusion "stop making 10 second clips, one 2 to 3 minute explainer beats the library" still holds. But the owner already HAD a 98 second explainer on the single topic where he has real local demand, and it was invisible. **Before recommending new filming to this owner again, inventory durations from the files first.** Note the YouTube copy on 2876 could not be length-checked from a remote session (network policy blocks youtube.com), so whether it is the same footage is unverified; its VideoObject still carries no duration and that should not be invented.
 
 **Emergency demand for reference:** 1771 2,306 impr pos 16.8, plus 652 impressions of pediatric emergency intent ("emergency toothache relief for kids park ridge" 493 at 18.5). That is where a second video belongs if one is ever filmed.
+
+### THE YOUTUBE EMERGENCY VIDEO IS 3:36 — the explainer already existed (Sep 12, same day, later)
+Owner supplied the length I could not check: **`ntoOp5lmp1w` on the practice YouTube channel is 3 minutes 36 seconds.**
+
+**So the two emergency videos are DIFFERENT EDITS, not the same file.** That resolves the open question from the previous entry:
+| Version | Length | Host | Was on |
+|---|---|---|---|
+| `emergency-dental-trauma-park-ridge.mp4` | **1:38** | self hosted, 3.5 MB | nowhere (orphaned, now on 1771) |
+| `ntoOp5lmp1w` | **3:36** | YouTube | 2876 only, position 92, 2 impressions |
+
+**THE STANDING VIDEO RECOMMENDATION IS NOW FULLY CORRECTED. He already had the explainer.** Every prior entry in this file told the owner to film "one 2 to 3 minute explainer" instead of more 10 second clips. **That video existed the whole time, at 3:36, on the right topic, and it was sitting on a page nobody sees.** The advice was not wrong about the strategy, it was wrong about the premise. **Never recommend new filming to this owner without first inventorying durations from the files AND asking him for the length of anything hosted off-site that cannot be measured from here.**
+
+**BOTH FIXES APPLIED:**
+- **2876 `/videos/emergency-dental-trauma-video/`**: its VideoObject had carried **no duration** since it was built (one of the 5 flagged YouTube embeds). Added `PT3M36S` by JSON-decoding the block, walking it recursively for any VideoObject with an empty duration, and re-encoding with a validity check. 7,573 -> 7,594 bytes. Backup `ld_bak_2876_duration_20260912`.
+- **1771 `/emergency-dentistry/` now carries BOTH videos**, which is correct because they are different edits and the page has 2,306 impressions at position 16.8 while the watch page has 2. The 3:36 YouTube version was added directly under the 1:38 local clip as a **lazy loaded 16:9 responsive iframe** (`loading="lazy"`, `rel=0`, `strict-origin-when-cross-origin`) with its own VideoObject carrying `PT3M36S`, the YouTube contentUrl and embedUrl, and the `maxresdefault` thumbnail. 31,253 -> 32,837 bytes. Backup `ld_bak_1771_ytfull_20260912`.
+- Captions state only what is demonstrable. **The two edits are NOT claimed to be the same case** — that was never verified, so the long one is described as "the full length version" of same day emergency treatment, not as the same patient.
+
+**Verified live:** 1771 returns 200 / 124.9 KB / 1 h1 / 1 video tag / **5 JSON-LD blocks, 0 invalid, durations `[PT3M36S, PT1M38S]`** / 0 fatals. 2876 returns 200 with `PT3M36S` present. **Both `/emergency-dentistry/` and `/videos/emergency-dental-trauma-video/` are in `page-video-sitemap.xml`.** Cache purged, `video_scan_date` nulled again to force an AIOSEO rescan, IndexNow pinged for both.
+
+**Structure to preserve:** the self hosted 1:38 clip is the one that gives the site its own watch page claim (local `contentUrl`); the YouTube 3:36 is the full explainer and also feeds the channel. Keeping the short cut self hosted and the long cut on YouTube, with both on the traffic page, is deliberate. Do not consolidate them.
