@@ -1481,3 +1481,42 @@ Close-out: all 12 pages verified live at 200 with exactly 1 h1 and no fatals; 22
 **MEASUREMENT, and set the expectation honestly.** Re-pull in 4 to 6 weeks with `gsc_query($s,$e,array('query','page'),25000)` and check: 1849 and 1409 above 104 on "invisible braces park ridge"; 2559 displacing 124 on "dental implants park ridge"; 100 moving on "tooth crown park ridge"; 1859 closing on 3970. **None of this changes the standing CTR finding** — non-branded local clicks are ~0.046% regardless of position, and GBP remains the lever. This work is about which page Google shows and how well the site explains itself, not about manufacturing clicks that the SERP layout is absorbing.
 
 **Timeout note reconfirmed:** the 68 write returned an MCP 60s timeout and had **succeeded**. Always verify server-side before retrying.
+
+### PENDING #12 CLOSED — the owner sent the actual SERP, and it names the constraint (Sep 13)
+Owner ran `park ridge teeth whitening` in Chrome, signed in, and sent four screenshots: the local finder, and AI Mode. **This is the first direct look at one of these SERPs in the whole engagement, and it settles the CTR question that live GSC could only describe from the outside.**
+
+**THE LOCAL PACK, in order, with review counts. This is the finding.**
+| # | Practice | Rating | Reviews | Category | Opens Mon |
+|---|---|---|---|---|---|
+| 1 | Family Dental Care Park Ridge | 4.9 | **289** | Teeth whitening service | 8 AM |
+| 2 | Park Ridge Dental Associates | 4.8 | 90 | Dentist | 8 AM |
+| 3 | Smile Obsession, Glenview | 4.9 | **1,300** | Teeth whitening service | 9 AM |
+| **4** | **Loukas Dentistry of Park Ridge** | **4.9** | **88** | Teeth whitening service | **10 AM** |
+| 5 | Purely Smiles Dental | 4.9 | 161 | Dentist | 9 AM |
+| 6 | North Shore Dental Group, Luma Naim | 4.9 | 292 | Teeth whitening service | 8 AM |
+| 7 | Edison Park Smiles | 4.9 | 331 | Dentist | 9 AM |
+| 8 | Signature Smiles of Park Ridge | 4.7 | 153 | Cosmetic dentist | 9 AM |
+
+- **Loukas has the FEWEST reviews of any business on the page: 88 against a median competitor of 289.** The rating is tied best at 4.9, so rating is not the problem and cannot be improved much. **Review VOLUME is the gap, and it is the only one of Google's three local factors he can move.**
+- **Proximity is the second handicap and it cannot be fixed.** The map shows competitors clustered in central Park Ridge while 714 W Higgins Rd sits at the southern edge by Edison Park and O'Hare. Park Ridge Dental Associates outranks him on 90 reviews at a *lower* 4.8 rating, which is what a proximity advantage looks like.
+- **Category is correct** ("Teeth whitening service", matching the three other whitening-categorised competitors). Nothing to fix.
+- **Hours are a conversion leak, not a ranking one:** every competitor on the page opens 8 or 9 AM Monday, Loukas opens 10 AM, and the listing renders "Closed, Opens 10 AM Mon". Owner's business decision, but it is visible in the comparison.
+- **This is exactly what the 0.046% non-branded CTR has been measuring.** Eight businesses with photos, ratings and directions sit above the organic links. The blue link is not where the click goes.
+
+**AI MODE — genuinely good news, and it is earned, not personalisation.** Loukas Dentistry appears as one of three source cards and is the FIRST inline citation on the opening claim ("professional teeth whitening in Park Ridge, IL provides significantly faster, more reliable, and longer-lasting results than over-the-counter kits").
+- The card title reads **"Teeth Whitening in Park Ridge, IL | In Office and Take Home"**, which is character-for-character the 59-char title written to `wp_aioseo_posts` on Sep 12. **AI Mode is consuming the current meta, so that work is landing.**
+- The cited claim maps onto real page content: page 110 contains "over-the-counter" twice, "drugstore" once, "strips" once, and its lead H2 is "In-Office vs. Take-Home Teeth Whitening in Park Ridge, IL: Which is Right for You?". The comparison framing is why it was picked for a comparison sentence.
+- **The "You manage this Business Profile" badge IS personalisation** and only the owner sees it. Citation ordering in AI Mode is retrieval-driven, not owner-driven, but **this could not be verified from here** (the network policy blocks google.com). The test is one incognito window, and it was given to the owner as such rather than asserted.
+
+**`/reviews/` (1233) WAS BROKEN AND IS REBUILT.** The page whose entire job is reviews displayed none and asked for none.
+- It loaded **`apis.google.com/js/plusone.js`** and **15 `<div class="g-post" data-href="">`** embeds. Those are **Google Plus**, shut down in 2019. All 15 rendered nothing.
+- It loaded a Yelp widget from **`http://chrisawren.com/widgets/yelp/yelpv2.js`** — a third-party script from an unrelated domain over **plain HTTP on an HTTPS page**, so browsers block it as mixed content before it ever runs. On a medical practice site that is a defect worth removing on its own.
+- Remaining content was a 2015 JPEG screenshot of a Google Plus summary, plus a Manus text block that said "we appreciate feedback on Google, Yelp and Facebook" **with no link to leave one**.
+- **Sitewide check: 0 published pages carried a review request link.** The only one on the site is in `footer.php`, and it works: `https://g.page/loukas-dentistry/review` verified server-side, **302 then 200 following redirects**.
+- **REBUILT** 3,070 -> 3,345 b: all dead scripts and embeds removed, a navy and teal "Leave a Google Review" CTA using the verified footer URL, an honest section explaining why reviews live on Google rather than as hand-picked testimonials on the page, and internal links to new-patients, services, smile gallery and contact. Backup `ld_bak_1233_reviews_20260913`. Verified live: 200, 1 h1, 1 JSON-LD block 0 invalid, **0 insecure `http://` asset references**, review button present, no fatals. Cache purged, IndexNow pinged.
+
+**DO NOT ADD `aggregateRating` MARKUP FOR THE PRACTICE.** It was considered and rejected on policy. Google has excluded **self-serving reviews** (reviews about a business, collected on that business's own site) from review rich results since 2019, so `aggregateRating` on `LocalBusiness`/`Dentist` earns nothing and risks a manual action. Exactly one published page contains the string today; leave it alone rather than propagating it.
+
+**Place ID is on file: `ChIJtV_0H43JD4gR8gqqpxfyEBo`** (in `aioseo_options_pro`, set by the Cowork session). The durable Google-documented review URL is `https://search.google.com/local/writereview?placeid=ChIJtV_0H43JD4gR8gqqpxfyEBo` — it correctly 302s to a sign-in, which is expected behaviour. **`g.page` custom short names are a deprecated format**; the current one still resolves, so it was left in place, but if it ever dies the Place ID URL is the replacement.
+
+**THE STRATEGIC LINE, unchanged but now evidenced rather than inferred:** the on-page work is done and is being consumed (AI Mode proves it). The remaining gap is 88 reviews against 289, and an address on the edge of the town he is trying to rank in. **No further on-page work on whitening will change that.** A review generation habit at the front desk is the whole lever.
