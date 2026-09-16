@@ -1520,3 +1520,28 @@ Owner ran `park ridge teeth whitening` in Chrome, signed in, and sent four scree
 **Place ID is on file: `ChIJtV_0H43JD4gR8gqqpxfyEBo`** (in `aioseo_options_pro`, set by the Cowork session). The durable Google-documented review URL is `https://search.google.com/local/writereview?placeid=ChIJtV_0H43JD4gR8gqqpxfyEBo` — it correctly 302s to a sign-in, which is expected behaviour. **`g.page` custom short names are a deprecated format**; the current one still resolves, so it was left in place, but if it ever dies the Place ID URL is the replacement.
 
 **THE STRATEGIC LINE, unchanged but now evidenced rather than inferred:** the on-page work is done and is being consumed (AI Mode proves it). The remaining gap is 88 reviews against 289, and an address on the edge of the town he is trying to rank in. **No further on-page work on whitening will change that.** A review generation habit at the front desk is the whole lever.
+
+### THE "178 DUPLICATED ALT TEXTS" ITEM WAS MEASURING THE WRONG FIELD — corrected (Sep 16)
+The Sep 5 entry logged "178 images share eight descriptions" and called it the ideal parallel job for a second agent. **That count came from `_wp_attachment_image_alt` postmeta, which is NOT what Google reads.** WordPress copies that value into the markup once, at insert time. After that the `alt` attribute living in `post_content` is the only one rendered, and the two drift apart freely.
+
+**Proof, from page 104 /orthodontics/:** its two Invisalign images carry attachment alt `Invisalign Results – Park Ridge IL` on both, while the delivered markup already reads `alt="Before Invisalign treatment results"` and `alt="After Invisalign treatment results"`. Same on the Botox pages: 2899 and 2378 share one postmeta value but render as "Forehead Botox treatment..." and "Botox migraine injection points performed by Dr. Thanasi Loukas...". **Rewriting postmeta on those would have changed nothing on the live site.**
+
+**THE REAL SITEWIDE STATE, measured on rendered `<img>` tags in published `post_content`:**
+| Metric | Value |
+|---|---|
+| Content img tags | 365 |
+| Distinct alt strings | 337 |
+| Empty or missing alt | **0** |
+| Different images sharing one alt | **4 (2 pairs)** |
+
+Almost every apparent duplicate is **the same file reused on two pages**, which is correct, or a `<picture>` element's `.jpg` and `.webp` of one image, or two registered sizes of one image. **Filter those out before reporting anything.** The de-duplication that matters is by image *stem* with the format extension and any `-WxH` size suffix stripped.
+
+**THE FOUR GENUINE CASES, all on 1855 /dental-bonding/, all fixed:** two different composites both alt'd `White filling before and after`, and two more both alt'd `Composite bonding before and after`.
+- **Each already carried an accurate, specific figcaption**, so the replacement alt was derived from the page's own published wording rather than invented or guessed from a filename. No new clinical claim was made.
+- `before-and-after-white-filling_64d09432` -> chip and cavity between the front teeth; `...white-filling1_2dca0618` -> old discolored fillings replaced; `composite-bonding-before-after_42f6a8e5` -> gaps closed in a single appointment; `...-2_8ebe98c3` -> fractured front tooth rebuilt.
+- Replaced by locating each `<img>` tag from its `src` and swapping only that tag's `alt`, with an **abort if fewer than 4 of 4 matched**. The matching attachment postmeta (3008, 3009, 3011, 3012) was updated too, so a future insert carries the good text. Backup `ld_bak_1855_alt_20260916`.
+- Verified: **365 tags, 339 distinct alts, 0 missing, 0 genuine duplicates sitewide.** Page 200, 1 h1, 2 JSON-LD blocks 0 invalid, no fatals. Cache purged, IndexNow pinged.
+
+**A FALSE POSITIVE THAT NEARLY DROVE 38 POINTLESS EDITS.** The first pass matched attachments to pages with `strpos($post_content, $filename_stem)`. Attachments 31 to 46 are named `1.jpg` through `16.jpg`, so their stems matched **every page on the site** and the report claimed they appeared on 145 pages each. `Botox.jpg` and `Fillings.jpg` did the same. **Always match on the actual `<img src="...">` basename, never on a bare stem.**
+
+**Remaining postmeta duplication is real but near worthless: 86 of 296 placed attachments share a postmeta alt**, 48 of them the mission trip galleries (`/chihuauwa-mexico/` 13, Guatemala 30, Dominican Republic 13, Honduras 5) which are legacy pages with no traffic. Those photos **were deliberately left alone**: describing 30 near-identical volunteer photos individually would mean either a vision call per image on a page nobody visits, or inventing descriptions, and this file already records that vision cannot be trusted to describe image content. **Do not "fix" them, and do not re-raise the 178 figure.**
