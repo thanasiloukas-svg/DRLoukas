@@ -1545,3 +1545,24 @@ Almost every apparent duplicate is **the same file reused on two pages**, which 
 **A FALSE POSITIVE THAT NEARLY DROVE 38 POINTLESS EDITS.** The first pass matched attachments to pages with `strpos($post_content, $filename_stem)`. Attachments 31 to 46 are named `1.jpg` through `16.jpg`, so their stems matched **every page on the site** and the report claimed they appeared on 145 pages each. `Botox.jpg` and `Fillings.jpg` did the same. **Always match on the actual `<img src="...">` basename, never on a bare stem.**
 
 **Remaining postmeta duplication is real but near worthless: 86 of 296 placed attachments share a postmeta alt**, 48 of them the mission trip galleries (`/chihuauwa-mexico/` 13, Guatemala 30, Dominican Republic 13, Honduras 5) which are legacy pages with no traffic. Those photos **were deliberately left alone**: describing 30 near-identical volunteer photos individually would mean either a vision call per image on a page nobody visits, or inventing descriptions, and this file already records that vision cannot be trusted to describe image content. **Do not "fix" them, and do not re-raise the 178 figure.**
+
+### Weekly link scan 2026-09-25 — clean, and a NEW false positive that must not be "fixed"
+151 published pages, **292 unique links, ZERO broken.** 133 resolved via `url_to_postid`, 159 HTTP-checked. Link count is up from 238 on Sep 4 because of the Sep 12 internal-linking work (related-reading blocks, silo links, orphan repairs).
+
+**Two non-200 results, both false positives:**
+1. `instagram.com/loukasdentistry/` → **429**, the known Instagram datacenter-IP rate limit. Already documented. Not a dead link.
+2. **NEW: `https://www.mogo.com/Registration/Appointment/Index` → `cURL error 60: SSL certificate problem: unable to get local issuer certificate`.** This looks like a hard failure and it is NOT one.
+
+**Why it is a false positive, proven rather than assumed.** Opened a raw TLS socket with verification off and read the served chain:
+- Leaf `CN=*.mogo.com`, **valid to 2027-03-18**, SAN covers `mogo.com` and `*.mogo.com`.
+- **The chain served is complete, 2 certs**: leaf + `GoDaddy TLS Intermediate CA DV - R1v1`, which is issued by **`GoDaddy TLS Root CA - R1`**.
+- WordPress's own bundled `wp-includes/certificates/ca-bundle.crt` (186 KB on this host) contains **one** "Go Daddy" string (the old `Go Daddy Root Certificate Authority - G2`) and **zero** occurrences of "godaddy" — **the newer R1 root is not in it.**
+So mogo.com is correctly configured and real browsers trust it; only *this server's* outdated WP CA bundle cannot build the path. **Do NOT rewrite these links.**
+
+**What would have been damaged by "fixing" it:** three live "Schedule Appointment" / "Book an Appointment" CTA buttons — two on **68 `/services/`** (4,983 impr) and one on **47 `/virtual-tour/`**. Both pages verified 200 with 1 h1 and the buttons intact; nothing was changed.
+
+**CORRECTION to the Sep 5 entry, which claimed "mogo.com appeared exactly once, only here" (on post 1418).** That sitewide scan was wrong. Live count of non-revision rows containing `mogo.com`: **47 (page/publish), 68 (page/publish), 14 (page/draft), 3379 (custom_css), 4354 (novamira_skill)**. The Sep 5 repoint of 1418 was still right on its own terms — that one was plain `http://` on an HTTPS page, i.e. genuinely blocked as mixed content — but the "only one reference" claim was not.
+
+**OPEN QUESTION FOR THE OWNER, and it is a business question not a technical one:** is Mogo still the practice's booking system? If yes these CTAs are correct and should stay. If the practice has moved off Mogo, then `/services/` and `/virtual-tour/` are sending patients to a scheduler that is not his, and they should point at `/contact-us/`. **Not changed unilaterally** — the Sep 5 precedent repointed a plain-http link on a blog post, which is not the same as retargeting the primary booking CTA on the services hub.
+
+**NEW RULE for this scan: `cURL error 60` is a trust-path failure, not a dead link.** Before reporting one as broken, open a socket with `verify_peer=false`, parse the leaf for expiry and SAN, and count the served chain. A valid unexpired cert with a complete chain means the remote host is fine and the local CA bundle is stale.
