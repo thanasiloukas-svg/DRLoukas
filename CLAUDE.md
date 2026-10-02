@@ -1692,3 +1692,32 @@ Also improved: cosmetic dentist park ridge il 17.0 -> 16.1, tmj treatment park r
 **THE CONCLUSION IS UNCHANGED AND NOW HAS A FOURTH INDEPENDENT MEASUREMENT: ranking is not the constraint.** 188 non-branded local queries at average position 13.1, a dozen of them between 4.5 and 9, produce **zero clicks**. The on-page work demonstrably moves position and position demonstrably does not convert. **GBP, reviews and proximity are the whole remaining lever**, which is exactly what today's profile work addressed. Do not read "clicks 2 -> 0" as a regression; the base is too small to be a trend, and the branded/non-branded split has been stable for three months.
 
 **PHOTOS AND PRODUCTS ARE PERMANENTLY MANUAL — tested, not assumed.** `v4/.../media` returns SERVICE_DISABLED and `v4/.../products` returns **404, the endpoint does not exist at all.** Google retired both. The owner has already uploaded his photos through the dashboard. **Do not hand him a photo upload list again — he did it.**
+
+### Languages corrected, homepage CTAs made prominent, rurl cleaned sitewide (Oct 2, later)
+Owner supplied the facts directly: **he and Dr. Maria Loukas speak Greek and English fluently, hygienist Elena Vargas also speaks Greek, receptionist Rosanna Patano speaks Italian fluently. The Polish-speaking assistant leaves in a week**, so Polish was removed.
+
+**GREEK IS NOT AVAILABLE AS A GBP ATTRIBUTE. Do not try again.** `attributes/languages_spoken` for this location offers exactly **19** values and Greek is not one: American Sign Language, Arabic, Cantonese, English, Filipino, French, German, Haitian Creole, Hindi, Italian, Korean, Mandarin, Polish, Portuguese, Romanian, Russian, Spanish, Ukrainian, Vietnamese. That is Google's list, not a setting.
+- **Set:** `english_spoken` + `italian_spoken`, `polish_spoken` moved to `unsetValues`.
+- **Greek was put in the description instead**, which is the only place on the profile it can appear. Description rewritten to 729 chars (limit 750) ending "...Our team speaks Greek and Italian. New patients welcome." Freed the space by trimming "northwest Chicago suburbs" to "northwest suburbs", compressing the implant sentence, and shortening the facial-aesthetics clause. Backup `ld_bak_gbp_desc_20261002`.
+- **GOTCHA: the stored description contains HARD LINE BREAKS.** Two literal `str_replace` calls silently failed because the phrase spanned a newline, and the abort guard caught it. **Collapse whitespace first, or anchor on a short fragment that cannot straddle a break.**
+- **Healthgrades, which lists Greek, is therefore MORE accurate than Google on languages.** Another reason to claim those profiles.
+
+**HOMEPAGE CTAs MADE PROMINENT (owner's explicit request).** Both buttons already existed in the hero; the problem was that the appointment button was `.btn-outline` — transparent with a 1.5px border, reading as secondary.
+- **Appended a corrective block to `assets/css/main.css`** (the established pattern: appended rules win the cascade at equal specificity). 44,835 -> 46,149 bytes. Backup `main.css.bak-20261002-ctas`.
+  - `.hero-ctas .btn` padding 14/32 -> **20/44**, font 15px -> **19px**, weight 700, icons 22px.
+  - `.hero-ctas .btn-primary` (call) brighter teal gradient `#2EF0DA -> #18C6B3` on navy text, **21px**, stronger glow.
+  - `.hero-ctas .btn-outline` (appointment) is now a **solid gold `#CCA968` button with navy text**, matching the brand before/after card palette, no longer transparent.
+  - `.hp-contact-phone` 26px bold teal; `.lk-nav-call` background opacity .12 -> .22.
+  - Mobile under 640px: both buttons **full width, stacked**, 18 to 20px.
+- **Theme Version 1.0.6 -> 1.0.7** (mandatory for any main.css change — it is the cache-bust key).
+- **Verified the CSS actually reaches the browser, not just the file:** fetched the homepage, extracted the Boost combined stylesheet `boost-cache/static/ffffd3f02f.min.css` (194.8 KB) and confirmed `.hero-ctas .btn` is PRESENT in the served bundle. **Do not report a CSS change as done without this step** — Boost combines and defers stylesheets, so the source file proves nothing.
+
+**`rurl=http://` CLEANED EVERYWHERE — 51 posts, 2 theme files, 3 live options.** The Mogo booking URL carried a plain-http return parameter, costing an extra redirect hop after every booking.
+- 51 published rows, `header.php` and `footer.php` (both with `token_get_all(TOKEN_PARSE)` syntax checks and `.bak-20261002-rurl` backups), plus options `widget_text`, `options_request_appointment_link`, `loukas_appointment_url`.
+- **Sitewide http rurl now 0** (live options and homepage both verified). Reverse by replacing `rurl=https://` back to `rurl=http://`; affected post ids in `ld_bak_rurl_https_20261002`, option values in `ld_bak_rurlopts_20261002`.
+- The GBP place action link was fixed the same way earlier in the session.
+
+**A SECOND AGENT IS EDITING THIS SITE TODAY — the concurrency rule is live, not theoretical.** 21 backup options are stamped `20261002`; only 7 are mine (the `ld_bak_gbp_*` and `ld_bak_rurl*` set). The other **14 belong to a parallel session**: `ld_bak_102_aioseo`, `ld_bak_102_rewrite`, `ld_bak_1771_dash`, `ld_bak_1850_tmjlink`, `ld_bak_1859_tmjmerge`, `ld_bak_2559_strengthen`, `ld_bak_3258_implantlinks`, `ld_bak_3303_tmjlink`, `ld_bak_3970_status`, `ld_bak_554_bondlink`, `ld_bak_68_implantlink`, `ld_bak_aioseo_meta`, `ld_bak_frontpagephp`, `ld_bak_redirects_tmjguide`.
+- **`ld_bak_frontpagephp_20261002` means that session edited `front-page.php`, which this session also edited today.** There is no post locking and no file locking. My changes verified live after theirs, but the next collision may not resolve so cleanly.
+- `ld_bak_3970_status_20261002` suggests a post **status** change, which is the riskiest kind — check 3970 is still published.
+- **Standing rule restated: two agents must never work the same site at the same time.** Before any multi-file pass, list `ld_bak_%<today>%` and see who else is in here.
