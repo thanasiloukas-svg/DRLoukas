@@ -1637,3 +1637,21 @@ PENDING question from the Sep 25 link scan is **CLOSED: Mogo is still the bookin
 ### Desktop Commander is connected — I can open browser tabs on the owner's machine (Oct 2)
 Device **NashPC**, id `231a0b94-2f0b-447c-9b03-f24681cf7244`, online. `mcp__Remote_Desktop_Commander__start_process` with `shell: cmd.exe` and `start chrome "<url>" "<url>"` opens tabs for him directly, which is the right move for any owner-gated console click instead of pasting links and hoping.
 - **I have NO browser visibility.** Claude in Chrome is not linked. Anything I appear to "see" on his screen came from a screenshot he pasted. He asked directly and was alarmed; state this plainly if it ever comes up again.
+
+### GOOGLE MY BUSINESS API v4 IS NOT AVAILABLE — stop trying to enable it (Oct 2)
+Owner clicked through the Cloud Console twice. **The verdict is final: `mybusiness.googleapis.com` cannot be enabled on project `numeric-anthem-506400-v4`.**
+- The direct library link `console.cloud.google.com/apis/library/mybusiness.googleapis.com?project=...` **redirects to the generic library index**, and on a second attempt the page returns **"Failed to load"** (Request ID 3179639807907991743). Every other My Business API opens its own product page normally.
+- Cause: **v4 is the deprecated, access-restricted legacy API.** The Basic API Access approval that unblocked the current APIs does not reopen it. Reviews, posts and photos are the one group Google never migrated to a v1 surface, which is why they remain stranded there.
+- **Checklist items 7 (reviews), 8 (posts) and 9 (photos) are therefore PERMANENTLY "not checked" from a remote session.** They are visible and manageable in the Business Profile dashboard; they were never something to write programmatically anyway. Do not re-raise this as a blocker.
+
+**FOUR OF FIVE ARE ON, and they cover everything that manages the profile:**
+| API | State | Covers |
+|---|---|---|
+| My Business Business Information | ON | categories, services, hours, description, attributes (the Oct 2 writes) |
+| My Business Account Management | ON | ownership, admins |
+| Business Profile Performance | ON | calls, directions, website clicks, search terms |
+| My Business Place Actions | ON | booking links |
+| Google My Business (v4) | **UNAVAILABLE** | reviews, posts, photos |
+
+**PLACE ACTIONS READ — the booking link exists and is correct.** `placeActionLinks` returns one entry: `placeActionType: APPOINTMENT`, `providerType: MERCHANT`, `isPreferred: true`, `isEditable: true`, uri `https://registration.mogo.com/ScheduleAppt.aspx?oid=5849d0b1-...`, created 2026-04-20, **updated 2026-10-01** (the owner's own fix). Same `rurl=http://` cosmetic leftover as the site CTAs.
+- **CORRECTION to the Oct 2 audit entry: "0 bookings in six months" is NOT a warning and should not be reported as one.** `BUSINESS_BOOKINGS` counts only bookings made through Reserve with Google partner integrations. A merchant-supplied external appointment URL never registers there. Zero is the expected reading for this setup, not evidence of a broken link.
