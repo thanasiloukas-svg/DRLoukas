@@ -1721,3 +1721,66 @@ Owner supplied the facts directly: **he and Dr. Maria Loukas speak Greek and Eng
 - **`ld_bak_frontpagephp_20261002` means that session edited `front-page.php`, which this session also edited today.** There is no post locking and no file locking. My changes verified live after theirs, but the next collision may not resolve so cleanly.
 - `ld_bak_3970_status_20261002` suggests a post **status** change, which is the riskiest kind — check 3970 is still published.
 - **Standing rule restated: two agents must never work the same site at the same time.** Before any multi-file pass, list `ld_bak_%<today>%` and see who else is in here.
+
+### THE CALL BUTTON WAS DEAD FOR 62 DAYS — the biggest measurable loss found in this engagement (Oct 2)
+Built the owner a GBP dashboard and the data handed up a real defect. **Artifact: https://claude.ai/artifact/9qnEaPgEdVoGvWzTvcHWLL**
+
+**`CALL_CLICKS` was ZERO for 62 consecutive days, 2026-06-23 through 2026-08-23.** Last click Jun 22, next click Aug 24. Found by pulling the **daily** series, not the monthly — the Oct 2 audit entry above reported "July 0" as a curiosity because monthly totals hide the shape. **Always pull daily when a metric looks odd.**
+
+**Four things rule out every innocent explanation, and all four were tested, not assumed:**
+1. **`BUSINESS_DIRECTION_REQUESTS` and `WEBSITE_CLICKS` ran normally every day of the window**, returned in the *same* API response. Not a Google-wide outage.
+2. **July was the STRONGEST mobile month of the six** (527 mobile-search impressions). Not a quiet summer, not low exposure.
+3. **18-month pull (Apr 2025 – Mar 2026, 365 days): 615 call clicks, monthly 31–70, average 51, and ZERO gaps of even 14 days.** This is the only gap in eighteen months.
+4. Daily rate 1.41/day before the gap, 1.42/day after — so the window itself cost **~88 call clicks**.
+
+**AND IT NEVER RECOVERED.** Baseline was 51/month. The four *unaffected* months of 2026 (Apr 33, May 56, Jun 28, Sep 44) average **40/month**. Calls used to be the dominant action (615/yr vs 444 website clicks); over Apr–Sep 2026 calls were 171 against website 234. **The call action is structurally damaged, not just interrupted.**
+
+**Ranked causes (the listing reads healthy TODAY, so this is historical and no API exposes GBP edit history):**
+1. **Phone number came off the listing, or a Google-suggested edit replaced it.** With no `primaryPhone`, Google draws no Call button while Directions and Website are untouched — matches the fingerprint exactly. CLAUDE.md records `hasGoogleUpdated: true` for months until the owner's Oct 2 address edit resolved it. **`metadata.hasPendingEdits` is STILL true.**
+2. Duplicate or merged listing briefly absorbing calls (no duplicate flag now).
+3. Temporary loss of verified standing (strips action buttons; `hasVoiceOfMerchant: true` now).
+4. Google reporting bug — weakest, see the four tests above.
+
+**Current state verified Oct 2:** `primaryPhone` "(847) 696-1919" present and correct, `openInfo.status` OPEN, `hasVoiceOfMerchant` true, `hasPendingEdits` **true**, no duplicate, primary category Dentist.
+
+**OWNER-FACING POINT HE RAISED AND HE WAS RIGHT:** on **desktop** Search, Google prints the phone as plain text with **no Call button** — which is what he remembered seeing. The dedicated Call button exists only on **mobile**, and tapping it is the ONLY thing `CALL_CLICKS` counts. **73% of impressions are mobile.** Do not confuse the desktop layout with a missing button.
+
+**NEXT STEP, OFFERED AND AWAITING HIS WORD:** Google emails the listing owner when it changes a profile field. A narrow Gmail search for Business Profile notices mid-June to late-August 2026 would very likely name the exact field and date. Gmail connector is available. **Not run without his say-so — it is his personal inbox.**
+
+**METHOD — the dashboard pull, reusable:**
+- Token: `$cfg=include WP_CONTENT_DIR.'/loukas-google/oauth-client.php';` refresh_token grant at `oauth2.googleapis.com/token`.
+- `GET businessprofileperformance.googleapis.com/v1/locations/2957245919655600064:fetchMultiDailyMetricsTimeSeries` with repeated `dailyMetrics=` params and `dailyRange.start_date.{year,month,day}` / `dailyRange.end_date.*`. 6 months × 9 metrics = **304 KB** — write it to a file (`uploads/ld-gbp-perf.json`) and parse server-side; never return raw.
+- The API serves **at least 18 months** of history. Use it: a baseline is what turns an anomaly into a finding.
+- Search terms: `/v1/{loc}/searchkeywords/impressions/monthly`. **Every value reading exactly `15` is `insightsValue.threshold`, a privacy floor, NOT a count.** Only 5 of 41 terms carry real values.
+
+**Numbers for the record, Apr–Sep 2026:** impressions 5,017 (mobile search 2,954 / desktop search 1,077 / mobile maps 705 / desktop maps 281); actions 734 (calls 171, directions 329, website 234); **action rate 14.6%** against non-branded organic at 0.046%. Search 80% vs Maps 20%; mobile 73% vs desktop 27%. `BUSINESS_BOOKINGS` and `BUSINESS_CONVERSATIONS` 0 — both expected (Reserve with Google only; messaging retired). **September (661 impr) may be understated — GBP data lags several days and this was pulled Oct 2.**
+
+### The "second agent" identified, and what it changed (Oct 2)
+Owner asked whether the parallel session was another Claude. **Evidence says yes, and it is not Manus.**
+- **Every connection to the site on Oct 2 came through ONE Novamira OAuth client, registered name "Claude"** (id 54, created Sep 29), on a single unbroken refresh chain: 02:42, 04:26, 05:45, 07:01, 08:17, 09:31, 11:37, 14:03, 15:10, 16:16 UTC. No second client was registered.
+- **All six `Manus *` application passwords read `last_used NEVER`.** The ChatGPT client (id 9) last touched the site Sep 29. `wp_novamira_chat_sessions` holds 1 row, last updated Sep 29 — so not Novamira Chat either.
+- Its backups use the exact `ld_bak_<id>_<label>_<date>` convention, which exists only because it is written in this file.
+- Its work window was **08:36–10:40 UTC**. A sibling session "Claude Terminal setup" exists but was created 10:46 and produced 926 output tokens — not it. Cowork sessions do not appear in `list_sessions`, which is the likeliest surface.
+- **Takeaway for identifying a future collision: the OAuth client name plus app-password `last_used` plus the chat-sessions table distinguishes Claude from Manus/ChatGPT/wp-admin in one query.**
+
+**WHAT IT DID — `ld_bak_3970_status_20261002` RESOLVED, and it is a real change:**
+- **3970 `/teeth-grinding-tmj-guide-park-ridge/` is now a DRAFT** (unpublished). Backup option holds the previous value `publish`.
+- It created **redirect #382** `/teeth-grinding-tmj-guide-park-ridge/` → `/tmj-treatment/`, and **repointed redirects 241–250** (ten legacy teeth-grinding/TMJ URLs) from the guide to `/tmj-treatment/`.
+- **Verified live: the guide URL returns 301 → /tmj-treatment/, no 404.** Competent work, and defensible — the guide outranked the service page (12.0 vs 21.5).
+- **But flag it:** 3970 was one of the three consolidated guides built Aug 23 that this file says not to redo, it was drawing 505 impressions, and the **abfraction before/after card (attachment 4422) placed on it Sep 12 is now off the live site.** Owner's call whether to republish or move that image to 1859.
+- It also edited 102 (root canal rewrite + AIOSEO meta), 2559, 68, 3258, 554, 1771, 1850, 3303 and `front-page.php`.
+- Note its `front-page.php` backup went to an **option** (`ld_bak_frontpagephp_20261002`), not a dated `.bak-` file on disk. Mine are `.bak-<date>-<label>` files. That difference identifies authorship of a theme edit.
+
+### Windsor AI — recommended against (Oct 2)
+Owner asked about connecting Windsor AI to GBP and Search Console "and then to you". Answered honestly:
+- **There is no path from Windsor into a Claude session.** It pipes marketing sources into Looker Studio / Sheets / BigQuery. It cannot feed me.
+- **It adds no capability.** The on-server bridge already reads GSC and GBP live, direct from Google's APIs — the same data Windsor resells, one step closer to source.
+- **It does not touch the constraint.** Four independent measurements say ranking is not the problem (188 non-branded local queries at avg position 13.1 → zero clicks; GBP converts at 14.6%, non-branded organic at 0.046%). The lever is reviews (88 vs local-pack median 289) and proximity.
+- If he wants a dashboard: Looker Studio connects GSC and GA4 natively and free. GBP is the only gap, and that is now covered by the artifact above.
+
+### The OAuth client in the Sep/Oct screenshot — ignore it (Oct 2)
+Owner sent a Cloud Console screenshot of **"GSC Desktop App"**, client `493372200589-...`, created Jun 21 2026, last used Aug 25 2026.
+- **It lives in project `named-signal-492309-m1` ("My Maps Project") — NOT `numeric-anthem-506400-v4`, which holds the working GSC + GBP bridge.**
+- It is a **Desktop**-type client, so localhost-redirect only, and can never authenticate the server-side flow on drloukas.com. It is the leftover from the local `mcp-server-gsc` setup on NashPC.
+- **No benefit, not broken, nothing to do.** Google auto-deletes unused OAuth clients after 6 months (~Feb 2027), restorable 30 days. Confirm nothing local uses it before deleting. **Never touch anything in `numeric-anthem-506400-v4`.**
+- Standing risk worth naming: two Cloud projects is how credentials end up in the wrong one.
