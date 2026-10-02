@@ -1655,3 +1655,40 @@ Owner clicked through the Cloud Console twice. **The verdict is final: `mybusine
 
 **PLACE ACTIONS READ — the booking link exists and is correct.** `placeActionLinks` returns one entry: `placeActionType: APPOINTMENT`, `providerType: MERCHANT`, `isPreferred: true`, `isEditable: true`, uri `https://registration.mogo.com/ScheduleAppt.aspx?oid=5849d0b1-...`, created 2026-04-20, **updated 2026-10-01** (the owner's own fix). Same `rurl=http://` cosmetic leftover as the site CTAs.
 - **CORRECTION to the Oct 2 audit entry: "0 bookings in six months" is NOT a warning and should not be reported as one.** `BUSINESS_BOOKINGS` counts only bookings made through Reserve with Google partner integrations. A merchant-supplied external appointment URL never registers there. Zero is the expected reading for this setup, not evidence of a broken link.
+
+### Profile finished through the API, and the Sep 12 work is MEASURABLY WORKING (Oct 2)
+Owner: "edit the profile all the way through, make sure rankings are better and then pull my rankings."
+
+**EVERYTHING THE API CAN REACH IS NOW DONE.** Categories 7, services 23, attributes **31 -> 35**, booking link corrected.
+- **Attributes added, all grounded in the site's own copy rather than guessed:** `url_appointment` (the https Mogo scheduler), `url_youtube` (`https://www.youtube.com/@LOUKASDENTISTRY`, confirmed in `aioseo_options` social profiles, page 2643, footer.php and front-page.php), `has_onsite_parking` and `has_parking_lot_free` (pages 68, 72, 91, 96, 126, 565 all say free on-site parking on the west side of the building). Backup `ld_bak_gbp_attributes_20261002`.
+- **DELIBERATELY NOT SET:** the seven ownership-identity attributes (`is_owned_by_asian/black/disability/indigenous/latinx/lgbtq/veterans`) and `url_linkedin`/`url_tiktok`/`url_pinterest`/`url_twitter`/`url_whatsapp`/`url_text_messaging`. AIOSEO has those social fields **empty**, so the accounts probably do not exist, and identity attributes are the owner's to declare. **Never guess these.**
+- **Booking link fixed:** `placeActionLinks` PATCH `?updateMask=uri` changed `rurl=http://www.drloukas.com` to `https://`. Backup `ld_bak_gbp_placeaction_20261002`.
+
+**TWO API SYNTAX LANDMINES, both cost a round trip:**
+- `GET /v1/attributes?parent=locations/X` — **`languageCode` and `regionCode` must NOT be set when `parent` is set** (400, "Field must not be set when parent is set"). With `parent` alone it returns 55 available attributes for the location's categories.
+- `PATCH /v1/{loc}/attributes?attributeMask=...` — the mask needs the **FULL** name, `attributes/url_appointment`, not the bare id. Bare ids return 400 `INVALID_ATTRIBUTE_NAME`, and Google's own docs example shows the short form, which is wrong here.
+
+**THE MEASUREMENT, and it is the best news in this file.** Non-branded "park ridge" queries, Aug 31 to Sep 27 vs Aug 3 to Aug 30:
+| | Prior 28d | Current 28d |
+|---|---|---|
+| Queries | 194 | 188 |
+| Impressions | 15,469 | 13,289 |
+| **Avg position** | **15.1** | **13.1** |
+| Clicks | 2 | **0** |
+
+**Average position improved two full places in four weeks, and every named mover is a page edited on Sep 12:**
+| Query | Was | Now | What was done |
+|---|---|---|---|
+| invisalign park ridge | 10.4 | **7.8** | 1849 expanded, routing callout on 104 |
+| invisalign park ridge il | 8.3 | **6.3** | same |
+| dental implants park ridge | 24.0 | **20.0** | hub consolidation + 124 routing implant intent away |
+| dental crown in park ridge il | 16.6 | **13.8** | 100 "tooth crown" terminology section |
+| invisible braces park ridge | 10.1 | **8.8** | **the phrase was added to 1849, which had ranked for it with zero occurrences** |
+| composite filling park ridge | 11.2 | **9.8** | 98 FAQ + before/after card |
+| dental bonding park ridge | 10.1 | **9.0** | 1855 rebuilt 7.4KB -> 22.7KB |
+| dentist park ridge il | 15.4 | **13.9** | anchor-text and head-term work |
+Also improved: cosmetic dentist park ridge il 17.0 -> 16.1, tmj treatment park ridge 8.7 -> 8.4, teeth bonding park ridge 10.7 -> 10.5. Slight slippage on tmj park ridge 8.6 -> 9.2 and teeth whitening park ridge 5.1 -> 5.5, both inside normal weekly noise.
+
+**THE CONCLUSION IS UNCHANGED AND NOW HAS A FOURTH INDEPENDENT MEASUREMENT: ranking is not the constraint.** 188 non-branded local queries at average position 13.1, a dozen of them between 4.5 and 9, produce **zero clicks**. The on-page work demonstrably moves position and position demonstrably does not convert. **GBP, reviews and proximity are the whole remaining lever**, which is exactly what today's profile work addressed. Do not read "clicks 2 -> 0" as a regression; the base is too small to be a trend, and the branded/non-branded split has been stable for three months.
+
+**PHOTOS AND PRODUCTS ARE PERMANENTLY MANUAL — tested, not assumed.** `v4/.../media` returns SERVICE_DISABLED and `v4/.../products` returns **404, the endpoint does not exist at all.** Google retired both. The owner has already uploaded his photos through the dashboard. **Do not hand him a photo upload list again — he did it.**
