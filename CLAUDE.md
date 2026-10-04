@@ -1784,3 +1784,40 @@ Owner sent a Cloud Console screenshot of **"GSC Desktop App"**, client `49337220
 - It is a **Desktop**-type client, so localhost-redirect only, and can never authenticate the server-side flow on drloukas.com. It is the leftover from the local `mcp-server-gsc` setup on NashPC.
 - **No benefit, not broken, nothing to do.** Google auto-deletes unused OAuth clients after 6 months (~Feb 2027), restorable 30 days. Confirm nothing local uses it before deleting. **Never touch anything in `numeric-anthem-506400-v4`.**
 - Standing risk worth naming: two Cloud projects is how credentials end up in the wrong one.
+
+### THE CALL-BUTTON CAUSE IS FOUND — Google rewrote the phone field on June 17 (Oct 3)
+Owner authorised the Gmail search. Two Google senders, June 16 to Sep 1, scoped to Business Profile notices. **The answer was one email.**
+
+**`businessprofile-noreply@google.com`, 2026-06-17 11:35 UTC, "Loukas Dentistry of Park Ridge, review new changes to your Business Profile":**
+> "Your Business Profile has recently been updated, either through user feedback or through our automated systems."
+> **New phone number: (847) 696-1919**
+
+**That is the ONLY field the email names, and it is the ONLY profile-field change notice in the entire window.** Everything else from those senders is performance reports, review alerts, a Labor Day hours prompt and Maps contributor noise.
+
+**Timeline, and the listing was mid-ownership-transfer when it happened:**
+| Date (UTC) | Event |
+|---|---|
+| Jun 1 16:59 | "Thanasi Loukas, your request has been sent" (management request) **and** an ownership invitation to thanasi.loukas@gmail.com |
+| Jun 9 04:34 + 04:40 | Two verification codes sent to **thanasi@drloukas.com** |
+| **Jun 17 11:35** | **Google-managed update: phone number** |
+| Jun 17 11:45 | Maps "your place edit was accepted" (generic contributor notice, names no field) |
+| **Jun 22** | **Last call click** |
+| **Jun 23 to Aug 23** | **62 days, zero call clicks** |
+| Aug 24 | Calls resume |
+
+**THE KEY POINT: he was asked to confirm that change and never did.** CLAUDE.md records `hasGoogleUpdated: true` persisting for months, clearing only on **Oct 2** when his address edit resolved it. So the June 17 Google-managed phone update **sat unreviewed from Jun 17 to Oct 2** — which brackets the outage.
+
+**Stated honestly: this is five days before the gap, not the same day, and an email cannot prove causation.** But it is the only field change in the window, on exactly the field that draws the Call button, during an ownership claim, and Google's own notices say edits take 24 hours or more to propagate. **The number Google set is CORRECT — the defect is not a wrong number, it is that the field was rewritten by an unverified automated edit and left unconfirmed.**
+- **Owner action:** open the phone field in the Business Profile dashboard, confirm (847) 696-1919 and save, so it is owner-asserted rather than Google-managed.
+
+### SECOND FINDING, AND IT IS LIVE: POSTING IS TURNED OFF ON THE BUSINESS PROFILE (Oct 3)
+Not what the search was looking for. From `businessprofile-noreply@google.com`, **2026-09-12 05:10 UTC**:
+> "**Google has turned off posting for this Business Profile to prevent edits that violate Google's policies.**"
+> Routing ID: **DPNB**
+
+- The removed post was ordinary service copy: *"Dental implants, start to finish, in one office. At Loukas Dentistry of Park Ridge, Dr. Thanasi L..."* Nothing in it violates anything legible. This reads as automated enforcement.
+- **It is not one incident. "Your post has been removed from Google" arrived four times on Jun 9 (04:05:34, :35, :36, :47), then Jun 17, Jun 18, and Sep 12.** The four-in-twelve-seconds burst on Jun 9 is the likeliest trigger for the suspension.
+- **This matters disproportionately.** GBP converts ~14.6% of impressions into calls, directions and website clicks against 0.046% for non-branded organic, and posts are one of the few things on that surface the owner fully controls. It is currently disabled.
+- **Owner action:** appeal the posting suspension in the Business Profile dashboard quoting Routing ID **DPNB**. Cannot be done from here — reviews, posts and photos live only in the retired GMB v4 API, which is permanently unavailable on this Cloud project.
+
+**METHOD NOTE:** the Gmail connector authenticates as **thanasi.loukas@gmail.com**, which is the address GBP notices go to (the Drive connector is the separate `loukasgendentistry@gmail.com`). Query that worked: `from:(businessprofile-noreply@google.com OR google-maps-noreply@google.com) after:YYYY/MM/DD before:YYYY/MM/DD in:anywhere`. **Google's profile-field change emails name the changed field in the body, so this is the one reliable way to reconstruct GBP edit history — no API exposes it.** Re-run it whenever a GBP metric moves without explanation.
