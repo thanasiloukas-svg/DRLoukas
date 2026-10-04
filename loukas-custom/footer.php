@@ -1,4 +1,87 @@
 <footer class="site-footer">
+  <nav class="footer-directory" aria-label="Site directory">
+    <div class="fd-grid">
+      <div class="fd-col"><h4>Preventive Care</h4>
+        <ul>
+          <li><a href="/preventive-dentistry/">Preventive Dentistry</a></li>
+          <li><a href="/preventive-dentistry/checkups-cleanings/">Checkups and Cleanings</a></li>
+          <li><a href="/preventive-dentistry/gum-disease-treatment/">Gum Disease Treatment</a></li>
+          <li><a href="/kids-dentistry/">Kids Dentistry</a></li>
+          <li><a href="/sleep-apnea-snoring-treatment/">Sleep Apnea and Snoring</a></li>
+          <li><a href="/toothbrush-abrasion-park-ridge-il/">Toothbrush Abrasion and RDA</a></li>
+        </ul>
+      </div>
+      <div class="fd-col"><h4>Restorative</h4>
+        <ul>
+          <li><a href="/restorative-dentistry/">Restorative Dentistry</a></li>
+          <li><a href="/restorative-dentistry/fillings/">Tooth Colored Fillings</a></li>
+          <li><a href="/restorative-dentistry/dental-crowns/">Dental Crowns</a></li>
+          <li><a href="/restorative-dentistry/root-canal-therapy/">Root Canal Therapy</a></li>
+          <li><a href="/dental-bridges/">Dental Bridges</a></li>
+          <li><a href="/partial-dentures/">Partial Dentures</a></li>
+        </ul>
+      </div>
+      <div class="fd-col"><h4>Dental Implants</h4>
+        <ul>
+          <li><a href="/dental-implants/">Dental Implants</a></li>
+          <li><a href="/single-implant-crown/">Single Implant Crown</a></li>
+          <li><a href="/implant-supported-dentures/">Implant Supported Dentures</a></li>
+          <li><a href="/all-on-4/">All on 4 Implants</a></li>
+          <li><a href="/bone-grafting/">Bone Grafting</a></li>
+          <li><a href="/dental-implant-consultation/">Implant Consultation</a></li>
+        </ul>
+      </div>
+      <div class="fd-col"><h4>Cosmetic and Orthodontics</h4>
+        <ul>
+          <li><a href="/cosmetic-dentistry/">Cosmetic Dentistry</a></li>
+          <li><a href="/cosmetic-dentistry/porcelain-veneers/">Porcelain Veneers</a></li>
+          <li><a href="/cosmetic-dentistry/teeth-whitening/">Teeth Whitening</a></li>
+          <li><a href="/dental-bonding/">Dental Bonding</a></li>
+          <li><a href="/restorative-dentistry/orthodontics/">Orthodontics</a></li>
+          <li><a href="/invisalign-park-ridge/">Invisalign</a></li>
+          <li><a href="/invisalign-vs-braces-park-ridge-il/">Invisalign vs Braces</a></li>
+          <li><a href="/smile-gallery/">Smile Gallery</a></li>
+        </ul>
+      </div>
+      <div class="fd-col"><h4>Facial Aesthetics</h4>
+        <ul>
+          <li><a href="/botox/">Botox and Dysport</a></li>
+          <li><a href="/botox-tmj-jaw-pain-park-ridge-il/">Botox for TMJ</a></li>
+          <li><a href="/botox-for-migraines-headaches-park-ridge-il/">Botox for Migraines</a></li>
+          <li><a href="/lip-fillers-park-ridge/">Lip Fillers</a></li>
+          <li><a href="/cosmetic-dentistry/dermal-fillers/">Dermal Fillers</a></li>
+          <li><a href="/chin-filler-park-ridge/">Chin Filler</a></li>
+          <li><a href="/jawline-filler-park-ridge/">Jawline Filler</a></li>
+          <li><a href="/kybella/">Kybella</a></li>
+          <li><a href="/pdo-threads/">PDO Threads</a></li>
+          <li><a href="/botox-parties/">Botox Parties</a></li>
+        </ul>
+      </div>
+      <div class="fd-col"><h4>Oral Surgery and Emergencies</h4>
+        <ul>
+          <li><a href="/oral-surgery/">Oral Surgery</a></li>
+          <li><a href="/oral-surgery/tooth-extractions/">Tooth Extractions</a></li>
+          <li><a href="/wisdom-teeth/">Wisdom Teeth</a></li>
+          <li><a href="/emergency-dentistry/">Emergency Dentistry</a></li>
+          <li><a href="/dental-emergency-park-ridge-il/">Dental Emergency Guide</a></li>
+          <li><a href="/tmj-treatment/">TMJ and Jaw Pain</a></li>
+        </ul>
+      </div>
+      <div class="fd-col"><h4>Patient Information</h4>
+        <ul>
+          <li><a href="/services/">All Dental Services</a></li>
+          <li><a href="/new-patients/">New Patients</a></li>
+          <li><a href="/insurance-accepted/">Insurance Accepted</a></li>
+          <li><a href="/dental-payment-plans/">Payment Plans</a></li>
+          <li><a href="/our-office/">Our Office</a></li>
+          <li><a href="/dental-technology/">Dental Technology</a></li>
+          <li><a href="/reviews/">Reviews</a></li>
+          <li><a href="/faq/">FAQ</a></li>
+          <li><a href="/location/">Location and Directions</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
   <div class="footer-inner">
     <div class="footer-col footer-brand">
       <picture><source srcset="https://www.drloukas.com/wp-content/uploads/2026/08/loukas-logo-header.webp" type="image/webp"><img src="https://www.drloukas.com/wp-content/uploads/2026/08/loukas-logo-header.png" alt="Loukas Dentistry" width="161" height="120" class="footer-logo" loading="lazy"></picture>
@@ -52,7 +135,7 @@
         </a>
       </div>
       <a href="https://g.page/loukas-dentistry/review" target="_blank" rel="noopener" class="footer-review-link">Leave a Google Review</a>
-      <a href="/contact-us/" class="hp-btn hp-btn-teal footer-book-btn">Book Appointment</a>
+      <a href="https://registration.mogo.com/ScheduleAppt.aspx?oid=5849d0b1-0396-4b2e-a3cf-6d98951f4019&amp;rurl=https://www.drloukas.com" class="hp-btn hp-btn-teal footer-book-btn" target="_blank" rel="noopener">Book Appointment</a>
     </div>
   </div>
   <div class="footer-bottom">
